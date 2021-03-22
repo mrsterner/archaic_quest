@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="All rights reserved"
+
+[[mods]]
+    modId="archaic_quest"
+    version="${file.jarVersion}"
+    displayName="Archaic Quest"
+    logoFile="examplemod.png"
+    credits="Obsidian Core and the other peeps"
+    authors="Obsidian Core, Sarinsa, Tate___Langdon"
+    description="Obsidian Core's legacy, with some other stuff. (Please return to us Obsidian Core ;_;)"
+
+[[dependencies.examplemod]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.examplemod]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
