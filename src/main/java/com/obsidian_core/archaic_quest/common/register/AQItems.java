@@ -8,4 +8,5 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class AQItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ArchaicQuest.MODID);
+
 }

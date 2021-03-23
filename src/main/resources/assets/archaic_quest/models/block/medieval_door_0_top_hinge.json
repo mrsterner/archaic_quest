@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_rh",
+  "textures": {
+    "top": "archaic_quest:block/medieval_door_0_top",
+    "bottom": "archaic_quest:block/medieval_door_0_bottom"
+  }
+}
