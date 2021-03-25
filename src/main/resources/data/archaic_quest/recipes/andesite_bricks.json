@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:polished_andesite"
+    }
+  },
+  "result": {
+    "item": "archaic_quest:andesite_bricks",
+    "count": 4
+  }
+}

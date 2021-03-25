@@ -18,6 +18,7 @@ public class ClientRegister {
     }
 
     private static void setBlockRenderTypes() {
+        RenderTypeLookup.setRenderLayer(AQBlocks.DUNGEON_DOOR_BARS.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_0.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_1.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_2.get(), RenderType.cutout());

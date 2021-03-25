@@ -1,0 +1,48 @@
+{
+  "variants": {
+    "facing=down,triggered=false": {
+      "model": "archaic_quest:block/andesite_aztec_trap_vertical",
+      "x": 180
+    },
+    "facing=east,triggered=false": {
+      "model": "archaic_quest:block/andesite_aztec_trap",
+      "y": 90
+    },
+    "facing=north,triggered=false": {
+      "model": "archaic_quest:block/andesite_aztec_trap"
+    },
+    "facing=south,triggered=false": {
+      "model": "archaic_quest:block/andesite_aztec_trap",
+      "y": 180
+    },
+    "facing=up,triggered=false": {
+      "model": "archaic_quest:block/andesite_aztec_trap_vertical"
+    },
+    "facing=west,triggered=false": {
+      "model": "archaic_quest:block/andesite_aztec_trap",
+      "y": 270
+    },
+    "facing=down,triggered=true": {
+      "model": "archaic_quest:block/andesite_aztec_trap_vertical_activated",
+      "x": 180
+    },
+    "facing=east,triggered=true": {
+      "model": "archaic_quest:block/andesite_aztec_trap_activated",
+      "y": 90
+    },
+    "facing=north,triggered=true": {
+      "model": "archaic_quest:block/andesite_aztec_trap_activated"
+    },
+    "facing=south,triggered=true": {
+      "model": "archaic_quest:block/andesite_aztec_trap_activated",
+      "y": 180
+    },
+    "facing=up,triggered=true": {
+      "model": "archaic_quest:block/andesite_aztec_trap_vertical_activated"
+    },
+    "facing=west,triggered=true": {
+      "model": "archaic_quest:block/andesite_aztec_trap_activated",
+      "y": 270
+    }
+  }
+}
