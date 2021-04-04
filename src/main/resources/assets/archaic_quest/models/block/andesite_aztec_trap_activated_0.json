@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "archaic_quest:block/andesite_aztec_bricks_25",
+    "front": "archaic_quest:block/andesite_aztec_trap_activated_0",
+    "side": "archaic_quest:block/andesite_aztec_bricks_25"
+  }
+}

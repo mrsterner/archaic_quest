@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "archaic_quest:block/andesite_aztec_bricks_29",
+    "north": "archaic_quest:block/andesite_aztec_bricks_29",
+    "south": "archaic_quest:block/andesite_aztec_bricks_29",
+    "east": "archaic_quest:block/andesite_aztec_bricks_29",
+    "west": "archaic_quest:block/andesite_aztec_bricks_29",
+    "up": "archaic_quest:block/andesite_aztec_bricks_14",
+    "down": "archaic_quest:block/andesite_aztec_bricks_14"
+  }
+}

@@ -47,6 +47,11 @@ public class AQRecipeProvider extends AbstractRecipeProvider {
         this.stonecuttingRecipe(AQBlocks.ANDESITE_AZTEC_BRICKS_23.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
         this.stonecuttingRecipe(AQBlocks.ANDESITE_AZTEC_BRICKS_24.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
         this.stonecuttingRecipe(AQBlocks.ANDESITE_AZTEC_BRICKS_25.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecuttingRecipe(AQBlocks.ANDESITE_AZTEC_BRICKS_26.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecuttingRecipe(AQBlocks.ANDESITE_AZTEC_BRICKS_27.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecuttingRecipe(AQBlocks.ANDESITE_AZTEC_BRICKS_28.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecuttingRecipe(AQBlocks.ANDESITE_AZTEC_BRICKS_29.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecuttingRecipe(AQBlocks.STONE_AZTEC_BRICKS_0.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
 
         ShapedRecipeBuilder.shaped(Blocks.COBBLESTONE, 1)
                 .pattern("###")
@@ -62,7 +67,7 @@ public class AQRecipeProvider extends AbstractRecipeProvider {
                 .unlockedBy(criterionName(Blocks.POLISHED_ANDESITE), has(Blocks.POLISHED_ANDESITE))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(AQBlocks.ANDESITE_AZTEC_TRAP.get(), 1)
+        ShapelessRecipeBuilder.shapeless(AQBlocks.ANDESITE_AZTEC_TRAP_0.get(), 1)
                 .requires(Blocks.DISPENSER)
                 .requires(AQBlocks.ANDESITE_AZTEC_BRICKS_25.get())
                 .unlockedBy(criterionName(Blocks.DISPENSER), has(Blocks.DISPENSER))

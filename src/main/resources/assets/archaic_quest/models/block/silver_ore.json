@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "archaic_quest:block/silver_ore"
+  }
+}

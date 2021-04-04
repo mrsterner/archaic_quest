@@ -52,7 +52,13 @@ public class AQBlockLootTableProvider extends BlockLootTables {
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_23.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_24.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_25.get());
-        this.dropSelf(AQBlocks.ANDESITE_AZTEC_TRAP.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_26.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_27.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_28.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_29.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_TRAP_0.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_TRAP_1.get());
+        this.dropSelf(AQBlocks.STONE_AZTEC_BRICKS_0.get());
 
         this.add(AQBlocks.MEDIEVAL_DOOR_0.get(), BlockLootTables::createDoorTable);
         this.add(AQBlocks.MEDIEVAL_DOOR_1.get(), BlockLootTables::createDoorTable);

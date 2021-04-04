@@ -42,9 +42,6 @@ public class LootModifierAdd extends LootModifier {
     @Nonnull
     @Override
     protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-        ArchaicQuest.LOGGER.info("Applying loot modifier");
-        ArchaicQuest.LOGGER.info("Table ID: " + context.getQueriedLootTableId().toString());
-
         if (context.getQueriedLootTableId().equals(this.targetLootTable)) {
             Random random = new Random();
             ItemStack stack = new ItemStack(this.itemToAdd, random.nextInt(this.maxStackCount + 1));
