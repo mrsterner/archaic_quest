@@ -1,11 +1,10 @@
 package com.obsidian_core.archaic_quest.common.core;
 
 import com.obsidian_core.archaic_quest.common.event.BiomeEvents;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.register.AQGlobalLootModifiers;
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.register.*;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
 import net.minecraft.loot.conditions.LootConditionManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -30,11 +29,17 @@ public class ArchaicQuest {
         AQBlocks.BLOCKS.register(eventBus);
         AQItems.ITEMS.register(eventBus);
         AQGlobalLootModifiers.GLOBAL_LOOT_MODIFIERS.register(eventBus);
+        AQSoundEvents.SOUNDS.register(eventBus);
+        AQTileEntities.TILE_ENTITIES.register(eventBus);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             AQConfiguredFeatures.register();
         });
+    }
+
+    public static ResourceLocation resourceLoc(String path) {
+        return new ResourceLocation(MODID, path);
     }
 }

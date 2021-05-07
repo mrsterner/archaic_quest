@@ -1,0 +1,8 @@
+{
+  "death_whistle_shriek": {
+    "subtitle": "sound_event.archaic_quest.misc.death_whistle_shriek",
+    "sounds": [
+      "archaic_quest:misc/death_whistle_shriek"
+    ]
+  }
+}

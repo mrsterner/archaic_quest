@@ -1,6 +1,5 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
@@ -9,6 +8,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.client.model.obj.OBJLoader;
 
 import java.util.Random;
 

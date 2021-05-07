@@ -9,5 +9,4 @@ public class AQFillerBlockTypes {
     public static final RuleTest GRANITE = new BlockMatchRuleTest(Blocks.GRANITE);
     public static final RuleTest DIORITE = new BlockMatchRuleTest(Blocks.DIORITE);
     public static final RuleTest ANDESITE = new BlockMatchRuleTest(Blocks.ANDESITE);
-
 }

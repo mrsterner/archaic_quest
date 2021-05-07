@@ -1,6 +1,7 @@
 package com.obsidian_core.archaic_quest.common.register;
 
 import com.obsidian_core.archaic_quest.common.block.AztecTrapBlock;
+import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import net.minecraft.block.*;
@@ -63,6 +64,38 @@ public class AQBlocks {
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_27 = registerBlock("andesite_aztec_bricks_27", AQCreativeTabs.BLOCKS, () -> new Block(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_28 = registerBlock("andesite_aztec_bricks_28", AQCreativeTabs.BLOCKS, () -> new Block(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_29 = registerBlock("andesite_aztec_bricks_29", AQCreativeTabs.BLOCKS, () -> new Block(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_BRICK_VERTICAL_SLAB = registerBlock("andesite_brick_vertical_slab", AQCreativeTabs.BLOCKS, () ->  new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_0 = registerBlock("andesite_aztec_brick_vertical_slab_0", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_1 = registerBlock("andesite_aztec_brick_vertical_slab_1", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_2 = registerBlock("andesite_aztec_brick_vertical_slab_2", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_3 = registerBlock("andesite_aztec_brick_vertical_slab_3", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_4 = registerBlock("andesite_aztec_brick_vertical_slab_4", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_5 = registerBlock("andesite_aztec_brick_vertical_slab_5", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_6 = registerBlock("andesite_aztec_brick_vertical_slab_6", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_7 = registerBlock("andesite_aztec_brick_vertical_slab_7", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_8 = registerBlock("andesite_aztec_brick_vertical_slab_8", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_9 = registerBlock("andesite_aztec_brick_vertical_slab_9", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_10 = registerBlock("andesite_aztec_brick_vertical_slab_10", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_11 = registerBlock("andesite_aztec_brick_vertical_slab_11", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_12 = registerBlock("andesite_aztec_brick_vertical_slab_12", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_13 = registerBlock("andesite_aztec_brick_vertical_slab_13", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_14 = registerBlock("andesite_aztec_brick_vertical_slab_14", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_15 = registerBlock("andesite_aztec_brick_vertical_slab_15", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_16 = registerBlock("andesite_aztec_brick_vertical_slab_16", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_17 = registerBlock("andesite_aztec_brick_vertical_slab_17", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_18 = registerBlock("andesite_aztec_brick_vertical_slab_18", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_19 = registerBlock("andesite_aztec_brick_vertical_slab_19", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_20 = registerBlock("andesite_aztec_brick_vertical_slab_20", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_21 = registerBlock("andesite_aztec_brick_vertical_slab_21", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_22 = registerBlock("andesite_aztec_brick_vertical_slab_22", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_23 = registerBlock("andesite_aztec_brick_vertical_slab_23", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_24 = registerBlock("andesite_aztec_brick_vertical_slab_24", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_25 = registerBlock("andesite_aztec_brick_vertical_slab_25", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_26 = registerBlock("andesite_aztec_brick_vertical_slab_26", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_27 = registerBlock("andesite_aztec_brick_vertical_slab_27", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_28 = registerBlock("andesite_aztec_brick_vertical_slab_28", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_29 = registerBlock("andesite_aztec_brick_vertical_slab_29", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_0 = registerBlock("andesite_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_1 = registerBlock("andesite_aztec_trap_1", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
     public static final RegistryObject<Block> STONE_AZTEC_BRICKS_0 = registerBlock("stone_aztec_bricks_0", AQCreativeTabs.BLOCKS, () -> new Block(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
@@ -73,6 +106,9 @@ public class AQBlocks {
     public static final RegistryObject<DoorBlock> MEDIEVAL_DOOR_2 = registerDoorBlock("medieval_door_2", () -> new DoorBlock(AbstractBlock.Properties.copy(MEDIEVAL_DOOR_0.get())));
 
     public static final RegistryObject<Block> TEST_BLOCK = registerBlock("test_block", AQCreativeTabs.BLOCKS, () -> new Block(AbstractBlock.Properties.of(Material.STONE).strength(1.0F, 1.0F).sound(SoundType.STONE).hasPostProcess(AQBlocks::always).emissiveRendering(AQBlocks::always)));
+
+    public static final RegistryObject<Block> AZTEC_CRAFTING_STATION = registerBlock("aztec_crafting_station", AQCreativeTabs.BLOCKS, () -> new Block(AbstractBlock.Properties.of(Material.STONE)));
+
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, ItemGroup itemGroup, Supplier<T> blockSupplier) {
         RegistryObject<T> registryObject = BLOCKS.register(name, blockSupplier);

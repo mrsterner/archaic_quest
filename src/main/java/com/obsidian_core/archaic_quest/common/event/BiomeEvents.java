@@ -5,6 +5,9 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
+import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
@@ -27,6 +30,7 @@ public class BiomeEvents {
 
         if (BiomeDictionary.hasType(getRegistryKey(biomeName), BiomeDictionary.Type.OVERWORLD)) {
             generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, AQConfiguredFeatures.TIN_ORE);
+            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, AQConfiguredFeatures.SILVER_ORE);
         }
     }
 

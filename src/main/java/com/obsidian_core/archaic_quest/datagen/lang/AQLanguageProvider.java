@@ -30,5 +30,7 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         this.addBlock(AQBlocks.ONYX, "Onyx");
 
         this.addItem(AQItems.PEBBLE, "Pebble");
+        this.addItem(AQItems.CRYSTAL_SKULL, "Crystal Skull");
+        this.addItem(AQItems.AZTEC_DEATH_WHISTLE, "Aztec Death Whistle");
     }
 }
