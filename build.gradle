@@ -71,6 +71,10 @@ repositories {
         name 'prog'
         url "http://dvs1.progwml6.com/files/maven"
     }
+    maven {
+        name 'Mekanism'
+        url "https://modmaven.dev/"
+    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -79,6 +83,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
 }
 
 jar {

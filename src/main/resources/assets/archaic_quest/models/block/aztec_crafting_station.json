@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "archaic_quest:models/block/obj/aztec_crafting_station.obj",
+  "flip-v": true
+}

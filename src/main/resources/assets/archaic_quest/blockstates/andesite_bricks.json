@@ -1,6 +1,7 @@
 {
   "variants": {
-    "": { "model": "archaic_quest:block/andesite_bricks"
+    "": {
+      "model": "archaic_quest:block/andesite_bricks"
     }
   }
 }

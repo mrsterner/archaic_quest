@@ -1,6 +1,7 @@
 {
   "variants": {
-    "": { "model": "archaic_quest:block/granite_quartz_ore"
+    "": {
+      "model": "archaic_quest:block/granite_quartz_ore"
     }
   }
 }

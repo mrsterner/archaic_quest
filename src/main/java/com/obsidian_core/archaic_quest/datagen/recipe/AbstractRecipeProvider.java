@@ -1,9 +1,7 @@
 package com.obsidian_core.archaic_quest.datagen.recipe;
 
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.SingleItemRecipeBuilder;
+import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
@@ -26,7 +24,7 @@ public abstract class AbstractRecipeProvider extends RecipeProvider {
         return "has_" + Objects.requireNonNull(criterionIngredient.asItem().getRegistryName()).getPath();
     }
 
-    protected void stonecuttingRecipe(IItemProvider result, IItemProvider ingredient, int count, Consumer<IFinishedRecipe> consumer) {
+    protected void stonecutting(IItemProvider result, IItemProvider ingredient, int count, Consumer<IFinishedRecipe> consumer) {
         String ingredientName = itemName(ingredient);
         String resultName = itemName(result);
 
@@ -35,12 +33,19 @@ public abstract class AbstractRecipeProvider extends RecipeProvider {
                 .save(consumer, resultName + "_from_" + ingredientName + "_stonecutting");
     }
 
-    protected void stonecuttingRecipe(IItemProvider result, ITag.INamedTag<Item> tagIngredient, int count, Consumer<IFinishedRecipe> consumer) {
+    protected void stonecutting(IItemProvider result, ITag.INamedTag<Item> tagIngredient, int count, Consumer<IFinishedRecipe> consumer) {
         String resultName = itemName(result);
         String tagName = tagIngredient.getName().getPath();
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(tagIngredient), result, count)
                 .unlocks("has_" + tagName, has(tagIngredient))
                 .save(consumer, resultName + "_from_" + tagName + "_stonecutting");
+    }
+
+    protected void smelting(IItemProvider result, IItemProvider ingredient, float exp, Consumer<IFinishedRecipe> consumer) {
+        String ingredientName = itemName(result);
+        CookingRecipeBuilder.smelting(Ingredient.of(ingredient), result, exp, 200)
+                .unlockedBy("has_" + ingredientName, has(ingredient))
+                .save(consumer, ArchaicQuest.resourceLoc(ingredientName + "_from_smelting"));
     }
 }

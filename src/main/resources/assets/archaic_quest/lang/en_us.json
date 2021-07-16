@@ -1,8 +1,20 @@
 {
+  "block.archaic_quest.andesite_turquoise_ore": "Andesite Turquoise Ore",
+  "block.archaic_quest.basalt_ore": "Basalt Ore",
+  "block.archaic_quest.diorite_jade_ore": "Diorite Jade Ore",
+  "block.archaic_quest.granite_quartz_ore": "Granite Quartz Ore",
+  "block.archaic_quest.onyx": "Onyx",
+  "block.archaic_quest.silver_ore": "Silver Ore",
+  "block.archaic_quest.tin_ore": "Tin Ore",
+  "item.archaic_quest.aztec_death_whistle": "Aztec Death Whistle",
+  "item.archaic_quest.crystal_skull": "Crystal Skull",
+  "item.archaic_quest.pebble": "Pebble",
+  "item.archaic_quest.silver_ingot": "Silver Ingot",
+  "item.archaic_quest.tin_ingot": "Tin Ingot",
   "itemGroup.archaic_quest_armor": "Archaic Quest - Armor",
   "itemGroup.archaic_quest_blocks": "Archaic Quest - Blocks",
   "itemGroup.archaic_quest_decoration": "Archaic Quest - Decoration",
   "itemGroup.archaic_quest_items": "Archaic Quest - Items",
   "itemGroup.archaic_quest_tools": "Archaic Quest - Tools",
-  "itemGroup.archaic_quest_weapons": "Archaic Quest - Weapons",
+  "itemGroup.archaic_quest_weapons": "Archaic Quest - Weapons"
 }

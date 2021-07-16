@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:dispenser"
+    },
+    {
+      "item": "archaic_quest:andesite_aztec_bricks_25"
+    }
+  ],
+  "result": {
+    "item": "archaic_quest:andesite_aztec_trap_0"
+  }
+}

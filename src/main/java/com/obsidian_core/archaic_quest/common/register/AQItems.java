@@ -2,10 +2,10 @@ package com.obsidian_core.archaic_quest.common.register;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
+import com.obsidian_core.archaic_quest.common.item.AQSimpleWeaponItem;
 import com.obsidian_core.archaic_quest.common.item.AztecDeathWhistleItem;
 import com.obsidian_core.archaic_quest.common.item.PebbleItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.item.*;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,6 +15,11 @@ import java.util.function.Supplier;
 public class AQItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ArchaicQuest.MODID);
+
+    public static final RegistryObject<Item> TIN_INGOT = registerSimpleItem("tin_ingot", AQCreativeTabs.ITEMS);
+    public static final RegistryObject<Item> SILVER_INGOT = registerSimpleItem("silver_ingot", AQCreativeTabs.ITEMS);
+
+    public static final RegistryObject<Item> BONE_CLUB = registerItem("bone_club", () -> new AQSimpleWeaponItem(ItemTier.WOOD, 2, -3.2F));
 
     public static final RegistryObject<Item> PEBBLE = registerItem("pebble", PebbleItem::new);
     public static final RegistryObject<Item> CRYSTAL_SKULL = registerSimpleItem("crystal_skull", AQCreativeTabs.ITEMS);

@@ -1,6 +1,7 @@
 {
   "variants": {
-    "": { "model": "archaic_quest:block/tin_ore"
+    "": {
+      "model": "archaic_quest:block/tin_ore"
     }
   }
 }

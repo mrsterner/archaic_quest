@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "entries": [
+    "archaic_quest:sunflower_modifier_remove",
+    "archaic_quest:cobblestone_modifier",
+    "archaic_quest:sunflower_modifier_add"
+  ]
+}

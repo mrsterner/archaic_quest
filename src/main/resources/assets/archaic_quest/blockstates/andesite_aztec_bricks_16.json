@@ -1,6 +1,27 @@
 {
   "variants": {
-    "": { "model": "archaic_quest:block/andesite_aztec_bricks_16"
+    "facing=down": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_16",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_16",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_23"
+    },
+    "facing=south": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_14",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_16",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_16",
+      "y": 270
     }
   }
 }

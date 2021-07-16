@@ -1,6 +1,7 @@
 {
   "variants": {
-    "": { "model": "archaic_quest:block/andesite_aztec_bricks_13"
+    "": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_13"
     }
   }
 }

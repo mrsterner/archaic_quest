@@ -1,0 +1,15 @@
+{
+  "conditions": [
+    {
+      "condition": "minecraft:match_tool",
+      "predicate": {
+        "item": "minecraft:air"
+      }
+    }
+  ],
+  "item": "archaic_quest:pebble",
+  "maxCount": 9,
+  "minCount": 5,
+  "lootTable": "minecraft:blocks/cobblestone",
+  "type": "archaic_quest:add_item_modifier"
+}

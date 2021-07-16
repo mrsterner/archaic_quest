@@ -1,6 +1,7 @@
 {
   "variants": {
-    "": { "model": "archaic_quest:block/onyx"
+    "": {
+      "model": "archaic_quest:block/onyx"
     }
   }
 }
