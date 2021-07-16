@@ -1,0 +1,6 @@
+{
+  "parent": "archaic_quest:block/aztec_pillar_middle",
+  "textures": {
+    "0": "archaic_quest:block/aztec_pillar_middle_skulls"
+  }
+}

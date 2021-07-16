@@ -93,6 +93,7 @@ public class AQBlocks {
     public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_27 = registerBlock("andesite_aztec_brick_vertical_slab_27", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
     public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_28 = registerBlock("andesite_aztec_brick_vertical_slab_28", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
     public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICK_VERTICAL_SLAB_29 = registerBlock("andesite_aztec_brick_vertical_slab_29", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
+    public static final RegistryObject<Block> AZTEC_PILLAR = registerBlock("aztec_pillar", AQCreativeTabs.DECORATION, () -> new ChiselPillarBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get()).noCollission()));
 
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_0 = registerBlock("andesite_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_1 = registerBlock("andesite_aztec_trap_1", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AbstractBlock.Properties.copy(ANDESITE_BRICKS.get())));

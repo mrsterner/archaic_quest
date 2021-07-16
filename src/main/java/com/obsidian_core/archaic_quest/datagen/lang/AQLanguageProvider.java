@@ -28,6 +28,7 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         this.addBlock(AQBlocks.ANDESITE_TURQUOISE_ORE, "Andesite Turquoise Ore");
         this.addBlock(AQBlocks.GRANITE_QUARTZ_ORE, "Granite Quartz Ore");
         this.addBlock(AQBlocks.ONYX, "Onyx");
+        this.addBlock(AQBlocks.AZTEC_PILLAR, "Aztec Pillar");
 
         this.addItem(AQItems.TIN_INGOT, "Tin Ingot");
         this.addItem(AQItems.SILVER_INGOT, "Silver Ingot");
@@ -35,5 +36,6 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         this.addItem(AQItems.PEBBLE, "Pebble");
         this.addItem(AQItems.CRYSTAL_SKULL, "Crystal Skull");
         this.addItem(AQItems.AZTEC_DEATH_WHISTLE, "Aztec Death Whistle");
+        this.addItem(AQItems.HAMMER_AND_CHISEL, "Hammer and Chisel");
     }
 }
