@@ -30,16 +30,5 @@ public class AQGlobalLootModifierProvider extends GlobalLootModifierProvider {
                         AQItems.PEBBLE.get(),
                         9,
                         5));
-
-        this.add("sunflower_modifier_add", AQGlobalLootModifiers.ADD_ITEM_MODIFIER.get(),
-                new LootModifierAdd(new ILootCondition[] {MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.SHEARS)).build()},
-                        new ResourceLocation("blocks/sunflower"),
-                        AQItems.PEBBLE.get(),
-                        1,
-                        1));
-
-        this.add("sunflower_modifier_remove", AQGlobalLootModifiers.REMOVE_ITEM_MODIFIER.get(),
-                new LootModifierRemove(new ILootCondition[] {MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.SHEARS)).build()},
-                        new ResourceLocation("blocks/sunflower"), Items.WHEAT_SEEDS));
     }
 }

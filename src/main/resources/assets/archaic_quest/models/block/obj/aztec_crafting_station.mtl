@@ -1,4 +1,4 @@
-# Made in Blockbench 3.8.4
+# Made in Blockbench 3.7.5
 newmtl m_0
-map_Kd archaic_quest:block/aztec_crafting_station
+map_Kd table_texture.png 
 newmtl none

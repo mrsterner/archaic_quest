@@ -1,5 +1,7 @@
 package com.obsidian_core.archaic_quest.common.loot_modifier;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
@@ -42,7 +44,7 @@ public class LootModifierAdd extends LootModifier {
     @Nonnull
     @Override
     protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-        if (context.getQueriedLootTableId().equals(this.targetLootTable)) {
+        if (context.getQueriedLootTableId().equals(targetLootTable)) {
             Random random = new Random();
             ItemStack stack = new ItemStack(this.itemToAdd, random.nextInt(this.maxStackCount + 1));
 

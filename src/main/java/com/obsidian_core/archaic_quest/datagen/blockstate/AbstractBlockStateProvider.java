@@ -2,6 +2,7 @@ package com.obsidian_core.archaic_quest.datagen.blockstate;
 
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
@@ -12,8 +13,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractBlockStateProvider extends BlockStateProvider {
 
@@ -23,9 +23,23 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         super(gen, ArchaicQuest.MODID, exFileHelper);
     }
 
-
     private String name(Block block) {
-        return block.getRegistryName().getPath();
+        return Objects.requireNonNull(block.getRegistryName()).getPath();
+    }
+
+    public void simpleBlockAndItem(Block block) {
+        this.simpleBlock(block);
+        this.simpleBlockItem(block, cubeAll(block));
+    }
+
+    public void topBottomCube(Block block, ResourceLocation sides, ResourceLocation topBottom) {
+        ModelFile model = models().cubeBottomTop(resLoc(":block/" + name(block)).toString(), sides, topBottom, topBottom);
+
+        getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(model)
+                .build());
+
+        simpleBlockItem(block, model);
     }
 
     public void verticalSlab(VerticalSlabBlock block, Block doubleBlock) {
@@ -37,7 +51,7 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
     }
 
     public void verticalSlab(VerticalSlabBlock block, Block doubleBlock, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
-        ModelFile model = models().withExistingParent(name(block), ArchaicQuest.MODID + ":block/vertical_slab")
+        ModelFile model = models().withExistingParent(name(block), resLoc(":block/vertical_slab").toString())
                 .texture("side", side)
                 .texture("bottom", bottom)
                 .texture("top", top);
@@ -64,5 +78,13 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
                     .uvLock(true)
                     .build();
             }, VerticalSlabBlock.WATERLOGGED);
+    }
+
+    public static ResourceLocation resLoc(String path) {
+        return ArchaicQuest.resourceLoc(path);
+    }
+
+    public static ResourceLocation texture(String textureName) {
+        return resLoc("textures/block/" + textureName + ".png");
     }
 }

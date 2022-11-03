@@ -31,7 +31,7 @@ public class BiomeEvents {
         if (BiomeDictionary.hasType(getRegistryKey(biomeName), BiomeDictionary.Type.OVERWORLD)) {
             generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, AQConfiguredFeatures.TIN_ORE);
             generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, AQConfiguredFeatures.SILVER_ORE);
-            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, AQConfiguredFeatures.GRANITE_QUARTZ_ORE);
+            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, AQConfiguredFeatures.GRANITE_QUARTZ_ORE);
         }
     }
 

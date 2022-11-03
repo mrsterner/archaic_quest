@@ -2,18 +2,28 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DoublePlantBlock;
 import net.minecraft.block.EndRodBlock;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ChiselPillarBlock extends Block {
 
@@ -28,22 +38,38 @@ public class ChiselPillarBlock extends Block {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         Type type = Type.BOTTOM;
-        Direction facing = context.getClickedFace();
+        Direction clickedFace = context.getClickedFace();
+        BlockPos clickedPos = context.getClickedPos();
 
         if (context.getPlayer() != null) {
             World world = context.getPlayer().level;
-            BlockState lookAtState = world.getBlockState(context.getClickedPos());
+            BlockState clickedState = world.getBlockState(clickedPos.relative(clickedFace.getOpposite()));
 
-            if (lookAtState.is(this)) {
-                type = Type.TOP;
-                facing = lookAtState.getValue(FACING);
+            if (clickedState.is(this)) {
+                Direction clickedStateFace = clickedState.getValue(FACING);
 
-                if (world.getBlockState(context.getClickedPos().relative(context.getClickedFace())).is(this)) {
-                    type = Type.SMOOTH;
+                if (clickedFace == clickedStateFace) {
+                    type = Type.TOP;
                 }
             }
         }
-        return this.defaultBlockState().setValue(FACING, facing).setValue(PILLAR_TYPE, type);
+        return this.defaultBlockState().setValue(FACING, clickedFace).setValue(PILLAR_TYPE, type);
+    }
+
+    @Override
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+        if (!state.is(this))
+            super.setPlacedBy(world, pos, state, livingEntity, itemStack);
+
+        Direction facing = state.getValue(FACING);
+        BlockPos behindPos = pos.relative(facing.getOpposite());
+        BlockState behindState = world.getBlockState(behindPos);
+
+        if (behindState.is(this)) {
+            if (behindState.getValue(PILLAR_TYPE) == Type.TOP && behindState.getValue(FACING) == facing) {
+                world.setBlock(behindPos, behindState.setValue(PILLAR_TYPE, Type.SMOOTH), 3);
+            }
+        }
     }
 
     @Override
@@ -82,17 +108,22 @@ public class ChiselPillarBlock extends Block {
             return this.name;
         }
 
-        /*
+
         public static Type chiselCycle(Type type) {
             if (type == BOTTOM || type == TOP)
                 return type;
 
-            List<Type> types = new ArrayList<>();
-            Collections.addAll(types, values());
-            types.remove(BOTTOM);
-            types.remove(TOP);
+            int index = type.ordinal() + 1;
 
+            if (index >= values().length)
+                // 0 and 1 are top and bottom.
+                index = 2;
+
+            return values()[index];
         }
-         */
+
+        public boolean canBeChiseled() {
+            return this != BOTTOM && this != TOP;
+        }
     }
 }
