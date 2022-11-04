@@ -3,6 +3,7 @@ package com.obsidian_core.archaic_quest.common.item;
 import com.obsidian_core.archaic_quest.common.block.ChiselPillarBlock;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
@@ -33,11 +34,17 @@ public class HammerAndChiselItem extends Item {
             ChiselPillarBlock.Type pillarType = clickedState.getValue(ChiselPillarBlock.PILLAR_TYPE);
 
             if (pillarType.canBeChiseled()) {
-                world.setBlock(pos, clickedState.setValue(ChiselPillarBlock.PILLAR_TYPE, ChiselPillarBlock.Type.chiselCycle(pillarType)), 3);
+                PlayerEntity player = context.getPlayer();
+
+                if (player != null) {
+                    world.setBlock(pos, clickedState.setValue(ChiselPillarBlock.PILLAR_TYPE, ChiselPillarBlock.Type.chiselCycle(player.isShiftKeyDown(), pillarType)), 3);
+                }
+                else {
+                    world.setBlock(pos, clickedState.setValue(ChiselPillarBlock.PILLAR_TYPE, ChiselPillarBlock.Type.chiselCycle(false, pillarType)), 3);
+                }
 
                 if (world instanceof ServerWorld) {
                     ServerWorld serverWorld = (ServerWorld) world;
-                    ServerPlayerEntity player = context.getPlayer() == null ? null : (ServerPlayerEntity) context.getPlayer();
 
                     if (player != null && !player.isCreative()) {
                         context.getItemInHand().hurtAndBreak(1, player, (serverPlayer) -> {

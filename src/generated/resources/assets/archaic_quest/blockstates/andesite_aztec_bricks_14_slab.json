@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "type=top": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_14_slab",
+      "uvlock": true
+    },
+    "type=bottom": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_14_slab",
+      "uvlock": true
+    },
+    "type=double": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_14"
+    }
+  }
+}

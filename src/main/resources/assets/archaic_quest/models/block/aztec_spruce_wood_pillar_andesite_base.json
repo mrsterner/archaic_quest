@@ -1,6 +1,7 @@
 {
   "parent": "archaic_quest:block/aztec_wood_pillar_base",
   "textures": {
-    "0": "archaic_quest:block/aztec_spruce_wood_pillar_andesite_base"
+    "0": "archaic_quest:block/aztec_spruce_wood_pillar_andesite_base",
+    "particle": "minecraft:block/stripped_spruce_log"
   }
 }

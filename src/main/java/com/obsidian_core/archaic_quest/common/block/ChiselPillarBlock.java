@@ -109,16 +109,24 @@ public class ChiselPillarBlock extends Block {
         }
 
 
-        public static Type chiselCycle(Type type) {
+        public static Type chiselCycle(boolean backwardCycle, Type type) {
             if (type == BOTTOM || type == TOP)
                 return type;
 
-            int index = type.ordinal() + 1;
+            int index;
 
-            if (index >= values().length)
-                // 0 and 1 are top and bottom.
-                index = 2;
+            if (backwardCycle) {
+                index = type.ordinal() - 1;
 
+                if (index < 2)
+                    index = values().length - 1;
+            }
+            else {
+                index = type.ordinal() + 1;
+
+                if (index >= values().length)
+                    index = 2;
+            }
             return values()[index];
         }
 

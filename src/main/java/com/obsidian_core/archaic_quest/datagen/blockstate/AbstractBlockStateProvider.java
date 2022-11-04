@@ -4,7 +4,9 @@ import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -23,7 +25,7 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         super(gen, ArchaicQuest.MODID, exFileHelper);
     }
 
-    private String name(Block block) {
+    protected String name(Block block) {
         return Objects.requireNonNull(block.getRegistryName()).getPath();
     }
 
@@ -42,6 +44,40 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         simpleBlockItem(block, model);
     }
 
+    public void slab(SlabBlock block, Block doubleBlock) {
+        slab(block, doubleBlock, blockTexture(doubleBlock));
+    }
+
+    public void slab(SlabBlock block, Block doubleBlock, ResourceLocation texture) {
+        slab(block, doubleBlock, texture, texture, texture);
+    }
+
+    public void slab(SlabBlock block, Block doubleBlock, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+        ModelFile model = models().withExistingParent(name(block), mcLoc("block/slab"))
+                .texture("side", side)
+                .texture("bottom", bottom)
+                .texture("top", top);
+
+        slab(block, model, cubeAll(doubleBlock));
+        simpleBlockItem(block, model);
+    }
+
+    public void slab(SlabBlock block, ModelFile model, ModelFile doubleSlab) {
+        getVariantBuilder(block).forAllStatesExcept(state -> {
+            SlabType slabState = state.getValue(SlabBlock.TYPE);
+
+            if (slabState == SlabType.DOUBLE) {
+                return ConfiguredModel.builder()
+                        .modelFile(doubleSlab)
+                        .build();
+            }
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .uvLock(true)
+                    .build();
+        }, SlabBlock.WATERLOGGED);
+    }
+
     public void verticalSlab(VerticalSlabBlock block, Block doubleBlock) {
         verticalSlab(block, doubleBlock, blockTexture(doubleBlock));
     }
@@ -51,7 +87,7 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
     }
 
     public void verticalSlab(VerticalSlabBlock block, Block doubleBlock, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
-        ModelFile model = models().withExistingParent(name(block), resLoc(":block/vertical_slab").toString())
+        ModelFile model = models().withExistingParent(name(block), resLoc("block/vertical_slab"))
                 .texture("side", side)
                 .texture("bottom", bottom)
                 .texture("top", top);
