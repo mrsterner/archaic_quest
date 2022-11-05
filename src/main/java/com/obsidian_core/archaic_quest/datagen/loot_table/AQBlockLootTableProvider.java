@@ -1,7 +1,10 @@
 package com.obsidian_core.archaic_quest.datagen.loot_table;
 
+import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.loot.LootTable;
 import net.minecraftforge.fml.RegistryObject;
@@ -58,13 +61,28 @@ public class AQBlockLootTableProvider extends BlockLootTables {
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_27.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_28.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_29.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_30.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_31.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_32.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_33.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_34.get());
+
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_TRAP_0.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_TRAP_1.get());
+
         this.dropSelf(AQBlocks.STONE_AZTEC_BRICKS_0.get());
 
         this.add(AQBlocks.MEDIEVAL_DOOR_0.get(), BlockLootTables::createDoorTable);
         this.add(AQBlocks.MEDIEVAL_DOOR_1.get(), BlockLootTables::createDoorTable);
         this.add(AQBlocks.MEDIEVAL_DOOR_2.get(), BlockLootTables::createDoorTable);
         this.add(AQBlocks.DUNGEON_DOOR_BARS.get(), BlockLootTables::createDoorTable);
+
+        for (RegistryObject<Block> regObj : AQBlocks.BLOCKS.getEntries()) {
+            Block block = regObj.get();
+
+            if (block instanceof SlabBlock || block instanceof StairsBlock || block instanceof VerticalSlabBlock) {
+                dropSelf(block);
+            }
+        }
     }
 }

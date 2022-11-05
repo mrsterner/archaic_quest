@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "archaic_quest:item/hammer_and_chisel"
-  }
-}

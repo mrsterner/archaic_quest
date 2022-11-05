@@ -40,6 +40,8 @@ public class AQBlocks {
         ANDESITE_BRICKS_PROP = AbstractBlock.Properties.of(Material.STONE, MaterialColor.STONE).requiresCorrectToolForDrops().strength(1.5F, 6.0F).harvestTool(ToolType.PICKAXE);
     }
 
+    // CROPS
+    public static final RegistryObject<Block> CORN_CROP = registerBlockNoBlockItem("corn_crop", CornDoubleCrop::new);
 
     // ORES
     public static final RegistryObject<Block> TIN_ORE = simpleBlock("tin_ore", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(1)));
@@ -70,6 +72,7 @@ public class AQBlocks {
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_14 = simpleBlockWithVars("andesite_aztec_bricks_14", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_15 = simpleBlockWithVars("andesite_aztec_bricks_15", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_16 = registerBlock("andesite_aztec_bricks_16", AQCreativeTabs.BLOCKS, () -> new Block(ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_16_VERT_SLAB = registerBlock("andesite_aztec_bricks_16_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_17 = simpleBlockWithVars("andesite_aztec_bricks_17", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_18 = simpleBlockWithVars("andesite_aztec_bricks_18", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_19 = simpleBlockWithVars("andesite_aztec_bricks_19", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
@@ -78,11 +81,24 @@ public class AQBlocks {
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_22 = simpleBlockWithVars("andesite_aztec_bricks_22", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_23 = simpleBlockWithVars("andesite_aztec_bricks_23", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_24 = registerBlock("andesite_aztec_bricks_24", AQCreativeTabs.BLOCKS, () -> new Block(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_24_VERT_SLAB = registerBlock("andesite_aztec_bricks_24_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_25 = simpleBlockWithVars("andesite_aztec_bricks_25", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_26 = registerBlock("andesite_aztec_bricks_26", AQCreativeTabs.BLOCKS, () -> new Block(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_26_VERT_SLAB = registerBlock("andesite_aztec_bricks_26_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_27 = registerBlock("andesite_aztec_bricks_27", AQCreativeTabs.BLOCKS, () -> new SimpleHorizontalBlock(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_27_VERT_SLAB = registerBlock("andesite_aztec_bricks_27_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_28 = simpleBlockWithVars("andesite_aztec_bricks_28", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_29 = registerBlock("andesite_aztec_bricks_29", AQCreativeTabs.BLOCKS, () -> new SimpleHorizontalBlock(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_29_VERT_SLAB = registerBlock("andesite_aztec_bricks_29_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_30 = simpleBlockWithVars("andesite_aztec_bricks_30", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_31 = simpleBlockWithVars("andesite_aztec_bricks_31", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_32 = registerBlock("andesite_aztec_bricks_32", AQCreativeTabs.BLOCKS, () -> new SimpleHorizontalBlock(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_32_VERT_SLAB = registerBlock("andesite_aztec_bricks_32_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_33 = registerBlock("andesite_aztec_bricks_33", AQCreativeTabs.BLOCKS, () -> new SimpleHorizontalBlock(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_33_VERT_SLAB = registerBlock("andesite_aztec_bricks_33_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_34 = registerBlock("andesite_aztec_bricks_34", AQCreativeTabs.BLOCKS, () -> new SimpleHorizontalBlock(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<VerticalSlabBlock> ANDESITE_AZTEC_BRICKS_34_VERT_SLAB = registerBlock("andesite_aztec_bricks_34_vertical_slab", AQCreativeTabs.BLOCKS, () -> new VerticalSlabBlock(ANDESITE_BRICKS_PROP));
+
 
     public static final RegistryObject<Block> AZTEC_PILLAR = registerBlock("aztec_pillar", AQCreativeTabs.DECORATION, () -> new ChiselPillarBlock(AQBlocks.ANDESITE_BRICKS_PROP));
 
@@ -125,6 +141,16 @@ public class AQBlocks {
 
         RegistryObject<StairsBlock> stairsRegObject = registerBlock(name + "_stairs", itemGroup, () -> new StairsBlock(registryObject.get()::defaultBlockState, properties));
         STAIRS_VARIANTS.put(registryObject, stairsRegObject);
+
+        return registryObject;
+    }
+
+    private static RegistryObject<Block> simpleBlockWithVertSlab(String name, ItemGroup itemGroup, Supplier<Block> blockSupplier) {
+        RegistryObject<Block> registryObject = registerBlock(name, itemGroup, blockSupplier);
+        SIMPLE_BLOCKS.add(registryObject);
+
+        RegistryObject<VerticalSlabBlock> vertSlabRegObject = registerBlock(name + "_vertical_slab", itemGroup, () -> new VerticalSlabBlock(AbstractBlock.Properties.copy(registryObject.get())));
+        VERT_SLAB_VARIANTS.put(registryObject, vertSlabRegObject);
 
         return registryObject;
     }

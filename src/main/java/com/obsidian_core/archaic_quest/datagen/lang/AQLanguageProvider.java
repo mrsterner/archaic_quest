@@ -33,6 +33,8 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         this.addBlock(AQBlocks.AZTEC_SPRUCE_WOOD_PILLAR, "Aztec Spruce Pillar");
         this.addBlock(AQBlocks.AZTEC_SPRUCE_WOOD_PILLAR_ANDESITE_BASE, "Aztec Spruce Pillar Base");
 
+        this.addItem(AQItems.CORN, "Corn Cob");
+
         this.addItem(AQItems.TIN_INGOT, "Tin Ingot");
         this.addItem(AQItems.SILVER_INGOT, "Silver Ingot");
         this.addItem(AQItems.BONE_CLUB, "Bone Club");

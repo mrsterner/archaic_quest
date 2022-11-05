@@ -51,6 +51,11 @@ public class AQRecipeProvider extends AbstractRecipeProvider {
         this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_27.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
         this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_28.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
         this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_29.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_30.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_31.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_32.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_33.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
+        this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_34.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
         this.stonecutting(AQBlocks.STONE_AZTEC_BRICKS_0.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);
 
         this.smelting(AQItems.TIN_INGOT.get(), AQBlocks.TIN_ORE.get(), 0.7F, consumer);

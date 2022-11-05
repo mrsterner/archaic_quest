@@ -25,6 +25,13 @@ public class ChiselPillarBlock extends Block {
     public static final EnumProperty<Type> PILLAR_TYPE = EnumProperty.create("pillar_type", Type.class);
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
+    private static final VoxelShape[] SHAPES = new VoxelShape[] {
+            Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 16.0D),
+            Block.box(0.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D),
+            Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D)
+    };
+
+
     public ChiselPillarBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(PILLAR_TYPE, Type.BOTTOM));
@@ -36,13 +43,13 @@ public class ChiselPillarBlock extends Block {
         switch (state.getValue(FACING)) {
             case NORTH:
             case SOUTH:
-                return Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 16.0D);
+                return SHAPES[0];
             case EAST:
             case WEST:
-                return Block.box(0.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
+                return SHAPES[1];
             case UP:
             default:
-                return Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+                return SHAPES[2];
         }
     }
 

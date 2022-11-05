@@ -2,7 +2,6 @@ package com.obsidian_core.archaic_quest.datagen.blockstate;
 
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.DataGenerator;
@@ -13,9 +12,8 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.RegistryObject;
 
-import java.util.*;
+import java.util.Objects;
 
 public abstract class AbstractBlockStateProvider extends BlockStateProvider {
 
@@ -51,29 +49,25 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
     }
 
     public void slab(SlabBlock block, Block doubleBlock, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
-        ModelFile model = models().withExistingParent(name(block), mcLoc("block/slab"))
+        ModelFile topModel = models().withExistingParent(name(block) + "_top", mcLoc("block/slab_top"))
                 .texture("side", side)
                 .texture("bottom", bottom)
                 .texture("top", top);
 
-        slab(block, model, cubeAll(doubleBlock));
-        simpleBlockItem(block, model);
+        ModelFile bottomModel = models().withExistingParent(name(block), mcLoc("block/slab"))
+                .texture("side", side)
+                .texture("bottom", bottom)
+                .texture("top", top);
+
+        slab(block, topModel, bottomModel, cubeAll(doubleBlock));
+        simpleBlockItem(block, bottomModel);
     }
 
-    public void slab(SlabBlock block, ModelFile model, ModelFile doubleSlab) {
-        getVariantBuilder(block).forAllStatesExcept(state -> {
-            SlabType slabState = state.getValue(SlabBlock.TYPE);
-
-            if (slabState == SlabType.DOUBLE) {
-                return ConfiguredModel.builder()
-                        .modelFile(doubleSlab)
-                        .build();
-            }
-            return ConfiguredModel.builder()
-                    .modelFile(model)
-                    .uvLock(true)
-                    .build();
-        }, SlabBlock.WATERLOGGED);
+    public void slab(SlabBlock block, ModelFile topModel, ModelFile bottomModel, ModelFile doubleModel) {
+        getVariantBuilder(block)
+                .partialState().with(SlabBlock.TYPE, SlabType.BOTTOM).addModels(new ConfiguredModel(bottomModel))
+                .partialState().with(SlabBlock.TYPE, SlabType.TOP).addModels(new ConfiguredModel(topModel))
+                .partialState().with(SlabBlock.TYPE, SlabType.DOUBLE).addModels(new ConfiguredModel(doubleModel));
     }
 
     public void verticalSlab(VerticalSlabBlock block, Block doubleBlock) {
