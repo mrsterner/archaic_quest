@@ -4,6 +4,7 @@ import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.loot.LootTable;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +30,7 @@ public class AQBlockLootTableProvider extends BlockLootTables {
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_1.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_2.get());
+        this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_2_CRACKED.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_3.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_4.get());
         this.dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_5.get());

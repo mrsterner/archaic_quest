@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "side": "archaic_quest:block/andesite_aztec_bricks_2_cracked",
+    "bottom": "archaic_quest:block/andesite_aztec_bricks_2_cracked",
+    "top": "archaic_quest:block/andesite_aztec_bricks_2_cracked"
+  }
+}

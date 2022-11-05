@@ -19,8 +19,6 @@ import java.util.*;
 
 public abstract class AbstractBlockStateProvider extends BlockStateProvider {
 
-    public static final List<RegistryObject<Block>> SIMPLE_BLOCKS = new ArrayList<>();
-
     public AbstractBlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
         super(gen, ArchaicQuest.MODID, exFileHelper);
     }

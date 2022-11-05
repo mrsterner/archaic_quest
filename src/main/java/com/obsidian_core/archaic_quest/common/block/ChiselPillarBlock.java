@@ -2,10 +2,7 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DoublePlantBlock;
-import net.minecraft.block.EndRodBlock;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
@@ -13,17 +10,15 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ChiselPillarBlock extends Block {
 
@@ -33,6 +28,22 @@ public class ChiselPillarBlock extends Block {
     public ChiselPillarBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(PILLAR_TYPE, Type.BOTTOM));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        switch (state.getValue(FACING)) {
+            case NORTH:
+            case SOUTH:
+                return Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 16.0D);
+            case EAST:
+            case WEST:
+                return Block.box(0.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
+            case UP:
+            default:
+                return Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+        }
     }
 
     @Override
