@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "side": "archaic_quest:block/andesite_aztec_bricks_7",
+    "bottom": "archaic_quest:block/andesite_aztec_bricks_7",
+    "top": "archaic_quest:block/andesite_aztec_bricks_7"
+  }
+}

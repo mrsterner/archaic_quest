@@ -1,5 +1,6 @@
 package com.obsidian_core.archaic_quest.datagen.blockstate;
 
+import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import net.minecraft.block.Block;
@@ -8,6 +9,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -88,6 +90,7 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         simpleBlockItem(block, model);
     }
 
+
     public void verticalSlab(VerticalSlabBlock block, ModelFile model, ModelFile doubleSlab) {
         getVariantBuilder(block).forAllStatesExcept(state -> {
             VerticalSlabBlock.SlabState slabState = state.getValue(VerticalSlabBlock.SLAB_STATE);
@@ -108,11 +111,26 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
             }, VerticalSlabBlock.WATERLOGGED);
     }
 
+    public void doubleCrop(DoubleCropBlock block) {
+        ResourceLocation crossModel = mcLoc("block/cross");
+
+        getVariantBuilder(block).forAllStates((state) -> {
+            int age = state.getValue(block.getAgeProperty());
+            boolean top = state.getValue(DoubleCropBlock.IS_TOP);
+            String modelFileName = name(block) + "_stage_" + age + (top ? "_top" : "");
+
+            return ConfiguredModel.builder()
+                    .modelFile(models().withExistingParent(modelFileName, crossModel)
+                            .texture("cross", texture(modelFileName)))
+                    .build();
+        });
+    }
+
     public static ResourceLocation resLoc(String path) {
         return ArchaicQuest.resourceLoc(path);
     }
 
     public static ResourceLocation texture(String textureName) {
-        return resLoc("textures/block/" + textureName + ".png");
+        return resLoc("block/" + textureName);
     }
 }

@@ -24,6 +24,6 @@ public class AQItemModelProvider extends ItemModelProvider {
 
     private <T extends Item> void simpleItem(T item) {
         ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
-        singleTexture(regName.getPath(), mcLoc("item/generated"), ArchaicQuest.resourceLoc("item/" + regName.getPath()));
+        singleTexture(regName.getPath(), mcLoc("item/generated"), "layer0", ArchaicQuest.resourceLoc("item/" + regName.getPath()));
     }
 }

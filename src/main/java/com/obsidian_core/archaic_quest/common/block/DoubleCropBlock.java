@@ -30,7 +30,7 @@ public abstract class DoubleCropBlock extends CropsBlock {
 
     protected static final AbstractBlock.Properties DEFAULT_PROPS = AbstractBlock.Properties.of(Material.PLANT, MaterialColor.COLOR_GREEN).instabreak().noCollission().noOcclusion().sound(SoundType.GRASS);
     public static final IntegerProperty AGE_4 = IntegerProperty.create("age", 0, 4);
-    public static final BooleanProperty IS_TOP = BooleanProperty.create("is_top");
+    public static final BooleanProperty IS_TOP = BooleanProperty.create("top");
 
     private final Supplier<IItemProvider> seed;
 
@@ -97,15 +97,25 @@ public abstract class DoubleCropBlock extends CropsBlock {
         if (world.getRawBrightness(pos, 0) >= 9) {
             int age = getAge(state);
 
-            if (age < getMaxAge()) {
+            if (age < getMaxAge() && !isTop(state)) {
                 float growthSpeed = getGrowthSpeed(this, world, pos);
 
                 if (ForgeHooks.onCropsGrowPre(world, pos, state, random.nextInt((int)(25.0F / growthSpeed) + 1) == 0)) {
-                    world.setBlock(pos, getStateForAge(age + 1), 2);
+                    int newAge = age + 1;
+                    world.setBlock(pos, getStateForAge(newAge), 2);
+
+                    if (newAge >= getDoublingAge()) {
+                        world.setBlock(pos.above(), getStateForAge(newAge).setValue(IS_TOP, true), 2);
+                    }
                     ForgeHooks.onCropsGrowPost(world, pos, state);
                 }
             }
         }
+    }
+
+    @Override
+    public BlockState getStateForAge(int age) {
+        return defaultBlockState().setValue(IS_TOP, false).setValue(getAgeProperty(), age);
     }
 
     public void growCrops(World world, BlockPos pos, BlockState state) {
@@ -115,7 +125,6 @@ public abstract class DoubleCropBlock extends CropsBlock {
         if (age > maxAge) {
             age = maxAge;
         }
-
         world.setBlock(pos, getStateForAge(age), 2);
     }
 
@@ -132,14 +141,20 @@ public abstract class DoubleCropBlock extends CropsBlock {
         BlockPos belowPos = pos.below();
         if (state.getBlock() == this) //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
             return world.getBlockState(belowPos).canSustainPlant(world, belowPos, Direction.UP, this);
-        return mayPlaceOn(world.getBlockState(belowPos), world, belowPos);
+
+        BlockState belowState = world.getBlockState(belowPos);
+
+        if (isTop(state)) {
+            return belowState.is(this) && !isTop(belowState);
+        }
+        else {
+            return mayPlaceOn(belowState, world, belowPos);
+        }
     }
 
     @Override
     protected boolean mayPlaceOn(BlockState state, IBlockReader world, BlockPos pos) {
-        return isTop(world.getBlockState(pos.above()))
-                ? state.is(this) && !isTop(state)
-                : state.is(Blocks.FARMLAND) && pos.above(2).getY() <= world.getMaxBuildHeight();
+        return state.is(Blocks.FARMLAND) && pos.above(2).getY() <= world.getMaxBuildHeight();
     }
 
     @Override

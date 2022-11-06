@@ -1,8 +1,12 @@
 package com.obsidian_core.archaic_quest.datagen.blockstate;
 
+import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
+import com.obsidian_core.archaic_quest.common.register.AQBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.RegistryObject;
 
 import static com.obsidian_core.archaic_quest.common.register.AQBlocks.*;
 
@@ -33,5 +37,13 @@ public class AQBlockStateProvider extends AbstractBlockStateProvider {
 
             simpleBlockItem(stairs.get(), model);
         });
+
+        for (RegistryObject<Block> regObject : BLOCKS.getEntries()) {
+            Block block = regObject.get();
+
+            if (block instanceof DoubleCropBlock) {
+                doubleCrop((DoubleCropBlock) block);
+            }
+        }
     }
 }

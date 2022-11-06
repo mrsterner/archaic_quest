@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "texture": "archaic_quest:item/aztec_death_whistle"
+    "layer0": "archaic_quest:item/aztec_death_whistle"
   }
 }
