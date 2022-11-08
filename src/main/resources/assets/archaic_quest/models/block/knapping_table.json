@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "archaic_quest:block/knapping_table_bottom",
+    "up": "archaic_quest:block/knapping_table_top",
+    "north": "archaic_quest:block/knapping_table_front",
+    "south": "archaic_quest:block/knapping_table_back",
+    "west": "archaic_quest:block/knapping_table_left",
+    "east": "archaic_quest:block/knapping_table_right",
+    "particle": "archaic_quest:block/knapping_table_front"
+  }
+}

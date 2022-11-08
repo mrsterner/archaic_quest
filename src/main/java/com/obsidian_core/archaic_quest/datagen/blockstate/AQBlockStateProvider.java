@@ -1,5 +1,6 @@
 package com.obsidian_core.archaic_quest.datagen.blockstate;
 
+import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
@@ -22,17 +23,11 @@ public class AQBlockStateProvider extends AbstractBlockStateProvider {
     protected void registerStatesAndModels() {
 
         SIMPLE_BLOCKS.forEach((block) -> simpleBlockAndItem(block.get()));
-
-        VERT_SLAB_VARIANTS.forEach((block, vertSlab) -> {
-            this.verticalSlab(vertSlab.get(), block.get());
-        });
-
-        SLAB_VARIANTS.forEach((block, slab) -> {
-            this.slab(slab.get(), block.get());
-        });
+        VERT_SLAB_VARIANTS.forEach((block, vertSlab) -> simpleVerticalSlab(vertSlab.get(), block.get()));
+        SLAB_VARIANTS.forEach((block, slab) -> slab(slab.get(), block.get()));
 
         STAIRS_VARIANTS.forEach((block, stairs) -> {
-            this.stairsBlock(stairs.get(), blockTexture(block.get()));
+            stairsBlock(stairs.get(), blockTexture(block.get()));
             ModelFile model = models().withExistingParent(name(stairs.get()), mcLoc("block/stairs"));
 
             simpleBlockItem(stairs.get(), model);
@@ -43,6 +38,9 @@ public class AQBlockStateProvider extends AbstractBlockStateProvider {
 
             if (block instanceof DoubleCropBlock) {
                 doubleCrop((DoubleCropBlock) block);
+            }
+            else if (block instanceof CoolVinesBlock) {
+                vine((CoolVinesBlock) block);
             }
         }
     }

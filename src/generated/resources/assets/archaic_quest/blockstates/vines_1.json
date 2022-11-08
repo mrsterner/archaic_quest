@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "cut=false,facing=north": {
+      "model": "archaic_quest:block/vines_1"
+    },
+    "cut=true,facing=north": {
+      "model": "archaic_quest:block/vines_1_cut"
+    },
+    "cut=false,facing=south": {
+      "model": "archaic_quest:block/vines_1",
+      "y": 180
+    },
+    "cut=true,facing=south": {
+      "model": "archaic_quest:block/vines_1_cut",
+      "y": 180
+    },
+    "cut=false,facing=west": {
+      "model": "archaic_quest:block/vines_1",
+      "y": 270
+    },
+    "cut=true,facing=west": {
+      "model": "archaic_quest:block/vines_1_cut",
+      "y": 270
+    },
+    "cut=false,facing=east": {
+      "model": "archaic_quest:block/vines_1",
+      "y": 90
+    },
+    "cut=true,facing=east": {
+      "model": "archaic_quest:block/vines_1_cut",
+      "y": 90
+    }
+  }
+}

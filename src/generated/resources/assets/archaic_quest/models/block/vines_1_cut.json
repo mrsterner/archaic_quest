@@ -1,0 +1,6 @@
+{
+  "parent": "archaic_quest:block/vine_var_1_cut",
+  "textures": {
+    "vine": "archaic_quest:block/vines_1_cut"
+  }
+}

@@ -6,7 +6,7 @@ import net.minecraft.item.SwordItem;
 
 public class AQSimpleWeaponItem extends SwordItem {
 
-    public AQSimpleWeaponItem(IItemTier itemTier, int damage, float attackSpeed) {
-        super(itemTier, damage, attackSpeed, new Item.Properties().tab(AQCreativeTabs.WEAPONS).stacksTo(1));
+    public AQSimpleWeaponItem(IItemTier itemTier, int durability, int damage, float attackSpeed) {
+        super(itemTier, damage, attackSpeed, new Item.Properties().tab(AQCreativeTabs.WEAPONS).stacksTo(1).durability(durability));
     }
 }

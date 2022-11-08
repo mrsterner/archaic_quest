@@ -11,6 +11,6 @@ public abstract class AbstractLanguageProvider extends LanguageProvider {
     }
 
     protected void addItemGroup(ItemGroup itemGroup, String localized) {
-        this.add("itemGroup." + itemGroup.getRecipeFolderName(), localized);
+        this.add("itemGroup." + itemGroup.getRecipeFolderName(), "Archaic Quest - " + localized);
     }
 }

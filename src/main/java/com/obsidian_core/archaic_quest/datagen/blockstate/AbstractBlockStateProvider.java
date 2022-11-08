@@ -1,11 +1,14 @@
 package com.obsidian_core.archaic_quest.datagen.blockstate;
 
+import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
+import net.minecraft.block.VineBlock;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Item;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -72,12 +75,8 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
                 .partialState().with(SlabBlock.TYPE, SlabType.DOUBLE).addModels(new ConfiguredModel(doubleModel));
     }
 
-    public void verticalSlab(VerticalSlabBlock block, Block doubleBlock) {
-        verticalSlab(block, doubleBlock, blockTexture(doubleBlock));
-    }
-
-    public void verticalSlab(VerticalSlabBlock block, Block doubleBlock, ResourceLocation texture) {
-        verticalSlab(block, doubleBlock, texture, texture, texture);
+    public void simpleVerticalSlab(VerticalSlabBlock block, Block doubleBlock) {
+        verticalSlab(block, doubleBlock, blockTexture(doubleBlock), blockTexture(doubleBlock), blockTexture(doubleBlock));
     }
 
     public void verticalSlab(VerticalSlabBlock block, Block doubleBlock, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
@@ -126,11 +125,38 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         });
     }
 
+    public void vine(CoolVinesBlock vineBlock) {
+        getVariantBuilder(vineBlock).forAllStatesExcept((state) -> {
+            Direction face = state.getValue(CoolVinesBlock.FACING);
+            boolean cut = state.getValue(CoolVinesBlock.CUT);
+            int yRot = (int) face.getOpposite().toYRot();
+
+            String textureName = name(vineBlock) + (cut ? "_cut" : "");
+            ResourceLocation modelName = resLoc("block/vine_var_1" + (cut ? "_cut" : ""));
+
+            return ConfiguredModel.builder()
+                    .modelFile(models().withExistingParent(name(vineBlock) + (cut ? "_cut" : ""), modelName)
+                            .texture("vine", texture(textureName)))
+                    .rotationY(yRot)
+                    .build();
+        }, CoolVinesBlock.CAN_GROW);
+        generatedItem(vineBlock);
+    }
+
+    private void generatedItem(Block block) {
+        itemModels().withExistingParent(name(block), mcLoc("item/generated"))
+                .texture("layer0", itemTexture(name(block)));
+    }
+
     public static ResourceLocation resLoc(String path) {
         return ArchaicQuest.resourceLoc(path);
     }
 
     public static ResourceLocation texture(String textureName) {
         return resLoc("block/" + textureName);
+    }
+
+    public static ResourceLocation itemTexture(String textureName) {
+        return resLoc("item/" + textureName);
     }
 }

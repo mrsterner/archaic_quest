@@ -1,8 +1,11 @@
 package com.obsidian_core.archaic_quest.common.core;
 
 import com.obsidian_core.archaic_quest.common.event.BiomeEvents;
+import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import com.obsidian_core.archaic_quest.common.register.*;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
+import net.minecraft.client.gui.screen.inventory.CraftingScreen;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.loot.conditions.LootConditionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,13 +33,12 @@ public class ArchaicQuest {
         AQItems.ITEMS.register(eventBus);
         AQGlobalLootModifiers.GLOBAL_LOOT_MODIFIERS.register(eventBus);
         AQSoundEvents.SOUNDS.register(eventBus);
+        AQContainers.CONTAINERS.register(eventBus);
         AQTileEntities.TILE_ENTITIES.register(eventBus);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            AQConfiguredFeatures.register();
-        });
+        event.enqueueWork(AQConfiguredFeatures::register);
     }
 
     public static ResourceLocation resourceLoc(String path) {

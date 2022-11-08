@@ -6,15 +6,21 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.RavagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -23,14 +29,16 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
 public abstract class DoubleCropBlock extends CropsBlock {
 
     protected static final AbstractBlock.Properties DEFAULT_PROPS = AbstractBlock.Properties.of(Material.PLANT, MaterialColor.COLOR_GREEN).instabreak().noCollission().noOcclusion().sound(SoundType.GRASS);
-    public static final IntegerProperty AGE_4 = IntegerProperty.create("age", 0, 4);
     public static final BooleanProperty IS_TOP = BooleanProperty.create("top");
+
+    public static final IntegerProperty AGE_4 = IntegerProperty.create("age", 0, 4);
 
     private final Supplier<IItemProvider> seed;
 
@@ -81,6 +89,12 @@ public abstract class DoubleCropBlock extends CropsBlock {
         return ageProperty();
     }
 
+    /**
+     * @return The age the crop should revert to
+     * when right-click harvested.
+     */
+    public abstract int getOnHarvestAge();
+
     public boolean isTop(BlockState state) {
         return state.getValue(IS_TOP);
     }
@@ -114,10 +128,35 @@ public abstract class DoubleCropBlock extends CropsBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
+        if (getAge(state) >= maxAge()) {
+            if (isTop(state)) {
+                world.setBlock(pos, getStateForAge(getOnHarvestAge()).setValue(IS_TOP, true), 2);
+                world.setBlock(pos.below(), getStateForAge(getOnHarvestAge()), 2);
+            }
+            else {
+                world.setBlock(pos, getStateForAge(getOnHarvestAge()), 2);
+                world.setBlock(pos.above(), getStateForAge(getOnHarvestAge()).setValue(IS_TOP, true), 2);
+            }
+            if (!world.isClientSide) {
+                List<ItemStack> drops = getDrops(getStateForAge(maxAge()), (ServerWorld) world, pos, null);
+
+                for (ItemStack stack : drops) {
+                    popResource(world, pos, stack);
+                }
+            }
+            return ActionResultType.sidedSuccess(world.isClientSide);
+        }
+        return ActionResultType.PASS;
+    }
+
+    @Override
     public BlockState getStateForAge(int age) {
         return defaultBlockState().setValue(IS_TOP, false).setValue(getAgeProperty(), age);
     }
 
+    @Override
     public void growCrops(World world, BlockPos pos, BlockState state) {
         int age = this.getAge(state) + getBonemealAgeIncrease(world);
         int maxAge = this.getMaxAge();
@@ -126,8 +165,13 @@ public abstract class DoubleCropBlock extends CropsBlock {
             age = maxAge;
         }
         world.setBlock(pos, getStateForAge(age), 2);
+
+        if (age >= getDoublingAge()) {
+            world.setBlock(pos.above(), getStateForAge(age).setValue(IS_TOP, true), 2);
+        }
     }
 
+    @Override
     protected int getBonemealAgeIncrease(World world) {
         return MathHelper.nextInt(world.random, 2, 3);
     }
@@ -139,17 +183,21 @@ public abstract class DoubleCropBlock extends CropsBlock {
 
     private boolean validPosition(IWorldReader world, BlockState state, BlockPos pos) {
         BlockPos belowPos = pos.below();
-        if (state.getBlock() == this) //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
-            return world.getBlockState(belowPos).canSustainPlant(world, belowPos, Direction.UP, this);
 
-        BlockState belowState = world.getBlockState(belowPos);
+        if (state.getBlock() == this) { //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
+            BlockState belowState = world.getBlockState(belowPos);
 
-        if (isTop(state)) {
-            return belowState.is(this) && !isTop(belowState);
+            if (isTop(state)) {
+                return belowState.is(this) && !isTop(belowState);
+            }
+            else {
+                if (getAge(state) >= getDoublingAge()) {
+                    return mayPlaceOn(belowState, world, belowPos) && world.getBlockState(pos.above()).is(this);
+                }
+                return mayPlaceOn(belowState, world, belowPos);
+            }
         }
-        else {
-            return mayPlaceOn(belowState, world, belowPos);
-        }
+        return world.getBlockState(belowPos).canSustainPlant(world, belowPos, Direction.UP, this);
     }
 
     @Override
@@ -162,15 +210,13 @@ public abstract class DoubleCropBlock extends CropsBlock {
         if (entity instanceof RavagerEntity && ForgeEventFactory.getMobGriefingEvent(world, entity)) {
             world.destroyBlock(pos, true, entity);
         }
-        else {
-            if (state.getValue(getAgeProperty()) == getMaxAge() && !isTop(state))
-                entity.getDeltaMovement().multiply(0.8D, 0.8D, 0.8D);
-        }
+        if (state.getValue(getAgeProperty()) == getMaxAge() && !isTop(state))
+            entity.makeStuckInBlock(state, new Vector3d(0.95D, 0.95D, 0.95D));
         super.entityInside(state, world, pos, entity);
     }
 
     @Override
-    protected IItemProvider getBaseSeedId() {
+    public IItemProvider getBaseSeedId() {
         return seed.get();
     }
 
@@ -181,6 +227,6 @@ public abstract class DoubleCropBlock extends CropsBlock {
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
-        stateBuilder.add(IS_TOP).add(getAgeProperty());
+        stateBuilder.add(IS_TOP, getAgeProperty());
     }
 }

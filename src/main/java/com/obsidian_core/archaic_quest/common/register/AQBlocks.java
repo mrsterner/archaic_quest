@@ -34,11 +34,14 @@ public class AQBlocks {
     public static final Map<RegistryObject<Block>, RegistryObject<SlabBlock>> SLAB_VARIANTS = new HashMap<>();
     public static final Map<RegistryObject<Block>, RegistryObject<StairsBlock>> STAIRS_VARIANTS = new HashMap<>();
 
-    private static final AbstractBlock.Properties ANDESITE_BRICKS_PROP;
+    public static final AbstractBlock.Properties ANDESITE_BRICKS_PROP;
 
     static {
         ANDESITE_BRICKS_PROP = AbstractBlock.Properties.of(Material.STONE, MaterialColor.STONE).requiresCorrectToolForDrops().strength(1.5F, 6.0F).harvestTool(ToolType.PICKAXE);
     }
+
+    // VEGETATION
+    public static final RegistryObject<Block> VINES_1 = registerBlock("vines_1", AQCreativeTabs.DECORATION, () -> new CoolVinesBlock(AbstractBlock.Properties.copy(Blocks.VINE)));
 
     // CROPS
     public static final RegistryObject<Block> CORN_CROP = registerBlockNoBlockItem("corn_crop", CornDoubleCrop::new);
@@ -101,6 +104,7 @@ public class AQBlocks {
 
 
     public static final RegistryObject<Block> AZTEC_PILLAR = registerBlock("aztec_pillar", AQCreativeTabs.DECORATION, () -> new ChiselPillarBlock(AQBlocks.ANDESITE_BRICKS_PROP));
+    public static final RegistryObject<Block> AZTEC_DUNGEON_DOOR = registerBlock("aztec_dungeon_door", AQCreativeTabs.DECORATION, AztecDungeonDoorBlock::new);
 
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_0 = registerBlock("andesite_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP));
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_1 = registerBlock("andesite_aztec_trap_1", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP));
@@ -119,6 +123,7 @@ public class AQBlocks {
     public static final RegistryObject<DoorBlock> MEDIEVAL_DOOR_1 = registerDoorBlock("medieval_door_1", () -> new DoorBlock(AbstractBlock.Properties.copy(MEDIEVAL_DOOR_0.get())));
     public static final RegistryObject<DoorBlock> MEDIEVAL_DOOR_2 = registerDoorBlock("medieval_door_2", () -> new DoorBlock(AbstractBlock.Properties.copy(MEDIEVAL_DOOR_0.get())));
 
+    public static final RegistryObject<Block> KNAPPING_TABLE = registerBlock("knapping_table", AQCreativeTabs.DECORATION, KnappingTableBlock::new);
 
 
 

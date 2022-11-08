@@ -12,16 +12,16 @@ public class CornDoubleCrop extends DoubleCropBlock {
 
     protected static final Pair<VoxelShape[], VoxelShape[]> SHAPES = Pair.of(
             new VoxelShape[] {
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D),
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
             },
             new VoxelShape[] {
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D),
+                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D),
+                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 11.0D, 16.0D),
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
             }
@@ -50,5 +50,10 @@ public class CornDoubleCrop extends DoubleCropBlock {
     @Override
     public IntegerProperty ageProperty() {
         return AGE_4;
+    }
+
+    @Override
+    public int getOnHarvestAge() {
+        return 3;
     }
 }
