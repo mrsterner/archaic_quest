@@ -1,17 +1,17 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.tile.AztecCraftingStationTileEntity;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.stats.Stats;
-import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -21,12 +21,10 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class AztecCraftingStationBlock extends ContainerBlock {
+public class AztecCraftingStationBlock extends Block {
 
     public static final DirectionProperty FACING = HorizontalBlock.FACING;
     // Whether this block state is the "master" block or a sub-block for collision purposes.
@@ -92,43 +90,22 @@ public class AztecCraftingStationBlock extends ContainerBlock {
     @SuppressWarnings("deprecation")
     public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean b) {
         super.onPlace(state, world, pos, oldState, b);
-
-        if (state.getValue(BLOCK_TYPE) == BlockType.MASTER) {
-            Direction dir = state.getValue(FACING);
-
-            switch (dir) {
-                case NORTH:
-
-                    break;
-                case SOUTH:
-                    break;
-                case WEST:
-                    break;
-                case EAST:
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
     @Nullable
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        if (state.getBlock() == this && state.getValue(BLOCK_TYPE) == BlockType.MASTER) {
-            return this.newBlockEntity(world);
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity newBlockEntity(IBlockReader world) {
         return new AztecCraftingStationTileEntity();
     }
 
     @Override
+    public boolean hasTileEntity(BlockState state) {
+        return state.getValue(BLOCK_TYPE) == BlockType.MASTER;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
     public BlockRenderType getRenderShape(BlockState state) {
-        return state.getValue(BLOCK_TYPE) == BlockType.MASTER ? BlockRenderType.MODEL : BlockRenderType.INVISIBLE;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override

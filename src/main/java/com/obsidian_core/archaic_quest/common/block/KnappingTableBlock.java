@@ -43,7 +43,6 @@ public class KnappingTableBlock extends Block {
         }
         else {
             player.openMenu(state.getMenuProvider(world, pos));
-            player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
             return ActionResultType.CONSUME;
         }
     }
@@ -53,7 +52,7 @@ public class KnappingTableBlock extends Block {
     @SuppressWarnings("deprecation")
     public INamedContainerProvider getMenuProvider(BlockState state, World world, BlockPos pos) {
         return new SimpleNamedContainerProvider((id, playerInventory, player)
-                -> new KnappingTableContainer(id, playerInventory), TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME);
+                -> new KnappingTableContainer(id, playerInventory, pos), TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME);
     }
 
     @Override

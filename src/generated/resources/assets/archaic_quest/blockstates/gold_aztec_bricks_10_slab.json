@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=top": {
+      "model": "archaic_quest:block/gold_aztec_bricks_10_slab_top"
+    },
+    "type=bottom": {
+      "model": "archaic_quest:block/gold_aztec_bricks_10_slab"
+    },
+    "type=double": {
+      "model": "archaic_quest:block/gold_aztec_bricks_10"
+    }
+  }
+}

@@ -7,6 +7,7 @@ import com.obsidian_core.archaic_quest.common.tag.AQItemTags;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
@@ -26,5 +27,6 @@ public class AQItemTagProvider extends ItemTagsProvider {
 
         this.tag(AQItemTags.INGOT_TIN).add(AQItems.TIN_INGOT.get());
         this.tag(AQItemTags.INGOT_SILVER).add(AQItems.SILVER_INGOT.get());
+        this.tag(Tags.Items.GEMS).add(AQItems.JADE.get());
     }
 }

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "side": "archaic_quest:block/gold_aztec_bricks_12",
+    "bottom": "archaic_quest:block/gold_aztec_bricks_12",
+    "top": "archaic_quest:block/gold_aztec_bricks_12"
+  }
+}

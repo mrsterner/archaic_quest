@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.inventory.container.KnappingTableContainer;
+import net.minecraft.client.gui.screen.HopperScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -18,23 +19,26 @@ public class KnappingTableScreen extends ContainerScreen<KnappingTableContainer>
     }
 
     @Override
+    public void init() {
+        super.init();
+        this.titleLabelX = (imageWidth - font.width(title)) / 2;
+    }
+
+    @Override
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTick) {
+        renderBackground(matrixStack);
+        renderBg(matrixStack, partialTick, mouseX, mouseY);
+        super.render(matrixStack, mouseX, mouseY, partialTick);
+        renderTooltip(matrixStack, mouseX, mouseY);
+    }
+
+    @Override
     @SuppressWarnings({"deprecation", "ConstantConditions"})
-    protected void renderBg(MatrixStack matrixStack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(MatrixStack matrixStack, float partialTick, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(texture);
+        minecraft.getTextureManager().bind(texture);
         int leftPos = this.leftPos;
         int topPos = this.topPos;
         blit(matrixStack, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
-
-        /*
-        if (menu.isLit()) {
-            int k = this.menu.getLitProgress();
-            blit(matrixStack, leftPos + 56, topPos + 36 + 12 - k, 176, 12 - k, 14, k + 1);
-        }
-
-        int l = this.menu.getBurnProgress();
-        blit(matrixStack, leftPos + 79, topPos + 34, 176, 14, l + 1, 16);
-
-         */
     }
 }

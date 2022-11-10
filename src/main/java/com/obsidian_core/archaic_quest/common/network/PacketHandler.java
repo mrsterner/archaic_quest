@@ -1,7 +1,6 @@
 package com.obsidian_core.archaic_quest.common.network;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.network.message.S2COpenInventoryType;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -34,7 +33,6 @@ public class PacketHandler {
 
     public final void registerMessages() {
         // Server -> Client
-        registerMessage(S2COpenInventoryType.class, S2COpenInventoryType::encode, S2COpenInventoryType::decode, S2COpenInventoryType::handle);
 
         // Client -> Server
     }

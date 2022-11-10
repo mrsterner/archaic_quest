@@ -1,5 +1,6 @@
 package com.obsidian_core.archaic_quest.client;
 
+import com.obsidian_core.archaic_quest.client.render.tile.AztecCraftingStationRenderer;
 import com.obsidian_core.archaic_quest.client.render.tile.AztecDungeonDoorRenderer;
 import com.obsidian_core.archaic_quest.client.screen.KnappingTableScreen;
 import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
@@ -42,14 +43,17 @@ public class ClientRegister {
 
     private static void registerTileEntityRenderers() {
         ClientRegistry.bindTileEntityRenderer(AQTileEntities.AZTEC_DUNGEON_DOOR.get(), AztecDungeonDoorRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(AQTileEntities.AZTEC_CRAFTING_STATION.get(), AztecCraftingStationRenderer::new);
     }
 
     private static void setBlockRenderTypes() {
         RenderTypeLookup.setRenderLayer(AQBlocks.AZTEC_CRAFTING_STATION.get(), RenderType.cutout());
+        /*
         RenderTypeLookup.setRenderLayer(AQBlocks.DUNGEON_DOOR_BARS.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_0.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_1.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_2.get(), RenderType.cutout());
+         */
 
         // Loop through the entire registry for certain block types
         // that should always use the same specific render type.

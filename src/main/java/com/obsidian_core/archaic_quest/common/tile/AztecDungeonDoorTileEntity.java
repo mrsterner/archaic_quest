@@ -1,5 +1,7 @@
 package com.obsidian_core.archaic_quest.common.tile;
 
+import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
+import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.register.AQTileEntities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -10,6 +12,7 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
 
     private DoorState doorState = DoorState.STAND_BY;
     private int doorPosition = 0;
+    private int previousDoorPos = doorPosition;
 
 
     public AztecDungeonDoorTileEntity() {
@@ -33,6 +36,25 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
                     doorState = DoorState.CLOSING;
                 }
             }
+            if (doorPosition >= 60 && doorPosition != previousDoorPos) {
+                toggleDoorBlocks(true);
+            }
+            else if (doorPosition <= 0 && doorPosition != previousDoorPos) {
+                toggleDoorBlocks(false);
+            }
+        }
+    }
+
+    /**
+     * Toggles this dungeon door tile entity's
+     * physical blocks' collision.
+     *
+     * @param open Whether the door should be opened or closed.
+     */
+    private void toggleDoorBlocks(boolean open) {
+        level.setBlock(getBlockPos(), level.getBlockState(getBlockPos()).setValue(AztecDungeonDoorBlock.HAS_COLLISION, open), 2);
+        if (level.getBlockState(getBlockPos().above()).is(AQBlocks.AZTEC_DUNGEON_DOOR.get())) {
+            level.setBlock(getBlockPos().above(), level.getBlockState(getBlockPos().above()).setValue(AztecDungeonDoorBlock.HAS_COLLISION, open), 2);
         }
     }
 

@@ -29,6 +29,7 @@ public class AQItems {
 
     public static final RegistryObject<Item> TIN_INGOT = registerSimpleItem("tin_ingot", AQCreativeTabs.ITEMS);
     public static final RegistryObject<Item> SILVER_INGOT = registerSimpleItem("silver_ingot", AQCreativeTabs.ITEMS);
+    public static final RegistryObject<Item> JADE = registerSimpleItem("jade", AQCreativeTabs.ITEMS);
 
     // TOOLS & WEAPONS
     public static final RegistryObject<Item> BONE_CLUB = registerSimpleItem("bone_club", () -> new AQSimpleWeaponItem(ItemTier.WOOD, 60, 5, -3.0F));

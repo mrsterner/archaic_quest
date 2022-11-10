@@ -1,5 +1,6 @@
 {
-  "loader": "forge:obj",
-  "model": "archaic_quest:models/block/obj/aztec_crafting_station.obj",
-  "flip-v": true
+  "parent": "archaic_quest:block/invis_model",
+  "textures": {
+    "particle": "archaic_quest:block/andesite_aztec_bricks_0"
+  }
 }

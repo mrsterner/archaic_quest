@@ -1,19 +1,7 @@
 {
   "variants": {
-    "facing=east": {
-      "model": "archaic_quest:block/aztec_crafting_station",
-      "y": 90
-    },
-    "facing=north": {
+    "": {
       "model": "archaic_quest:block/aztec_crafting_station"
-    },
-    "facing=south": {
-      "model": "archaic_quest:block/aztec_crafting_station",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "archaic_quest:block/aztec_crafting_station",
-      "y": 270
     }
   }
 }

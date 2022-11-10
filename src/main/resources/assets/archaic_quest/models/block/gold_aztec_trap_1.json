@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "archaic_quest:block/gold_aztec_bricks_13",
+    "front": "archaic_quest:block/gold_aztec_trap_1",
+    "side": "archaic_quest:block/gold_aztec_bricks_13"
+  }
+}

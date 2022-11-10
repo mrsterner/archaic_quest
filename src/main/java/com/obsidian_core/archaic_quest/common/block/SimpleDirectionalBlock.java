@@ -11,7 +11,7 @@ public class SimpleDirectionalBlock extends DirectionalBlock {
 
     public SimpleDirectionalBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     @Override

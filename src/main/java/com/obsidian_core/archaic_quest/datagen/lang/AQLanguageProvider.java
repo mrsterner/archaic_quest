@@ -2,6 +2,7 @@ package com.obsidian_core.archaic_quest.datagen.lang;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
+import com.obsidian_core.archaic_quest.common.misc.TranslationReferences;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.register.AQItems;
 import net.minecraft.data.DataGenerator;
@@ -40,6 +41,7 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
 
         this.addItem(AQItems.TIN_INGOT, "Tin Ingot");
         this.addItem(AQItems.SILVER_INGOT, "Silver Ingot");
+        this.addItem(AQItems.JADE, "Jade");
 
         this.addItem(AQItems.BONE_CLUB, "Bone Club");
         this.addItem(AQItems.MACHETE, "Machete");
@@ -48,5 +50,7 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         this.addItem(AQItems.CRYSTAL_SKULL, "Crystal Skull");
         this.addItem(AQItems.AZTEC_DEATH_WHISTLE, "Aztec Death Whistle");
         this.addItem(AQItems.HAMMER_AND_CHISEL, "Hammer and Chisel");
+
+        this.add(TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME.getKey(), "Knapping Table");
     }
 }

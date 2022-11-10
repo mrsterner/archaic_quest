@@ -75,6 +75,13 @@ repositories {
         name 'Mekanism'
         url "https://modmaven.dev/"
     }
+    maven {
+        name 'CurseMaven'
+        url 'https://www.cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -84,6 +91,8 @@ dependencies {
 
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
     runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
+
+    runtimeOnly fg.deobf("curse.maven:iris-455508:4023641")
 }
 
 jar {

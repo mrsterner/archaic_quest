@@ -2,6 +2,7 @@ package com.obsidian_core.archaic_quest.common.core;
 
 import com.obsidian_core.archaic_quest.common.event.BiomeEvents;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
+import com.obsidian_core.archaic_quest.common.network.PacketHandler;
 import com.obsidian_core.archaic_quest.common.register.*;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
 import net.minecraft.client.gui.screen.inventory.CraftingScreen;
@@ -22,7 +23,11 @@ public class ArchaicQuest {
     public static final String MODID = "archaic_quest";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
+    private final PacketHandler packetHandler = new PacketHandler();
+
     public ArchaicQuest() {
+        packetHandler.registerMessages();
+
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         eventBus.addListener(this::onCommonSetup);

@@ -2,7 +2,7 @@
   "parent": "archaic_quest:block/vertical_slab",
   "textures": {
     "side": "archaic_quest:block/andesite_aztec_bricks_27",
-    "bottom": "archaic_quest:block/andesite_aztec_bricks_27",
-    "top": "archaic_quest:block/andesite_aztec_bricks_27"
+    "bottom": "minecraft:block/polished_andesite",
+    "top": "minecraft:block/polished_andesite"
   }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "archaic_quest:block/mossy_andesite_aztec_bricks_14"
+  }
+}

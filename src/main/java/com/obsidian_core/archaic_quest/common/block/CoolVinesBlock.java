@@ -4,6 +4,7 @@ import com.obsidian_core.archaic_quest.common.register.AQItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.VineBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
@@ -85,10 +86,12 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         Direction face = context.getClickedFace();
-        BlockState state = context.getLevel().getBlockState(context.getClickedPos().relative(face.getOpposite()));
+        BlockPos behindPos = context.getClickedPos().relative(face.getOpposite());
+        World world = context.getLevel();
 
         if (face != Direction.DOWN && face != Direction.UP) {
-            if (state.isFaceSturdy(context.getLevel(), context.getClickedPos(), face.getOpposite())) {
+            if (Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
+                    || world.getBlockState(behindPos).isFaceSturdy(world, behindPos, face)) {
                 return defaultBlockState().setValue(FACING, face);
             }
         }
@@ -101,7 +104,10 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
         Direction face = state.getValue(FACING);
         BlockPos behindPos = pos.relative(face.getOpposite());
         BlockState aboveState = world.getBlockState(pos.above());
-        return Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face) || (aboveState.is(this) && aboveState.getValue(FACING) == face && !aboveState.getValue(CUT));
+
+        return Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
+                || world.getBlockState(behindPos).isFaceSturdy(world, behindPos, face)
+                || (aboveState.is(this) && aboveState.getValue(FACING) == face && !aboveState.getValue(CUT));
     }
 
     @Deprecated

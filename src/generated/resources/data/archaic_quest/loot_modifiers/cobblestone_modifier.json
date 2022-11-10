@@ -2,9 +2,7 @@
   "conditions": [
     {
       "condition": "minecraft:match_tool",
-      "predicate": {
-        "item": "minecraft:air"
-      }
+      "predicate": {}
     }
   ],
   "item": "archaic_quest:pebble",

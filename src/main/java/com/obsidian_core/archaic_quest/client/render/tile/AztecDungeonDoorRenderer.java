@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -121,6 +122,11 @@ public class AztecDungeonDoorRenderer extends TileEntityRenderer<AztecDungeonDoo
         matrixStack.popPose();
 
         matrixStack.popPose();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(AztecDungeonDoorTileEntity tileEntity) {
+        return true;
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
