@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "side": "archaic_quest:block/andesite_aztec_bricks_80",
-    "bottom": "archaic_quest:block/andesite_aztec_bricks_80",
-    "top": "archaic_quest:block/andesite_aztec_bricks_80"
-  }
-}

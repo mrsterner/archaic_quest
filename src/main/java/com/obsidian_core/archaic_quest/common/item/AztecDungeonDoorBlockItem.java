@@ -6,7 +6,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
-import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -16,7 +15,6 @@ import static com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock
 
 public class AztecDungeonDoorBlockItem extends BlockItem {
 
-    private static final DirectionProperty dirProperty = AztecDungeonDoorBlock.FACING;
     private static final EnumProperty<BlockType> typeProperty = AztecDungeonDoorBlock.BLOCK_TYPE;
 
     public AztecDungeonDoorBlockItem(Block block) {
@@ -31,6 +29,7 @@ public class AztecDungeonDoorBlockItem extends BlockItem {
 
         switch (direction) {
             default:
+            case SOUTH:
             case NORTH:
                 world.setBlock(pos.west(), blockState.setValue(typeProperty, BlockType.LOWER_LEFT), 2);
                 world.setBlock(pos.east(), blockState.setValue(typeProperty, BlockType.LOWER_RIGHT), 2);
@@ -39,15 +38,18 @@ public class AztecDungeonDoorBlockItem extends BlockItem {
                 world.setBlock(pos.above().east(), blockState.setValue(typeProperty, BlockType.RIGHT), 2);
                 world.setBlock(pos.above(2), blockState.setValue(typeProperty, BlockType.TOP), 2);
                 world.setBlock(pos.above(2).west(), blockState.setValue(typeProperty, BlockType.LEFT_TOP), 2);
-                world.setBlock(pos.above(2).east(), blockState.setValue(typeProperty, BlockType.RIGHT), 2);
-
-
-                break;
-            case WEST:
-                break;
-            case SOUTH:
+                world.setBlock(pos.above(2).east(), blockState.setValue(typeProperty, BlockType.RIGHT_TOP), 2);
                 break;
             case EAST:
+            case WEST:
+                world.setBlock(pos.south(), blockState.setValue(typeProperty, BlockType.LOWER_LEFT), 2);
+                world.setBlock(pos.north(), blockState.setValue(typeProperty, BlockType.LOWER_RIGHT), 2);
+                world.setBlock(pos.above(), blockState.setValue(typeProperty, BlockType.MIDDLE), 2);
+                world.setBlock(pos.above().south(), blockState.setValue(typeProperty, BlockType.LEFT), 2);
+                world.setBlock(pos.above().north(), blockState.setValue(typeProperty, BlockType.RIGHT), 2);
+                world.setBlock(pos.above(2), blockState.setValue(typeProperty, BlockType.TOP), 2);
+                world.setBlock(pos.above(2).south(), blockState.setValue(typeProperty, BlockType.LEFT_TOP), 2);
+                world.setBlock(pos.above(2).north(), blockState.setValue(typeProperty, BlockType.RIGHT_TOP), 2);
                 break;
         }
 

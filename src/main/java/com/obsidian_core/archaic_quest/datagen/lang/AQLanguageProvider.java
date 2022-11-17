@@ -34,14 +34,20 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         this.addBlock(AQBlocks.AZTEC_PILLAR, "Aztec Pillar");
         this.addBlock(AQBlocks.AZTEC_SPRUCE_WOOD_PILLAR, "Aztec Spruce Pillar");
         this.addBlock(AQBlocks.AZTEC_SPRUCE_WOOD_PILLAR_ANDESITE_BASE, "Aztec Spruce Pillar Base");
+        this.addBlock(AQBlocks.AZTEC_DUNGEON_DOOR_0, "Aztec Dungeon Door 0");
+        this.addBlock(AQBlocks.AZTEC_DUNGEON_DOOR_1, "Aztec Dungeon Door 1");
+        this.addBlock(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_0, "Aztec Dungeon Door Frame 0");
+        this.addBlock(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_1, "Aztec Dungeon Door Frame 1");
 
         this.addBlock(AQBlocks.KNAPPING_TABLE, "Knapping Table");
+        this.addBlock(AQBlocks.AZTEC_CRAFTING_STATION, "Aztec Crafting Station");
 
         this.addItem(AQItems.CORN, "Corn Cob");
 
         this.addItem(AQItems.TIN_INGOT, "Tin Ingot");
         this.addItem(AQItems.SILVER_INGOT, "Silver Ingot");
         this.addItem(AQItems.JADE, "Jade");
+        this.addItem(AQItems.TURQUOISE, "Turquoise");
 
         this.addItem(AQItems.BONE_CLUB, "Bone Club");
         this.addItem(AQItems.MACHETE, "Machete");

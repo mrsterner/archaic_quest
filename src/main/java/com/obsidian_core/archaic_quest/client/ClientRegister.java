@@ -21,6 +21,7 @@ import net.minecraft.world.FoliageColors;
 import net.minecraft.world.biome.BiomeColors;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -32,9 +33,12 @@ public class ClientRegister {
 
     @SubscribeEvent
     public static void register(FMLClientSetupEvent event) {
+        MinecraftForge.EVENT_BUS.register(new ClientEvents());
+
         setBlockRenderTypes();
         registerScreenMenus();
         registerTileEntityRenderers();
+        addSkippedHighlightBlocks();
     }
 
     private static void registerScreenMenus() {
@@ -48,12 +52,6 @@ public class ClientRegister {
 
     private static void setBlockRenderTypes() {
         RenderTypeLookup.setRenderLayer(AQBlocks.AZTEC_CRAFTING_STATION.get(), RenderType.cutout());
-        /*
-        RenderTypeLookup.setRenderLayer(AQBlocks.DUNGEON_DOOR_BARS.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_0.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_1.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(AQBlocks.MEDIEVAL_DOOR_2.get(), RenderType.cutout());
-         */
 
         // Loop through the entire registry for certain block types
         // that should always use the same specific render type.
@@ -63,6 +61,13 @@ public class ClientRegister {
             if (block instanceof DoubleCropBlock || block instanceof CoolVinesBlock)
                 RenderTypeLookup.setRenderLayer(block, RenderType.cutout());
         }
+    }
+
+    private static void addSkippedHighlightBlocks() {
+        ClientEvents.HIGHLIGHT_SKIPPED_BLOCKS.add(AQBlocks.AZTEC_DUNGEON_DOOR_0.get());
+        ClientEvents.HIGHLIGHT_SKIPPED_BLOCKS.add(AQBlocks.AZTEC_DUNGEON_DOOR_1.get());
+        ClientEvents.HIGHLIGHT_SKIPPED_BLOCKS.add(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_0.get());
+        ClientEvents.HIGHLIGHT_SKIPPED_BLOCKS.add(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_1.get());
     }
 
     @SubscribeEvent

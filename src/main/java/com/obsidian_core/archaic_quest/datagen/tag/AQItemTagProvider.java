@@ -27,6 +27,8 @@ public class AQItemTagProvider extends ItemTagsProvider {
 
         this.tag(AQItemTags.INGOT_TIN).add(AQItems.TIN_INGOT.get());
         this.tag(AQItemTags.INGOT_SILVER).add(AQItems.SILVER_INGOT.get());
-        this.tag(Tags.Items.GEMS).add(AQItems.JADE.get());
+        this.tag(Tags.Items.GEMS).add(
+                AQItems.JADE.get(),
+                AQItems.TURQUOISE.get());
     }
 }

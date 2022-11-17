@@ -1,7 +1,9 @@
 package com.obsidian_core.archaic_quest.datagen.blockstate;
 
+import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
+import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -41,6 +43,9 @@ public class AQBlockStateProvider extends AbstractBlockStateProvider {
             }
             else if (block instanceof CoolVinesBlock) {
                 vine((CoolVinesBlock) block);
+            }
+            else if (block instanceof AztecDungeonDoorBlock) {
+                simpleBlock(block, models().withExistingParent(name(block), ArchaicQuest.resourceLoc("block/aztec_dungeon_door")));
             }
         }
     }

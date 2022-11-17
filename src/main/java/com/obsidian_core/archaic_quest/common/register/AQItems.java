@@ -29,6 +29,7 @@ public class AQItems {
 
     public static final RegistryObject<Item> TIN_INGOT = registerSimpleItem("tin_ingot", AQCreativeTabs.ITEMS);
     public static final RegistryObject<Item> SILVER_INGOT = registerSimpleItem("silver_ingot", AQCreativeTabs.ITEMS);
+    public static final RegistryObject<Item> TURQUOISE = registerSimpleItem("turquoise", AQCreativeTabs.ITEMS);
     public static final RegistryObject<Item> JADE = registerSimpleItem("jade", AQCreativeTabs.ITEMS);
 
     // TOOLS & WEAPONS

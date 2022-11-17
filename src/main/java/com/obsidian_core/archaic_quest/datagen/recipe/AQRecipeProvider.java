@@ -2,6 +2,7 @@ package com.obsidian_core.archaic_quest.datagen.recipe;
 
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.register.AQItems;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -9,8 +10,11 @@ import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Items;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class AQRecipeProvider extends AbstractRecipeProvider {
 
     public AQRecipeProvider(DataGenerator dataGenerator) {
@@ -61,6 +65,8 @@ public class AQRecipeProvider extends AbstractRecipeProvider {
         this.smelting(AQItems.TIN_INGOT.get(), AQBlocks.TIN_ORE.get(), 0.7F, consumer);
         this.smelting(AQItems.SILVER_INGOT.get(), AQBlocks.SILVER_ORE.get(), 0.7F, consumer);
         this.smelting(Items.QUARTZ, AQBlocks.GRANITE_QUARTZ_ORE.get(), 0.2F, consumer);
+        this.smelting(AQItems.JADE.get(), AQBlocks.DIORITE_JADE_ORE.get(), 1.0F, consumer);
+        this.smelting(AQItems.TURQUOISE.get(), AQBlocks.ANDESITE_TURQUOISE_ORE.get(), 1.0F, consumer);
 
         ShapedRecipeBuilder.shaped(Blocks.COBBLESTONE, 1)
                 .pattern("###")

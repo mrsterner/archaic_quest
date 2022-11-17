@@ -1,5 +1,6 @@
 package com.obsidian_core.archaic_quest.datagen.loot_table;
 
+import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
@@ -46,8 +47,9 @@ public class AQBlockLootTableProvider extends BlockLootTables {
     public void addTables() {
         dropSelf(AQBlocks.TIN_ORE.get());
         dropSelf(AQBlocks.SILVER_ORE.get());
-        createOreDrop(AQBlocks.DIORITE_JADE_ORE.get(), AQItems.JADE.get());
-        createOreDrop(AQBlocks.GRANITE_QUARTZ_ORE.get(), Items.QUARTZ);
+        add(AQBlocks.DIORITE_JADE_ORE.get(), createOreDrop(AQBlocks.DIORITE_JADE_ORE.get(), AQItems.JADE.get()));
+        add(AQBlocks.GRANITE_QUARTZ_ORE.get(), createOreDrop(AQBlocks.GRANITE_QUARTZ_ORE.get(), Items.QUARTZ));
+        add(AQBlocks.ANDESITE_TURQUOISE_ORE.get(), createOreDrop(AQBlocks.ANDESITE_TURQUOISE_ORE.get(), AQItems.TURQUOISE.get()));
 
         dropSelf(AQBlocks.ANDESITE_BRICKS.get());
         dropSelf(AQBlocks.MOSSY_ANDESITE_BRICKS.get());
@@ -154,6 +156,12 @@ public class AQBlockLootTableProvider extends BlockLootTables {
         dropSelf(AQBlocks.ANDESITE_AZTEC_TRAP_0.get());
         dropSelf(AQBlocks.ANDESITE_AZTEC_TRAP_1.get());
 
+        dungeonDoor(AQBlocks.AZTEC_DUNGEON_DOOR_0.get());
+        dungeonDoor(AQBlocks.AZTEC_DUNGEON_DOOR_1.get());
+        dungeonDoor(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_0.get());
+        dungeonDoor(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_1.get());
+
+
         dropSelf(AQBlocks.STONE_AZTEC_BRICKS_0.get());
 
         dropSelf(AQBlocks.GOLD_AZTEC_BRICKS.get());
@@ -231,10 +239,21 @@ public class AQBlockLootTableProvider extends BlockLootTables {
     }
 
     private void rangedOreDrop(Block block, Item item, float min, float max) {
-        this.add(block, (b) -> {
-            return createSilkTouchDispatchTable(b, applyExplosionDecay(b, ItemLootEntry.lootTableItem(item)
-                    .apply(SetCount.setCount(RandomValueRange.between(min, max)))
-                    .apply(ApplyBonus.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
-        });
+        this.add(block, (b) -> createSilkTouchDispatchTable(b, applyExplosionDecay(b, ItemLootEntry.lootTableItem(item)
+                .apply(SetCount.setCount(RandomValueRange.between(min, max)))
+                .apply(ApplyBonus.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))));
+    }
+
+    private void dungeonDoor(AztecDungeonDoorBlock block) {
+        ILootCondition.IBuilder condition = BlockStateProperty.hasBlockStateProperties(block)
+                .setProperties(StatePropertiesPredicate.Builder.properties()
+                        .hasProperty(AztecDungeonDoorBlock.BLOCK_TYPE, AztecDungeonDoorBlock.BlockType.MASTER));
+
+        LootTable.Builder builder = applyExplosionDecay(block, LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .add(ItemLootEntry.lootTableItem(block.asItem())
+                                .when(condition))));
+
+        add(block, builder);
     }
 }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "archaic_quest:jade_from_smelting"
+    ]
+  },
+  "criteria": {
+    "has_jade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "archaic_quest:diorite_jade_ore"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "archaic_quest:jade_from_smelting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_jade",
+      "has_the_recipe"
+    ]
+  ]
+}

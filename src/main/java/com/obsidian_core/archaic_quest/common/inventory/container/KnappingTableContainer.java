@@ -77,7 +77,7 @@ public class KnappingTableContainer extends Container {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (!this.moveItemStackTo(slotItem, 0, 9, false)) {
+            else if (!this.moveItemStackTo(slotItem, 9, 10, false)) {
                 return ItemStack.EMPTY;
             }
 

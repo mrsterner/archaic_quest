@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "archaic_quest:aztec_dungeon_door_frame_0",
+              "properties": {
+                "block_type": "master"
+              }
+            }
+          ],
+          "name": "archaic_quest:aztec_dungeon_door_frame_0"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "function": "minecraft:explosion_decay"
+    }
+  ]
+}

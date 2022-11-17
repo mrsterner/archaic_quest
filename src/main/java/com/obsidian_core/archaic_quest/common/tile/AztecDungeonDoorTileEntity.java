@@ -1,46 +1,80 @@
 package com.obsidian_core.archaic_quest.common.tile;
 
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
+import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
+import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import com.obsidian_core.archaic_quest.common.network.NetworkHelper;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.register.AQTileEntities;
+import net.minecraft.block.*;
+import net.minecraft.client.renderer.Atlases;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ComparatorTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
+
+import javax.annotation.Nullable;
 
 public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableTileEntity {
 
     private DoorState doorState = DoorState.STAND_BY;
-    private int doorPosition = 0;
-    private int previousDoorPos = doorPosition;
-
+    private final int minDoorPos = 0;
+    private final int maxDoorPos = 60;
+    private int doorPosition = minDoorPos;
+    private DungeonDoorType doorType;
 
     public AztecDungeonDoorTileEntity() {
         super(AQTileEntities.AZTEC_DUNGEON_DOOR.get());
     }
 
     @Override
-    public void tick() {
-        if (level != null) {
-            doorState = DoorState.STAND_BY;
+    public void onLoad() {
+        super.onLoad();
 
-            if (!level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).inflate(4.0D)).isEmpty()) {
+        if (level != null) {
+            if (getBlockState().getBlock() instanceof AztecDungeonDoorBlock) {
+                doorType = ((AztecDungeonDoorBlock) getBlockState().getBlock()).getDoorType();
+            }
+        }
+    }
+
+    @Override
+    public void tick() {
+        if (doorType.isFrame())
+            return;
+
+        if (level != null) {
+            if (doorState == DoorState.STAND_BY)
+                return;
+
+            if (doorState == DoorState.OPENING) {
                 if (doorPosition < 60) {
                     ++doorPosition;
-                    doorState = DoorState.OPENING;
+                }
+                else {
+                    setDoorState(DoorState.STAND_BY);
+                    toggleDoorBlocks(true);
                 }
             }
-            else {
+            else if (doorState == DoorState.CLOSING) {
                 if (doorPosition > 0) {
                     --doorPosition;
-                    doorState = DoorState.CLOSING;
                 }
-            }
-            if (doorPosition >= 60 && doorPosition != previousDoorPos) {
-                toggleDoorBlocks(true);
-            }
-            else if (doorPosition <= 0 && doorPosition != previousDoorPos) {
-                toggleDoorBlocks(false);
+                else {
+                    setDoorState(DoorState.STAND_BY);
+                    toggleDoorBlocks(false);
+                }
             }
         }
     }
@@ -49,13 +83,42 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
      * Toggles this dungeon door tile entity's
      * physical blocks' collision.
      *
-     * @param open Whether the door should be opened or closed.
+     * @param isOpen Whether the door should be opened or closed.
      */
-    private void toggleDoorBlocks(boolean open) {
-        level.setBlock(getBlockPos(), level.getBlockState(getBlockPos()).setValue(AztecDungeonDoorBlock.HAS_COLLISION, open), 2);
-        if (level.getBlockState(getBlockPos().above()).is(AQBlocks.AZTEC_DUNGEON_DOOR.get())) {
-            level.setBlock(getBlockPos().above(), level.getBlockState(getBlockPos().above()).setValue(AztecDungeonDoorBlock.HAS_COLLISION, open), 2);
+    @SuppressWarnings("ConstantConditions")
+    private void toggleDoorBlocks(boolean isOpen) {
+        if (!level.isClientSide) {
+            switch (getBlockState().getValue(AztecDungeonDoorBlock.FACING)) {
+                case NORTH:
+                case SOUTH:
+                {
+                    for (BlockPos pos : BlockPos.betweenClosed(getBlockPos().west(), getBlockPos().east().above(2))) {
+                        level.setBlock(pos, level.getBlockState(pos).setValue(AztecDungeonDoorBlock.IS_OPEN, isOpen), 2);
+                    }
+                    break;
+                }
+                case EAST:
+                case WEST:
+                {
+                    for (BlockPos pos : BlockPos.betweenClosed(getBlockPos().north(), getBlockPos().south().above(2))) {
+                        level.setBlock(pos, level.getBlockState(pos).setValue(AztecDungeonDoorBlock.IS_OPEN, isOpen), 2);
+                    }
+                    break;
+                }
+            }
         }
+    }
+
+    public DungeonDoorType getDoorType() {
+        return doorType;
+    }
+
+    public boolean isOpen() {
+        return doorPosition >= maxDoorPos;
+    }
+
+    public boolean isClosed() {
+        return doorPosition <= minDoorPos;
     }
 
     public DoorState getDoorState() {
@@ -66,9 +129,72 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
         return doorPosition;
     }
 
+    public void setDoorState(DoorState doorState) {
+        this.doorState = doorState;
+        if (level != null && !level.isClientSide) {
+            NetworkHelper.updateDoorState((ServerWorld) level, getBlockPos(), doorState);
+        }
+    }
+
+    @Override
+    public void load(BlockState state, CompoundNBT compoundNBT) {
+        super.load(state, compoundNBT);
+
+        if (compoundNBT.contains("DoorPosition", Constants.NBT.TAG_ANY_NUMERIC)) {
+            doorPosition = MathHelper.clamp(compoundNBT.getInt("DoorPosition"), minDoorPos, maxDoorPos);
+        }
+        if (compoundNBT.contains("DoorState", Constants.NBT.TAG_ANY_NUMERIC)) {
+            int stateId = compoundNBT.getInt("DoorState");
+            DoorState doorState = DoorState.byId(stateId);
+            setDoorState(doorState == null ? DoorState.STAND_BY : doorState);
+        }
+    }
+
+    @Override
+    public CompoundNBT save(CompoundNBT compoundNBT) {
+        compoundNBT = super.save(compoundNBT);
+
+        compoundNBT.putInt("DoorPosition", doorPosition);
+        compoundNBT.putInt("DoorState", getDoorState().ordinal());
+
+        return compoundNBT;
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return save(new CompoundNBT());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public double getViewDistance() {
+        return 1024.0D;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        BlockPos pos = getBlockPos();
+        return new AxisAlignedBB(pos.offset(-2, 0, -2), pos.offset(2, 3, 2));
+    }
+
+
     public enum DoorState {
         OPENING,
         CLOSING,
-        STAND_BY
+        STAND_BY;
+
+        @Nullable
+        public static DoorState byId(int id) {
+            if (id > values().length || id < 0) {
+                return null;
+            }
+            return values()[id];
+        }
     }
 }

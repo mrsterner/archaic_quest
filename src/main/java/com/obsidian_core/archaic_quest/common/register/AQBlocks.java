@@ -2,10 +2,12 @@ package com.obsidian_core.archaic_quest.common.register;
 
 import com.obsidian_core.archaic_quest.client.render.tile.ISTER;
 import com.obsidian_core.archaic_quest.common.block.*;
+import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import com.obsidian_core.archaic_quest.common.item.AztecCraftingStationBlockItem;
 import com.obsidian_core.archaic_quest.common.item.AztecDungeonDoorBlockItem;
+import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -50,12 +52,12 @@ public class AQBlocks {
     public static final RegistryObject<Block> CORN_CROP = registerBlockNoBlockItem("corn_crop", CornCropBlock::new);
 
     // ORES
-    public static final RegistryObject<Block> TIN_ORE = simpleBlock("tin_ore", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(1)));
-    public static final RegistryObject<Block> SILVER_ORE = simpleBlock("silver_ore", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
-    public static final RegistryObject<Block> BASALT_ORE = simpleBlock("basalt_ore", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
-    public static final RegistryObject<Block> GRANITE_QUARTZ_ORE = simpleBlock("granite_quartz_ore", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(1)));
-    public static final RegistryObject<Block> ANDESITE_TURQUOISE_ORE = simpleBlock("andesite_turquoise_ore", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
-    public static final RegistryObject<Block> DIORITE_JADE_ORE = simpleBlock("diorite_jade_ore", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
+    public static final RegistryObject<Block> TIN_ORE = simpleBlock("tin_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(1)));
+    public static final RegistryObject<Block> SILVER_ORE = simpleBlock("silver_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
+    public static final RegistryObject<Block> BASALT_ORE = simpleBlock("basalt_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
+    public static final RegistryObject<Block> GRANITE_QUARTZ_ORE = simpleBlock("granite_quartz_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(2, 5, AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(1)));
+    public static final RegistryObject<Block> ANDESITE_TURQUOISE_ORE = simpleBlock("andesite_turquoise_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(2, 5, AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
+    public static final RegistryObject<Block> DIORITE_JADE_ORE = simpleBlock("diorite_jade_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(2, 5, AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
     public static final RegistryObject<Block> ONYX = simpleBlock("onyx", AQCreativeTabs.BLOCKS, () -> new OreBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F).harvestTool(ToolType.PICKAXE).harvestLevel(3)));
 
     // AZTEC STUFF
@@ -165,7 +167,12 @@ public class AQBlocks {
     public static final RegistryObject<Block> ANDESITE_AZTEC_BRICKS_87 = simpleBlockWithVars("andesite_aztec_bricks_87", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP);
 
     public static final RegistryObject<Block> AZTEC_PILLAR = registerBlock("aztec_pillar", AQCreativeTabs.DECORATION, () -> new ChiselPillarBlock(AQBlocks.ANDESITE_BRICKS_PROP));
-    public static final RegistryObject<Block> AZTEC_DUNGEON_DOOR = registerBlock("aztec_dungeon_door", AztecDungeonDoorBlock::new, () -> new AztecDungeonDoorBlockItem(AQBlocks.AZTEC_DUNGEON_DOOR.get()));
+    public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_0 = registerDungeonDoor("aztec_dungeon_door_0", DungeonDoorType.AZTEC_DOOR_0);
+    public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_1 = registerDungeonDoor("aztec_dungeon_door_1", DungeonDoorType.AZTEC_DOOR_1);
+    public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_FRAME_0 = registerDungeonDoor("aztec_dungeon_door_frame_0", DungeonDoorType.AZTEC_DOOR_FRAME_0);
+    public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_FRAME_1 = registerDungeonDoor("aztec_dungeon_door_frame_1", DungeonDoorType.AZTEC_DOOR_FRAME_1);
+
+
 
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_0 = registerBlock("andesite_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP));
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_1 = registerBlock("andesite_aztec_trap_1", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP));
@@ -274,6 +281,12 @@ public class AQBlocks {
     private static <T extends Block, B extends BlockItem> RegistryObject<T> registerBlock(String name, Supplier<T> blockSupplier, Supplier<B> blockItemSupplier) {
         RegistryObject<T> registryObject = BLOCKS.register(name, blockSupplier);
         AQItems.ITEMS.register(name, blockItemSupplier);
+        return registryObject;
+    }
+
+    private static RegistryObject<AztecDungeonDoorBlock> registerDungeonDoor(String name, DungeonDoorType doorType) {
+        RegistryObject<AztecDungeonDoorBlock> registryObject = BLOCKS.register(name, () -> new AztecDungeonDoorBlock(doorType));
+        AQItems.ITEMS.register(name, () -> new AztecDungeonDoorBlockItem(registryObject.get()));
         return registryObject;
     }
 
