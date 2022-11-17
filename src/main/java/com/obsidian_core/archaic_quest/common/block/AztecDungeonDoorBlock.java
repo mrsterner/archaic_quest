@@ -227,13 +227,12 @@ public class AztecDungeonDoorBlock extends Block {
             BlockPos masterPos = calculateMasterPos(state, pos);
 
             if (masterPos != null) {
-                BlockState masterState = world.getBlockState(masterPos);
-                if (isMaster(state)) masterState = state;
+                BlockState masterState = isMaster(state) ? state : world.getBlockState(masterPos);
 
-                if (masterState.is(this) || isMaster(state)) {
-                    Direction masterDir = masterState.getValue(FACING);
+                if (masterState.is(this)) {
+                    Direction dir = masterState.getValue(FACING);
 
-                    if (masterDir == Direction.NORTH || masterDir == Direction.SOUTH) {
+                    if (dir == Direction.NORTH || dir == Direction.SOUTH) {
                         for (BlockPos p : BlockPos.betweenClosed(masterPos.west(), masterPos.east().above(2))) {
                             world.destroyBlock(p, false);
                         }
@@ -262,11 +261,22 @@ public class AztecDungeonDoorBlock extends Block {
             super.neighborChanged(state, world, pos, block, neighborPos, flag);
             return;
         }
+        BlockPos masterPos;
 
-        if (isMaster(state) && !world.isClientSide) {
-            TileEntity te = world.getBlockEntity(pos);
+        if (isMaster(state)) {
+            masterPos = pos;
+        }
+        else {
+            masterPos = calculateMasterPos(state, pos);
+        }
 
+        if (masterPos == null)
+            return;
+
+        if (isMaster(world.getBlockState(masterPos)) && !world.isClientSide) {
             if (world.hasNeighborSignal(pos)) {
+                TileEntity te = world.getBlockEntity(masterPos);
+
                 if (te instanceof AztecDungeonDoorTileEntity) {
                     AztecDungeonDoorTileEntity dungeonDoor = (AztecDungeonDoorTileEntity) te;
 
