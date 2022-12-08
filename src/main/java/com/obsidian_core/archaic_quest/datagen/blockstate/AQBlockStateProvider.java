@@ -4,7 +4,6 @@ import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -35,7 +34,7 @@ public class AQBlockStateProvider extends AbstractBlockStateProvider {
             simpleBlockItem(stairs.get(), model);
         });
 
-        for (RegistryObject<Block> regObject : BLOCKS.getEntries()) {
+        for (RegistryObject<Block> regObject : REGISTRY.getEntries()) {
             Block block = regObject.get();
 
             if (block instanceof DoubleCropBlock) {

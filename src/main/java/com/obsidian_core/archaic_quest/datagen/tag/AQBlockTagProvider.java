@@ -22,13 +22,13 @@ public class AQBlockTagProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        this.tag(AQBlockTags.ORE_TIN).add(AQBlocks.TIN_ORE.get());
-        this.tag(AQBlockTags.ORE_SILVER).add(AQBlocks.SILVER_ORE.get());
-        this.tag(AQBlockTags.ORE_QUARTZ).add(AQBlocks.GRANITE_QUARTZ_ORE.get());
+        tag(AQBlockTags.ORE_TIN).add(AQBlocks.TIN_ORE.get());
+        tag(AQBlockTags.ORE_SILVER).add(AQBlocks.SILVER_ORE.get());
+        tag(AQBlockTags.ORE_QUARTZ).add(AQBlocks.GRANITE_QUARTZ_ORE.get());
 
         TagsProvider.Builder<Block> CLIMBABLE = tag(BlockTags.CLIMBABLE);
 
-        for (RegistryObject<Block> regObject : AQBlocks.BLOCKS.getEntries()) {
+        for (RegistryObject<Block> regObject : AQBlocks.REGISTRY.getEntries()) {
             Block block = regObject.get();
 
             if (block instanceof CoolVinesBlock) {

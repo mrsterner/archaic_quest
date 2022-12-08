@@ -203,7 +203,7 @@ public class AQBlockLootTableProvider extends BlockLootTables {
         dropSelf(AQBlocks.KNAPPING_TABLE.get());
 
 
-        for (RegistryObject<Block> regObj : AQBlocks.BLOCKS.getEntries()) {
+        for (RegistryObject<Block> regObj : AQBlocks.REGISTRY.getEntries()) {
             Block block = regObj.get();
 
             if (block instanceof SlabBlock || block instanceof StairsBlock || block instanceof VerticalSlabBlock) {

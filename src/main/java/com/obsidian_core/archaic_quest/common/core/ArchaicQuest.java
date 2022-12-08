@@ -34,12 +34,13 @@ public class ArchaicQuest {
 
         MinecraftForge.EVENT_BUS.register(new BiomeEvents());
 
-        AQBlocks.BLOCKS.register(eventBus);
-        AQItems.ITEMS.register(eventBus);
-        AQGlobalLootModifiers.GLOBAL_LOOT_MODIFIERS.register(eventBus);
-        AQSoundEvents.SOUNDS.register(eventBus);
-        AQContainers.CONTAINERS.register(eventBus);
-        AQTileEntities.TILE_ENTITIES.register(eventBus);
+        AQBlocks.REGISTRY.register(eventBus);
+        AQItems.REGISTRY.register(eventBus);
+        AQEntities.REGISTRY.register(eventBus);
+        AQGlobalLootModifiers.REGISTRY.register(eventBus);
+        AQSoundEvents.REGISTRY.register(eventBus);
+        AQContainers.REGISTRY.register(eventBus);
+        AQTileEntities.REGISTRY.register(eventBus);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

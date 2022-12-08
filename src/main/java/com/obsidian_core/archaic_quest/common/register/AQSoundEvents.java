@@ -8,12 +8,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class AQSoundEvents {
 
-    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ArchaicQuest.MODID);
+    public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ArchaicQuest.MODID);
 
     public static final RegistryObject<SoundEvent> DEATH_WHISTLE_SHRIEK = registerSound("death_whistle_shriek");
 
 
     private static RegistryObject<SoundEvent> registerSound(String name) {
-        return SOUNDS.register(name, () -> new SoundEvent(ArchaicQuest.resourceLoc(name)));
+        return REGISTRY.register(name, () -> new SoundEvent(ArchaicQuest.resourceLoc(name)));
     }
 }

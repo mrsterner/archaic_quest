@@ -34,6 +34,7 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
     private int doorPosition = minDoorPos;
     private DungeonDoorType doorType;
 
+
     public AztecDungeonDoorTileEntity() {
         super(AQTileEntities.AZTEC_DUNGEON_DOOR.get());
     }

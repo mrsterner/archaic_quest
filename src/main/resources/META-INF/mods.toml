@@ -9,18 +9,18 @@ license="All rights reserved"
     logoFile="examplemod.png"
     credits="Obsidian Core and the other peeps"
     authors="Obsidian Core, Sarinsa, Tate___Langdon"
-    description="Obsidian Core's legacy, with some other stuff. (Please return to us Obsidian Core ;_;)"
+    description="Obsidian Core's legacy, with some other stuff."
 
-[[dependencies.examplemod]]
+[[dependencies.archaic_quest]]
     modId="forge"
     mandatory=true
-    versionRange="[36,)"
+    versionRange="[36.2.39,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.archaic_quest]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.5,1.17)"
+    versionRange="[1.16.5]"
     ordering="NONE"
     side="BOTH"

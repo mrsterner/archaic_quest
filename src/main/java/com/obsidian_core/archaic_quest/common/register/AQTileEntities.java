@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("ConstantConditions")
 public class AQTileEntities {
 
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, ArchaicQuest.MODID);
+    public static final DeferredRegister<TileEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, ArchaicQuest.MODID);
 
 
     private static final Supplier<AztecDungeonDoorBlock[]> DUNGEON_DOORS = () ->
@@ -35,6 +35,6 @@ public class AQTileEntities {
 
 
     private static <T extends TileEntity> RegistryObject<TileEntityType<T>> register(String name, Supplier<TileEntityType<T>> tileEntityType) {
-        return TILE_ENTITIES.register(name, tileEntityType);
+        return REGISTRY.register(name, tileEntityType);
     }
 }

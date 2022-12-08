@@ -55,7 +55,7 @@ public class ClientRegister {
 
         // Loop through the entire registry for certain block types
         // that should always use the same specific render type.
-        for (RegistryObject<Block> regObject : AQBlocks.BLOCKS.getEntries()) {
+        for (RegistryObject<Block> regObject : AQBlocks.REGISTRY.getEntries()) {
             Block block = regObject.get();
 
             if (block instanceof DoubleCropBlock || block instanceof CoolVinesBlock)

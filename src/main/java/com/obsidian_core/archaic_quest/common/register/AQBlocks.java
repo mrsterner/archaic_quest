@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 public class AQBlocks {
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ArchaicQuest.MODID);
+    public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, ArchaicQuest.MODID);
 
     public static final List<RegistryObject<Block>> SIMPLE_BLOCKS = new ArrayList<>();
     public static final Map<RegistryObject<Block>, RegistryObject<VerticalSlabBlock>> VERT_SLAB_VARIANTS = new HashMap<>();
@@ -263,30 +263,30 @@ public class AQBlocks {
     }
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, ItemGroup itemGroup, Supplier<T> blockSupplier) {
-        RegistryObject<T> registryObject = BLOCKS.register(name, blockSupplier);
-        AQItems.ITEMS.register(name, () -> new BlockItem(registryObject.get(), new Item.Properties().tab(itemGroup)));
+        RegistryObject<T> registryObject = REGISTRY.register(name, blockSupplier);
+        AQItems.REGISTRY.register(name, () -> new BlockItem(registryObject.get(), new Item.Properties().tab(itemGroup)));
         return registryObject;
     }
 
     private static <T extends Block> RegistryObject<T> registerBlockNoBlockItem(String name, Supplier<T> blockSupplier) {
-        return BLOCKS.register(name, blockSupplier);
+        return REGISTRY.register(name, blockSupplier);
     }
 
     private static <T extends DoorBlock> RegistryObject<T> registerDoorBlock(String name, Supplier<T> doorBlockSupplier) {
-        RegistryObject<T> registryObject = BLOCKS.register(name, doorBlockSupplier);
-        AQItems.ITEMS.register(name, () -> new TallBlockItem(registryObject.get(), new Item.Properties().tab(AQCreativeTabs.BLOCKS).stacksTo(16)));
+        RegistryObject<T> registryObject = REGISTRY.register(name, doorBlockSupplier);
+        AQItems.REGISTRY.register(name, () -> new TallBlockItem(registryObject.get(), new Item.Properties().tab(AQCreativeTabs.BLOCKS).stacksTo(16)));
         return registryObject;
     }
 
     private static <T extends Block, B extends BlockItem> RegistryObject<T> registerBlock(String name, Supplier<T> blockSupplier, Supplier<B> blockItemSupplier) {
-        RegistryObject<T> registryObject = BLOCKS.register(name, blockSupplier);
-        AQItems.ITEMS.register(name, blockItemSupplier);
+        RegistryObject<T> registryObject = REGISTRY.register(name, blockSupplier);
+        AQItems.REGISTRY.register(name, blockItemSupplier);
         return registryObject;
     }
 
     private static RegistryObject<AztecDungeonDoorBlock> registerDungeonDoor(String name, DungeonDoorType doorType) {
-        RegistryObject<AztecDungeonDoorBlock> registryObject = BLOCKS.register(name, () -> new AztecDungeonDoorBlock(doorType));
-        AQItems.ITEMS.register(name, () -> new AztecDungeonDoorBlockItem(registryObject.get()));
+        RegistryObject<AztecDungeonDoorBlock> registryObject = REGISTRY.register(name, () -> new AztecDungeonDoorBlock(doorType));
+        AQItems.REGISTRY.register(name, () -> new AztecDungeonDoorBlockItem(registryObject.get()));
         return registryObject;
     }
 

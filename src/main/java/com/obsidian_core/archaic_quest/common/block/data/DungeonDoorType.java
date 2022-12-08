@@ -14,10 +14,6 @@ public enum DungeonDoorType {
 
 
 
-
-
-
-
     DungeonDoorType(boolean isFrame, @Nonnull String textureName) {
         this.isFrame = isFrame;
         this.texture = ArchaicQuest.resourceLoc("textures/tile/dungeon_door/" + textureName + ".png");
