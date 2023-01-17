@@ -226,7 +226,7 @@ public class AQBlocks {
      */
 
     public static final RegistryObject<Block> KNAPPING_TABLE = registerBlock("knapping_table", AQCreativeTabs.DECORATION, KnappingTableBlock::new);
-
+    public static final RegistryObject<Block> FOUNDRY = registerBlock("foundry", AQCreativeTabs.DECORATION, FoundryBlock::new);
 
 
 

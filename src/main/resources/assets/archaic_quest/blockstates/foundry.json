@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "archaic_quest:block/foundry",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "archaic_quest:block/foundry"
+    },
+    "facing=south": {
+      "model": "archaic_quest:block/foundry",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "archaic_quest:block/foundry",
+      "y": 270
+    }
+  }
+}

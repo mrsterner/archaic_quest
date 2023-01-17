@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "archaic_quest:block/foundry_bottom",
+    "up": "archaic_quest:block/foundry_top",
+    "north": "archaic_quest:block/foundry_front",
+    "south": "archaic_quest:block/foundry_back",
+    "west": "archaic_quest:block/foundry_left",
+    "east": "archaic_quest:block/foundry_right",
+    "particle": "archaic_quest:block/foundry_front"
+  }
+}

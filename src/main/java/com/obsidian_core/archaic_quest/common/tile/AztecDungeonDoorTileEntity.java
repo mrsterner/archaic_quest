@@ -11,11 +11,9 @@ import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ComparatorTileEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.MobSpawnerTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -52,7 +50,7 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
 
     @Override
     public void tick() {
-        if (doorType.isFrame())
+        if (doorType == null || doorType.isFrame())
             return;
 
         if (level != null) {
@@ -132,6 +130,9 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
 
     public void setDoorState(DoorState doorState) {
         this.doorState = doorState;
+    }
+
+    public void sendDoorStateUpdate() {
         if (level != null && !level.isClientSide) {
             NetworkHelper.updateDoorState((ServerWorld) level, getBlockPos(), doorState);
         }
@@ -144,6 +145,7 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
         if (compoundNBT.contains("DoorPosition", Constants.NBT.TAG_ANY_NUMERIC)) {
             doorPosition = MathHelper.clamp(compoundNBT.getInt("DoorPosition"), minDoorPos, maxDoorPos);
         }
+
         if (compoundNBT.contains("DoorState", Constants.NBT.TAG_ANY_NUMERIC)) {
             int stateId = compoundNBT.getInt("DoorState");
             DoorState doorState = DoorState.byId(stateId);
@@ -172,16 +174,47 @@ public class AztecDungeonDoorTileEntity extends TileEntity implements ITickableT
         return save(new CompoundNBT());
     }
 
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        if(level.isClientSide) {
+            super.handleUpdateTag(this.getBlockState(), pkt.getTag());
+
+            CompoundNBT tag = pkt.getTag();
+
+            if (tag.contains("DoorPosition", Constants.NBT.TAG_ANY_NUMERIC)) {
+                doorPosition = MathHelper.clamp(tag.getInt("DoorPosition"), minDoorPos, maxDoorPos);
+            }
+            if (tag.contains("DoorState", Constants.NBT.TAG_ANY_NUMERIC)) {
+                int stateId = tag.getInt("DoorState");
+                DoorState doorState = DoorState.byId(stateId);
+                setDoorState(doorState == null ? DoorState.STAND_BY : doorState);
+            }
+        }
+    }
+
+    @Override
+    public boolean onlyOpCanSetNbt() {
+        return true;
+    }
+
     @OnlyIn(Dist.CLIENT)
+    @Override
     public double getViewDistance() {
-        return 1024.0D;
+        return 128.0D;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         BlockPos pos = getBlockPos();
-        return new AxisAlignedBB(pos.offset(-2, 0, -2), pos.offset(2, 3, 2));
+        return getBlockState().getBlock() instanceof AztecDungeonDoorBlock
+                ? new AxisAlignedBB(pos.offset(-2, 0, -2), pos.offset(2, 3, 2))
+                : INFINITE_EXTENT_AABB;
     }
 
 

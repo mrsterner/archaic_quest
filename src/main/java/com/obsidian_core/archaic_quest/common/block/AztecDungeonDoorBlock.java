@@ -282,9 +282,11 @@ public class AztecDungeonDoorBlock extends Block {
 
                     if (dungeonDoor.isOpen()) {
                         dungeonDoor.setDoorState(DoorState.CLOSING);
+                        dungeonDoor.sendDoorStateUpdate();
                     }
                     else if (dungeonDoor.isClosed()) {
                         dungeonDoor.setDoorState(DoorState.OPENING);
+                        dungeonDoor.sendDoorStateUpdate();
                     }
                 }
             }
