@@ -1,13 +1,13 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 
-public class SimpleHorizontalBlock extends HorizontalBlock {
+public class SimpleHorizontalBlock extends HorizontalDirectionalBlock {
 
     public SimpleHorizontalBlock(Properties properties) {
         super(properties);
@@ -15,12 +15,12 @@ public class SimpleHorizontalBlock extends HorizontalBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext useContext) {
+    public BlockState getStateForPlacement(BlockPlaceContext useContext) {
         return this.defaultBlockState().setValue(FACING, useContext.getHorizontalDirection());
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(FACING);
     }
 }

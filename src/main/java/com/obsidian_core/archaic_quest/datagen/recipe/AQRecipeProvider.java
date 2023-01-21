@@ -1,14 +1,14 @@
 package com.obsidian_core.archaic_quest.datagen.recipe;
 
+import com.mojang.math.MethodsReturnNonnullByDefault;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.register.AQItems;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.item.Items;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
@@ -22,7 +22,7 @@ public class AQRecipeProvider extends AbstractRecipeProvider {
     }
 
     @Override
-    public void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         this.stonecutting(AQItems.PEBBLE.get(), Blocks.COBBLESTONE, 9, consumer);
         this.stonecutting(AQBlocks.ANDESITE_BRICKS.get(), Items.ANDESITE, 1, consumer);
         this.stonecutting(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get(), AQBlocks.ANDESITE_BRICKS.get(), 1, consumer);

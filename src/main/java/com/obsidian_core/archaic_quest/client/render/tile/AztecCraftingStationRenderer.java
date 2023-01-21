@@ -1,43 +1,44 @@
 package com.obsidian_core.archaic_quest.client.render.tile;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.tile.AztecCraftingStationTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.obsidian_core.archaic_quest.common.tile.AztecCraftingStationBlockEntity;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class AztecCraftingStationRenderer extends TileEntityRenderer<AztecCraftingStationTileEntity> {
+public class AztecCraftingStationRenderer implements BlockEntityRenderer<AztecCraftingStationBlockEntity> {
 
     private static final ResourceLocation texture = ArchaicQuest.resourceLoc("textures/block/aztec_crafting_station.png");
 
-    private ModelRenderer table;
-    private ModelRenderer cube5_r1;
-    private ModelRenderer cube8_r1;
-    private ModelRenderer misc;
-    private ModelRenderer hammer;
-    private ModelRenderer chissel;
-    private ModelRenderer paper;
-    private ModelRenderer cube17_r1;
-    private ModelRenderer patterntiles;
-    private ModelRenderer cube13_r1;
-    private ModelRenderer cube12_r1;
-    private ModelRenderer cube14_r1;
+    private ModelPart table;
+    private ModelPart cube5_r1;
+    private ModelPart cube8_r1;
+    private ModelPart misc;
+    private ModelPart hammer;
+    private ModelPart chissel;
+    private ModelPart paper;
+    private ModelPart cube17_r1;
+    private ModelPart patterntiles;
+    private ModelPart cube13_r1;
+    private ModelPart cube12_r1;
+    private ModelPart cube14_r1;
 
-    public AztecCraftingStationRenderer(TileEntityRendererDispatcher rendererDispatcher) {
-        super(rendererDispatcher);
-        setupModel();
+    public AztecCraftingStationRenderer(BlockEntityRendererProvider.Context context) {
+        //setupModel();
     }
 
+    /*
     private void setupModel() {
         int textureWidth = 256;
         int textureHeight = 256;
@@ -120,73 +121,50 @@ public class AztecCraftingStationRenderer extends TileEntityRenderer<AztecCrafti
         setRotationAngle(cube14_r1, 1.5708F, 0.0F, 0.0F);
         cube14_r1.texOffs(240, 248).addBox(-3.0F, -7.0F, 2.0F, 6.0F, 6.0F, 2.0F, 0.0F, false);
     }
+
+     */
     
     @Override
-    public void render(AztecCraftingStationTileEntity tileEntity, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int packedLight, int textureOverlay) {
+    public void render(AztecCraftingStationBlockEntity tileEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int textureOverlay) {
         BlockState state = tileEntity.getLevel() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState() : tileEntity.getBlockState();
         Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         float rotation = direction.toYRot();
 
-        matrixStack.pushPose();
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(-rotation));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+        poseStack.pushPose();
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(-rotation));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
 
         double x, z;
 
         switch (direction) {
-            default:
-            case NORTH:
+            // NORTH & default
+            default -> {
                 x = 0.5D;
                 z = -0.5D;
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 x = -0.5D;
                 z = 0.5D;
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 x = -0.5D;
                 z = -0.5D;
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 x = 0.5D;
                 z = 0.5D;
-                break;
+            }
         }
-        matrixStack.translate(x, -1.5D, z);
+        poseStack.translate(x, -1.5D, z);
 
-        IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(RenderType.entityCutout(texture));
-        table.render(matrixStack, vertexBuilder, packedLight, textureOverlay);
-        misc.render(matrixStack, vertexBuilder, packedLight, textureOverlay);
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
+        table.render(poseStack, vertexConsumer, packedLight, textureOverlay);
+        misc.render(poseStack, vertexConsumer, packedLight, textureOverlay);
 
-        /*
-        matrixStack.pushPose();
-
-        int doorPos = tileEntity.getDoorPosition();
-        float precision = doorPos >= 60 || doorPos <= 0 ? 0.0F : partialTick;
-
-        switch (tileEntity.getDoorState()) {
-            default:
-                break;
-            case STAND_BY:
-                precision = 0.0F;
-                break;
-            case CLOSING:
-                precision = -precision;
-                break;
-        }
-
-        double y = (double) (tileEntity.getDoorPosition() + precision) / 25.0D;
-        matrixStack.translate(0.0D, y, 0.0D);
-        door.render(matrixStack, vertexBuilder, packedLight, textureOverlay);
-
-        matrixStack.popPose();
-
-         */
-
-        matrixStack.popPose();
+        poseStack.popPose();
     }
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
         modelRenderer.xRot = x;
         modelRenderer.yRot = y;
         modelRenderer.zRot = z;

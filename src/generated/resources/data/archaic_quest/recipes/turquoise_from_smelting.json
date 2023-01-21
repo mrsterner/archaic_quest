@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 1.0,
   "ingredient": {
     "item": "archaic_quest:andesite_turquoise_ore"
   },
-  "result": "archaic_quest:turquoise",
-  "experience": 1.0,
-  "cookingtime": 200
+  "result": "archaic_quest:turquoise"
 }

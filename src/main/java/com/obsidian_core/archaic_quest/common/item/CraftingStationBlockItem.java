@@ -1,13 +1,12 @@
 package com.obsidian_core.archaic_quest.common.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Items;
-import net.minecraft.item.TallBlockItem;
-import net.minecraft.util.Direction;
+
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CraftingStationBlockItem extends BlockItem {
 
@@ -16,7 +15,7 @@ public class CraftingStationBlockItem extends BlockItem {
     }
 
     @Override
-    protected boolean placeBlock(BlockItemUseContext context, BlockState state) {
+    protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         context.getLevel().setBlock(context.getClickedPos().above(), Blocks.AIR.defaultBlockState(), 27);
         Direction dir = context.getHorizontalDirection();
         return super.placeBlock(context, state);

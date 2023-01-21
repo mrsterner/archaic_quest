@@ -1,11 +1,16 @@
 package com.obsidian_core.archaic_quest.datagen.recipe;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.data.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.SingleItemRecipeBuilder;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -16,35 +21,35 @@ public abstract class AbstractRecipeProvider extends RecipeProvider {
         super(dataGenerator);
     }
 
-    protected String itemName(IItemProvider iItemProvider) {
-        return Objects.requireNonNull(iItemProvider.asItem().getRegistryName()).getPath();
+    protected String itemName(ItemLike itemLike) {
+        return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemLike.asItem())).getPath();
     }
 
-    protected String criterionName(IItemProvider criterionIngredient) {
-        return "has_" + Objects.requireNonNull(criterionIngredient.asItem().getRegistryName()).getPath();
+    protected String criterionName(ItemLike criterionIngredient) {
+        return "has_" + Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(criterionIngredient.asItem())).getPath();
     }
 
-    protected void stonecutting(IItemProvider result, IItemProvider ingredient, int count, Consumer<IFinishedRecipe> consumer) {
+    protected void stonecutting(ItemLike result, ItemLike ingredient, int count, Consumer<FinishedRecipe> consumer) {
         String ingredientName = itemName(ingredient);
         String resultName = itemName(result);
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(ingredient), result, count)
-                .unlocks("has_" + ingredientName, has(ingredient))
+                .unlockedBy("has_" + ingredientName, has(ingredient))
                 .save(consumer, resultName + "_from_" + ingredientName + "_stonecutting");
     }
 
-    protected void stonecutting(IItemProvider result, ITag.INamedTag<Item> tagIngredient, int count, Consumer<IFinishedRecipe> consumer) {
+    protected void stonecutting(ItemLike result, TagKey<Item> tagIngredient, int count, Consumer<FinishedRecipe> consumer) {
         String resultName = itemName(result);
-        String tagName = tagIngredient.getName().getPath();
+        String tagName = tagIngredient.location().getPath();
 
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(tagIngredient), result, count)
-                .unlocks("has_" + tagName, has(tagIngredient))
+                .unlockedBy("has_" + tagName, has(tagIngredient))
                 .save(consumer, resultName + "_from_" + tagName + "_stonecutting");
     }
 
-    protected void smelting(IItemProvider result, IItemProvider ingredient, float exp, Consumer<IFinishedRecipe> consumer) {
+    protected void smelting(ItemLike result, ItemLike ingredient, float exp, Consumer<FinishedRecipe> consumer) {
         String ingredientName = itemName(result);
-        CookingRecipeBuilder.smelting(Ingredient.of(ingredient), result, exp, 200)
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ingredient), result, exp, 200)
                 .unlockedBy("has_" + ingredientName, has(ingredient))
                 .save(consumer, ArchaicQuest.resourceLoc(ingredientName + "_from_smelting"));
     }

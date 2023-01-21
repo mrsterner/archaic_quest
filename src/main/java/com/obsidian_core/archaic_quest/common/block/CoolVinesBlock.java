@@ -1,26 +1,25 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import com.obsidian_core.archaic_quest.common.register.AQItems;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.VineBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.IForgeShearable;
 
 import javax.annotation.Nullable;
@@ -51,7 +50,7 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return shapes[state.getValue(FACING).get2DDataValue() + (state.getValue(CUT) ? 4 : 0)];
     }
 
@@ -70,28 +69,28 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (!world.isAreaLoaded(pos, 1)) return;
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (!level.isAreaLoaded(pos, 1)) return;
 
         if (random.nextInt(10) == 0) {
             BlockPos belowPos = pos.below();
 
-            if (belowPos.getY() > 0 && world.getBlockState(belowPos).isAir(world, belowPos)) {
-                world.setBlock(belowPos, state, 2);
+            if (belowPos.getY() > 0 && level.getBlockState(belowPos).isAir()) {
+                level.setBlock(belowPos, state, 2);
             }
         }
     }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction face = context.getClickedFace();
         BlockPos behindPos = context.getClickedPos().relative(face.getOpposite());
-        World world = context.getLevel();
+        Level level = context.getLevel();
 
         if (face != Direction.DOWN && face != Direction.UP) {
-            if (Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
-                    || world.getBlockState(behindPos).isFaceSturdy(world, behindPos, face)) {
+            if (Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
+                    || level.getBlockState(behindPos).isFaceSturdy(level, behindPos, face)) {
                 return defaultBlockState().setValue(FACING, face);
             }
         }
@@ -100,26 +99,27 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Deprecated
     @SuppressWarnings("deprecation")
-    public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         Direction face = state.getValue(FACING);
         BlockPos behindPos = pos.relative(face.getOpposite());
-        BlockState aboveState = world.getBlockState(pos.above());
+        BlockState aboveState = level.getBlockState(pos.above());
 
-        return Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
-                || world.getBlockState(behindPos).isFaceSturdy(world, behindPos, face)
+        return Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
+                || level.getBlockState(behindPos).isFaceSturdy(level, behindPos, face)
                 || (aboveState.is(this) && aboveState.getValue(FACING) == face && !aboveState.getValue(CUT));
     }
 
     @Deprecated
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, IWorld world, BlockPos pos, BlockPos pos1) {
-        return !newState.canSurvive(world, pos)
+    @Override
+    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, LevelAccessor level, BlockPos pos, BlockPos pos1) {
+        return !newState.canSurvive(level, pos)
                 ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(newState, direction, state, world, pos, pos1);
+                : super.updateShape(newState, direction, state, level, pos, pos1);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(FACING, CUT, CAN_GROW);
     }
 

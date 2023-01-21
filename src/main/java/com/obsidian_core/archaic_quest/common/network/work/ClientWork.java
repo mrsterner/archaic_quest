@@ -1,30 +1,27 @@
 package com.obsidian_core.archaic_quest.common.network.work;
 
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateDoorState;
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity;
+import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-import static com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity.DoorState;
+import static com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity.DoorState;
 
 public class ClientWork {
 
     public static void handleUpdateDoorState(S2CUpdateDoorState message) {
         BlockPos pos = message.doorPos;
         DoorState doorState = DoorState.byId(message.doorState);
-        ClientWorld world = Minecraft.getInstance().level;
+        ClientLevel level = Minecraft.getInstance().level;
 
-        if (world == null) return;
+        if (level == null) return;
 
-        TileEntity tileEntity = world.getBlockEntity(pos);
+        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
 
-        if (tileEntity instanceof AztecDungeonDoorTileEntity) {
-            AztecDungeonDoorTileEntity dungeonDoor = (AztecDungeonDoorTileEntity) tileEntity;
-
+        if (blockEntity instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
             if (doorState == null) return;
-
             dungeonDoor.setDoorState(doorState);
         }
     }

@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.block.data;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 

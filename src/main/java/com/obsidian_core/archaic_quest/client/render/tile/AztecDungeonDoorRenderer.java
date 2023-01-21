@@ -1,50 +1,43 @@
 package com.obsidian_core.archaic_quest.client.render.tile;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity;
-import net.minecraft.block.StructureBlock;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.StructureTileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.StructureBlockTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class AztecDungeonDoorRenderer extends TileEntityRenderer<AztecDungeonDoorTileEntity> {
+public class AztecDungeonDoorRenderer implements BlockEntityRenderer<AztecDungeonDoorBlockEntity> {
 
-    private ModelRenderer door;
-    private ModelRenderer frame;
-    private ModelRenderer cube11_r1;
-    private ModelRenderer cube10_r1;
+    private ModelPart door;
+    private ModelPart frame;
+    private ModelPart cube11_r1;
+    private ModelPart cube10_r1;
 
-    private ModelRenderer doorFrame;
-    private ModelRenderer frameElement;
-    private ModelRenderer frame12_r1;
-    private ModelRenderer frame10_r1;
+    private ModelPart doorFrame;
+    private ModelPart frameElement;
+    private ModelPart frame12_r1;
+    private ModelPart frame10_r1;
 
 
-    public AztecDungeonDoorRenderer(TileEntityRendererDispatcher rendererDispatcher) {
-        super(rendererDispatcher);
-        setupModel();
+    public AztecDungeonDoorRenderer(BlockEntityRendererProvider.Context context) {
+        //setupModel();
     }
 
+    /*
     private void setupModel() {
         int textureWidth = 256;
         int textureHeight = 256;
 
         //--------- DOOR --------- //
-        door = new ModelRenderer(textureWidth, textureHeight, 0, 0);
+        door = new ModelPart(textureWidth, textureHeight, 0, 0);
         door.setPos(1.0F, 24.0F, -2.0F);
         door.texOffs(108, 181).addBox(-17.0F, -39.0F, 0.0F, 32.0F, 39.0F, 4.0F, 0.0F, false);
 
@@ -102,8 +95,10 @@ public class AztecDungeonDoorRenderer extends TileEntityRenderer<AztecDungeonDoo
         cube10_r1.texOffs(206, 0).addBox(-5.0F, -41.0F, -5.0F, 5.0F, 41.0F, 20.0F, 0.0F, false);
     }
 
+     */
+
     @Override
-    public void render(AztecDungeonDoorTileEntity tileEntity, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer renderType, int packedLight, int textureOverlay) {
+    public void render(AztecDungeonDoorBlockEntity tileEntity, float partialTick, PoseStack matrixStack, MultiBufferSource bufferSource, int packedLight, int textureOverlay) {
         Direction direction = tileEntity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         float rotation = direction.toYRot();
 
@@ -114,42 +109,41 @@ public class AztecDungeonDoorRenderer extends TileEntityRenderer<AztecDungeonDoo
         double x, z;
 
         switch (direction) {
-            default:
-            case NORTH:
+            default -> {
                 x = 0.5D;
                 z = -0.5D;
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 x = -0.5D;
                 z = 0.5D;
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 x = -0.5D;
                 z = -0.5D;
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 x = 0.5D;
                 z = 0.5D;
-                break;
+            }
         }
         matrixStack.translate(x, -1.5D, z);
 
-        IVertexBuilder vertexBuilder = renderType.getBuffer(RenderType.entityCutout(tileEntity.getDoorType().getTextureLocation()));
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(tileEntity.getDoorType().getTextureLocation()));
 
         if (tileEntity.getDoorType().isFrame()) {
-            renderDoorFrame(matrixStack, vertexBuilder, packedLight, textureOverlay);
+            renderDoorFrame(matrixStack, vertexConsumer, packedLight, textureOverlay);
         }
         else {
-            renderDoor(tileEntity, partialTick, matrixStack, vertexBuilder, packedLight, textureOverlay);
+            renderDoor(tileEntity, partialTick, matrixStack, vertexConsumer, packedLight, textureOverlay);
         }
         matrixStack.popPose();
     }
 
 
-    private void renderDoor(AztecDungeonDoorTileEntity tileEntity, float partialTick, MatrixStack matrixStack, IVertexBuilder vertexBuilder, int packedLight, int textureOverlay) {
-        frame.render(matrixStack, vertexBuilder, packedLight, textureOverlay);
+    private void renderDoor(AztecDungeonDoorBlockEntity tileEntity, float partialTick, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int textureOverlay) {
+        frame.render(poseStack, vertexConsumer, packedLight, textureOverlay);
 
-        matrixStack.pushPose();
+        poseStack.pushPose();
 
         int doorPos = tileEntity.getDoorPosition();
         float precision = doorPos >= 60 || doorPos <= 0 ? 0.0F : partialTick;
@@ -166,23 +160,23 @@ public class AztecDungeonDoorRenderer extends TileEntityRenderer<AztecDungeonDoo
         }
 
         double y = (double) (tileEntity.getDoorPosition() + precision) / 25.0D;
-        matrixStack.translate(0.0D, y, 0.0D);
-        door.render(matrixStack, vertexBuilder, packedLight, textureOverlay);
+        poseStack.translate(0.0D, y, 0.0D);
+        door.render(poseStack, vertexConsumer, packedLight, textureOverlay);
 
-        matrixStack.popPose();
+        poseStack.popPose();
     }
 
-    private void renderDoorFrame(MatrixStack matrixStack, IVertexBuilder vertexBuilder, int packedLight, int textureOverlay) {
-        doorFrame.render(matrixStack, vertexBuilder, packedLight, textureOverlay);
-        frameElement.render(matrixStack, vertexBuilder, packedLight, textureOverlay);
+    private void renderDoorFrame(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int textureOverlay) {
+        doorFrame.render(poseStack, vertexConsumer, packedLight, textureOverlay);
+        frameElement.render(poseStack, vertexConsumer, packedLight, textureOverlay);
     }
 
     @Override
-    public boolean shouldRenderOffScreen(AztecDungeonDoorTileEntity tileEntity) {
+    public boolean shouldRenderOffScreen(AztecDungeonDoorBlockEntity tileEntity) {
         return true;
     }
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
         modelRenderer.xRot = x;
         modelRenderer.yRot = y;
         modelRenderer.zRot = z;

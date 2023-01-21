@@ -1,32 +1,37 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import com.obsidian_core.archaic_quest.common.tile.AztecCraftingStationTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import com.obsidian_core.archaic_quest.common.tile.AztecCraftingStationBlockEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-public class AztecCraftingStationBlock extends Block {
+public class AztecCraftingStationBlock extends Block implements EntityBlock {
 
-    public static final DirectionProperty FACING = HorizontalBlock.FACING;
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     // Whether this block state is the "master" block or a sub-block for collision purposes.
     public static final EnumProperty<BlockType> BLOCK_TYPE = EnumProperty.create("block_type", BlockType.class);
 
@@ -49,23 +54,23 @@ public class AztecCraftingStationBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (world.isClientSide) {
-            return ActionResultType.SUCCESS;
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
         }
         else {
-            this.openContainer(world, pos, playerEntity);
-            return ActionResultType.CONSUME;
+            this.openContainer(level, pos, player);
+            return InteractionResult.CONSUME;
         }
     }
 
     @Deprecated
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         BlockType type = state.getValue(BLOCK_TYPE);
 
         if (type == BlockType.MASTER) {
-            return VoxelShapes.block();
+            return Shapes.block();
         }
         else {
             int i = state.getValue(FACING).get2DDataValue();
@@ -73,39 +78,36 @@ public class AztecCraftingStationBlock extends Block {
         }
     }
 
-    protected void openContainer(World world, BlockPos pos, PlayerEntity playerEntity) {
-        TileEntity tileEntity = world.getBlockEntity(pos);
+    protected void openContainer(Level level, BlockPos pos, Player player) {
+        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
 
-        if (tileEntity instanceof AztecCraftingStationTileEntity) {
-            playerEntity.openMenu((INamedContainerProvider)tileEntity);
+        if (blockEntity instanceof AztecCraftingStationBlockEntity) {
+            player.openMenu((MenuProvider) blockEntity);
         }
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext useContext) {
+    public BlockState getStateForPlacement(BlockPlaceContext useContext) {
         return this.defaultBlockState().setValue(FACING, useContext.getHorizontalDirection()).setValue(BLOCK_TYPE, BlockType.MASTER);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean b) {
-        super.onPlace(state, world, pos, oldState, b);
-    }
-
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new AztecCraftingStationTileEntity();
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean b) {
+        super.onPlace(state, level, pos, oldState, b);
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return state.getValue(BLOCK_TYPE) == BlockType.MASTER;
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return state.getValue(BLOCK_TYPE) == BlockType.MASTER
+                ? new AztecCraftingStationBlockEntity(pos, state)
+                : null;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -122,16 +124,22 @@ public class AztecCraftingStationBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isPathfindable(BlockState state, IBlockReader world, BlockPos pos, PathType pathType) {
+    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType pathType) {
         return false;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(FACING, BLOCK_TYPE);
     }
 
-    private enum BlockType implements IStringSerializable {
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return EntityBlock.super.getTicker(level, state, blockEntityType);
+    }
+
+    private enum BlockType implements StringRepresentable {
         MASTER("master"),
         LEFT("left"),
         RIGHT("right");

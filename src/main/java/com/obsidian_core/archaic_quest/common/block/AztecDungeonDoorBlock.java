@@ -2,46 +2,42 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity.DoorState;
+import static com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity.DoorState;
 
-public class AztecDungeonDoorBlock extends Block {
+public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<BlockType> BLOCK_TYPE = EnumProperty.create("block_type", BlockType.class);
     public static final BooleanProperty IS_OPEN = BooleanProperty.create("open");
 
     private static final Map<BlockType, VoxelShape[]> shapes = new HashMap<>();
-
-
-
 
     // Hitbox hell incoming
     //
@@ -54,131 +50,131 @@ public class AztecDungeonDoorBlock extends Block {
         shapes.put(BlockType.MASTER, new VoxelShape[] {
                 Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D),
                 Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
-                VoxelShapes.empty(),
-                VoxelShapes.empty()
+                Shapes.empty(),
+                Shapes.empty()
         });
         shapes.put(BlockType.LOWER_RIGHT, new VoxelShape[] {
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D),
                         Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D)
                 ),
         });
         shapes.put(BlockType.LOWER_LEFT, new VoxelShape[] {
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D),
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.MIDDLE, new VoxelShape[] {
                 Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D),
                 Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
-                VoxelShapes.empty(),
-                VoxelShapes.empty()
+                Shapes.empty(),
+                Shapes.empty()
         });
         shapes.put(BlockType.RIGHT, new VoxelShape[] {
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(6.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 10.0D),
                         Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(6.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 10.0D)
                 )
         });
         shapes.put(BlockType.LEFT, new VoxelShape[] {
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.TOP, new VoxelShape[] {
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 10.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(6.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.LEFT_TOP, new VoxelShape[] {
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 16.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 16.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.RIGHT_TOP, new VoxelShape[] {
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(6.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 10.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                         Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(6.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                VoxelShapes.or(
+                Shapes.or(
                         Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 10.0D),
                         Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 )
@@ -189,63 +185,57 @@ public class AztecDungeonDoorBlock extends Block {
 
 
     public AztecDungeonDoorBlock(DungeonDoorType doorType) {
-        super(AbstractBlock.Properties.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get()).noOcclusion());
+        super(BlockBehaviour.Properties.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get()).noOcclusion());
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(BLOCK_TYPE, BlockType.MASTER).setValue(IS_OPEN, false));
         this.doorType = doorType;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         BlockType type = state.getValue(BLOCK_TYPE);
         Direction facing = state.getValue(FACING);
         boolean isOpen = state.getValue(IS_OPEN);
 
         if (doorType.isFrame()) {
-            switch (facing) {
-                case NORTH:
-                case SOUTH:
-                    return shapes.get(type)[2];
-                default:
-                    return shapes.get(type)[3];
-            }
+            return switch (facing) {
+                case NORTH, SOUTH -> shapes.get(type)[2];
+                default -> shapes.get(type)[3];
+            };
         }
 
-        switch (facing) {
-            case NORTH:
-            case SOUTH:
-                return isOpen ? shapes.get(type)[2] : shapes.get(type)[0];
-            default:
-                return isOpen ? shapes.get(type)[3] : shapes.get(type)[1];
-        }
+        return switch (facing) {
+            case NORTH, SOUTH -> isOpen ? shapes.get(type)[2] : shapes.get(type)[0];
+            default -> isOpen ? shapes.get(type)[3] : shapes.get(type)[1];
+        };
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean flag) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean flag) {
         if (state.is(this) && !newState.is(this)) {
             BlockPos masterPos = calculateMasterPos(state, pos);
 
             if (masterPos != null) {
-                BlockState masterState = isMaster(state) ? state : world.getBlockState(masterPos);
+                BlockState masterState = isMaster(state) ? state : level.getBlockState(masterPos);
 
                 if (masterState.is(this)) {
                     Direction dir = masterState.getValue(FACING);
 
                     if (dir == Direction.NORTH || dir == Direction.SOUTH) {
                         for (BlockPos p : BlockPos.betweenClosed(masterPos.west(), masterPos.east().above(2))) {
-                            world.destroyBlock(p, false);
+                            level.destroyBlock(p, false);
                         }
                     }
                     else {
                         for (BlockPos p : BlockPos.betweenClosed(masterPos.south(), masterPos.north().above(2))) {
-                            world.destroyBlock(p, false);
+                            level.destroyBlock(p, false);
                         }
                     }
                 }
             }
         }
-        super.onRemove(state, world, pos, newState, flag);
+        super.onRemove(state, level, pos, newState, flag);
     }
 
     @Override
@@ -256,9 +246,9 @@ public class AztecDungeonDoorBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
         if (doorType.isFrame()) {
-            super.neighborChanged(state, world, pos, block, neighborPos, flag);
+            super.neighborChanged(state, level, pos, block, neighborPos, flag);
             return;
         }
         BlockPos masterPos;
@@ -273,13 +263,11 @@ public class AztecDungeonDoorBlock extends Block {
         if (masterPos == null)
             return;
 
-        if (isMaster(world.getBlockState(masterPos)) && !world.isClientSide) {
-            if (world.hasNeighborSignal(pos)) {
-                TileEntity te = world.getBlockEntity(masterPos);
+        if (isMaster(level.getBlockState(masterPos)) && !level.isClientSide) {
+            if (level.hasNeighborSignal(pos)) {
+                BlockEntity be = level.getExistingBlockEntity(masterPos);
 
-                if (te instanceof AztecDungeonDoorTileEntity) {
-                    AztecDungeonDoorTileEntity dungeonDoor = (AztecDungeonDoorTileEntity) te;
-
+                if (be instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
                     if (dungeonDoor.isOpen()) {
                         dungeonDoor.setDoorState(DoorState.CLOSING);
                         dungeonDoor.sendDoorStateUpdate();
@@ -303,39 +291,32 @@ public class AztecDungeonDoorBlock extends Block {
         if (!fromState.is(this)) return null;
 
         switch (fromState.getValue(FACING)) {
-            default:
-            case NORTH:
-            case SOUTH:
-            {
-                switch (fromState.getValue(BLOCK_TYPE)) {
-                    case TOP: return fromPos.below(2);
-                    case LEFT_TOP: return fromPos.below(2).east();
-                    case RIGHT_TOP: return fromPos.below(2).west();
-                    case MIDDLE: return fromPos.below();
-                    case LEFT: return fromPos.below().east();
-                    case RIGHT: return fromPos.below().west();
-                    case LOWER_LEFT: return fromPos.east();
-                    case LOWER_RIGHT: return fromPos.west();
-                    case MASTER: return fromPos;
-                }
+            case NORTH, SOUTH -> {
+                return switch (fromState.getValue(BLOCK_TYPE)) {
+                    case TOP -> fromPos.below(2);
+                    case LEFT_TOP -> fromPos.below(2).east();
+                    case RIGHT_TOP -> fromPos.below(2).west();
+                    case MIDDLE -> fromPos.below();
+                    case LEFT -> fromPos.below().east();
+                    case RIGHT -> fromPos.below().west();
+                    case LOWER_LEFT -> fromPos.east();
+                    case LOWER_RIGHT -> fromPos.west();
+                    case MASTER -> fromPos;
+                };
             }
-                break;
-            case EAST:
-            case WEST:
-            {
-                switch (fromState.getValue(BLOCK_TYPE)) {
-                    case TOP: return fromPos.below(2);
-                    case LEFT_TOP: return fromPos.below(2).north();
-                    case RIGHT_TOP: return fromPos.below(2).south();
-                    case MIDDLE: return fromPos.below();
-                    case LEFT: return fromPos.below().north();
-                    case RIGHT: return fromPos.below().south();
-                    case LOWER_LEFT: return fromPos.north();
-                    case LOWER_RIGHT: return fromPos.south();
-                    case MASTER: return fromPos;
-                }
+            case EAST, WEST -> {
+                return switch (fromState.getValue(BLOCK_TYPE)) {
+                    case TOP -> fromPos.below(2);
+                    case LEFT_TOP -> fromPos.below(2).north();
+                    case RIGHT_TOP -> fromPos.below(2).south();
+                    case MIDDLE -> fromPos.below();
+                    case LEFT -> fromPos.below().north();
+                    case RIGHT -> fromPos.below().south();
+                    case LOWER_LEFT -> fromPos.north();
+                    case LOWER_RIGHT -> fromPos.south();
+                    case MASTER -> fromPos;
+                };
             }
-                break;
         }
         return null;
     }
@@ -345,24 +326,22 @@ public class AztecDungeonDoorBlock extends Block {
     }
 
     @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new AztecDungeonDoorTileEntity();
-    }
-
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return state.is(this) && isMaster(state);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return state.is(this) && isMaster(state)
+                ? new AztecDungeonDoorBlockEntity(pos, state)
+                : null;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        World world = context.getLevel();
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction direction = context.getHorizontalDirection().getOpposite();
 
@@ -370,7 +349,7 @@ public class AztecDungeonDoorBlock extends Block {
 
         if (direction == Direction.NORTH || direction == Direction.SOUTH) {
             for (BlockPos blockPos : BlockPos.betweenClosed(pos.east(), pos.west().above(2))) {
-                if (!world.getBlockState(blockPos).canBeReplaced(context)) {
+                if (!level.getBlockState(blockPos).canBeReplaced(context)) {
                     foundSpace = false;
                     break;
                 }
@@ -378,7 +357,7 @@ public class AztecDungeonDoorBlock extends Block {
         }
         else if (direction == Direction.WEST || direction == Direction.EAST) {
             for (BlockPos blockPos : BlockPos.betweenClosed(pos.south(), pos.north().above(2))) {
-                if (!world.getBlockState(blockPos).canBeReplaced(context)) {
+                if (!level.getBlockState(blockPos).canBeReplaced(context)) {
                     foundSpace = false;
                     break;
                 }
@@ -404,11 +383,18 @@ public class AztecDungeonDoorBlock extends Block {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(FACING, BLOCK_TYPE, IS_OPEN);
     }
 
-    public enum BlockType implements IStringSerializable {
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return (lvl, pos, state, blockEntity) -> AztecDungeonDoorBlockEntity.tick(lvl, pos, state, (AztecDungeonDoorBlockEntity) blockEntity);
+    }
+
+
+    public enum BlockType implements StringRepresentable {
         MASTER("master"),
         MIDDLE("middle"),
         TOP("top"),

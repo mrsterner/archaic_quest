@@ -1,43 +1,44 @@
 package com.obsidian_core.archaic_quest.common.item;
 
 import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
 
 public class MacheteItem extends AQSimpleWeaponItem {
 
-    public MacheteItem(IItemTier itemTier, int durability, int damage, float attackSpeed) {
+    public MacheteItem(Tier itemTier, int durability, int damage, float attackSpeed) {
         super(itemTier, durability, damage, attackSpeed);
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
 
         if (player == null)
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
 
-        World world = context.getLevel();
+        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        BlockState state = world.getBlockState(pos);
+        BlockState state = level.getBlockState(pos);
         ItemStack stack = context.getItemInHand();
 
         if (state.getBlock() instanceof CoolVinesBlock && !state.getValue(CoolVinesBlock.CUT)) {
             if (player.isShiftKeyDown()) {
-                world.setBlock(pos, state.setValue(CoolVinesBlock.CAN_GROW, false), 2);
+                level.setBlock(pos, state.setValue(CoolVinesBlock.CAN_GROW, false), 2);
             }
             else {
-                world.setBlock(pos, state.setValue(CoolVinesBlock.CUT, true).setValue(CoolVinesBlock.CAN_GROW, false), 2);
+                level.setBlock(pos, state.setValue(CoolVinesBlock.CUT, true).setValue(CoolVinesBlock.CAN_GROW, false), 2);
             }
             stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
-            return ActionResultType.sidedSuccess(world.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 }

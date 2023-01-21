@@ -1,14 +1,12 @@
 package com.obsidian_core.archaic_quest.common.core;
 
 import com.obsidian_core.archaic_quest.common.event.BiomeEvents;
-import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
+import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import com.obsidian_core.archaic_quest.common.network.PacketHandler;
 import com.obsidian_core.archaic_quest.common.register.*;
+import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
-import net.minecraft.client.gui.screen.inventory.CraftingScreen;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.loot.conditions.LootConditionManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -23,10 +21,13 @@ public class ArchaicQuest {
     public static final String MODID = "archaic_quest";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final PacketHandler packetHandler = new PacketHandler();
 
     public ArchaicQuest() {
         packetHandler.registerMessages();
+
+        AQDamageSources.init();
 
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -37,10 +38,12 @@ public class ArchaicQuest {
         AQBlocks.REGISTRY.register(eventBus);
         AQItems.REGISTRY.register(eventBus);
         AQEntities.REGISTRY.register(eventBus);
+        AQBiomes.REGISTRY.register(eventBus);
+        AQBiomeModifiers.REGISTRY.register(eventBus);
         AQGlobalLootModifiers.REGISTRY.register(eventBus);
         AQSoundEvents.REGISTRY.register(eventBus);
         AQContainers.REGISTRY.register(eventBus);
-        AQTileEntities.REGISTRY.register(eventBus);
+        AQBlockEntities.REGISTRY.register(eventBus);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

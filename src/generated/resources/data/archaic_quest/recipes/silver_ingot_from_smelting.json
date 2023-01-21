@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.7,
   "ingredient": {
     "item": "archaic_quest:silver_ore"
   },
-  "result": "archaic_quest:silver_ingot",
-  "experience": 0.7,
-  "cookingtime": 200
+  "result": "archaic_quest:silver_ingot"
 }

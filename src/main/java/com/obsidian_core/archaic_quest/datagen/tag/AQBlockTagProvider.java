@@ -4,13 +4,14 @@ import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
-import net.minecraft.block.Block;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.TagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +27,7 @@ public class AQBlockTagProvider extends BlockTagsProvider {
         tag(AQBlockTags.ORE_SILVER).add(AQBlocks.SILVER_ORE.get());
         tag(AQBlockTags.ORE_QUARTZ).add(AQBlocks.GRANITE_QUARTZ_ORE.get());
 
-        TagsProvider.Builder<Block> CLIMBABLE = tag(BlockTags.CLIMBABLE);
+        TagsProvider.TagAppender<Block> CLIMBABLE = tag(BlockTags.CLIMBABLE);
 
         for (RegistryObject<Block> regObject : AQBlocks.REGISTRY.getEntries()) {
             Block block = regObject.get();
@@ -35,5 +36,11 @@ public class AQBlockTagProvider extends BlockTagsProvider {
                 CLIMBABLE.add(block);
             }
         }
+
+        AQBlocks.BLOCK_TAGS.forEach((registryObject, tagKeys) -> {
+            for (TagKey<Block> tagKey : tagKeys) {
+                tag(tagKey).add(registryObject.get());
+            }
+        });
     }
 }

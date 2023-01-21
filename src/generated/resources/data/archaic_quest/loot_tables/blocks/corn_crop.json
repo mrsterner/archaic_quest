@@ -1,15 +1,20 @@
 {
   "type": "minecraft:block",
+  "functions": [
+    {
+      "function": "minecraft:explosion_decay"
+    }
+  ],
   "pools": [
     {
-      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "conditions": [
             {
-              "condition": "minecraft:block_state_property",
               "block": "archaic_quest:corn_crop",
+              "condition": "minecraft:block_state_property",
               "properties": {
                 "top": "false"
               }
@@ -17,18 +22,29 @@
           ],
           "name": "archaic_quest:corn_cob"
         }
-      ]
+      ],
+      "rolls": 1.0
     },
     {
-      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "block": "archaic_quest:corn_crop",
+          "condition": "minecraft:block_state_property",
+          "properties": {
+            "age": "4",
+            "top": "false"
+          }
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:apply_bonus",
               "enchantment": "minecraft:fortune",
               "formula": "minecraft:binomial_with_bonus_count",
+              "function": "minecraft:apply_bonus",
               "parameters": {
                 "extra": 3,
                 "probability": 0.5714286
@@ -38,21 +54,7 @@
           "name": "archaic_quest:corn_cob"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:block_state_property",
-          "block": "archaic_quest:corn_crop",
-          "properties": {
-            "age": "4",
-            "top": "false"
-          }
-        }
-      ]
-    }
-  ],
-  "functions": [
-    {
-      "function": "minecraft:explosion_decay"
+      "rolls": 1.0
     }
   ]
 }

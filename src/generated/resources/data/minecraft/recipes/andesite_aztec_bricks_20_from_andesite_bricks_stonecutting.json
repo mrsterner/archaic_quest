@@ -1,8 +1,8 @@
 {
   "type": "minecraft:stonecutting",
+  "count": 1,
   "ingredient": {
     "item": "archaic_quest:andesite_bricks"
   },
-  "result": "archaic_quest:andesite_aztec_bricks_20",
-  "count": 1
+  "result": "archaic_quest:andesite_aztec_bricks_20"
 }

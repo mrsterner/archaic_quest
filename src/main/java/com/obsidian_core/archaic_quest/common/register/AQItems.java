@@ -3,10 +3,12 @@ package com.obsidian_core.archaic_quest.common.register;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.*;
 import com.obsidian_core.archaic_quest.common.item.data.AQItemTier;
-import net.minecraft.item.*;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +23,9 @@ public class AQItems {
 
 
     // FOOD
-    public static final RegistryObject<Item> CORN = registerSimpleItem("corn_cob", () -> new BlockNamedItem(AQBlocks.CORN_CROP.get(), new Item.Properties()
+    public static final RegistryObject<Item> CORN = registerSimpleItem("corn_cob", () -> new ItemNameBlockItem(AQBlocks.CORN_CROP.get(), new Item.Properties()
             .tab(AQCreativeTabs.FOOD)
-            .food(new Food.Builder()
+            .food(new FoodProperties.Builder()
                     .nutrition(2)
                     .saturationMod(1.0F)
                     .build())));
@@ -65,14 +67,14 @@ public class AQItems {
 
 
     // TOOLS & WEAPONS
-    public static final RegistryObject<Item> MACHETE = registerSimpleItem("machete", () -> new MacheteItem(ItemTier.IRON, 200, 2, -1.0F));
+    public static final RegistryObject<Item> MACHETE = registerSimpleItem("machete", () -> new MacheteItem(Tiers.IRON, 200, 2, -1.0F));
     public static final RegistryObject<Item> HAMMER_AND_CHISEL = registerSimpleItem("hammer_and_chisel", HammerAndChiselItem::new);
     public static final RegistryObject<Item> WHIP = registerSimpleItem("whip", AQCreativeTabs.ITEMS);
 
-    public static final RegistryObject<Item> WOOD_BONE_DAGGER = registerSimpleItem("wood_bone_dagger", () -> new AQSimpleWeaponItem(ItemTier.WOOD, 60, 3, 0.0F));
+    public static final RegistryObject<Item> WOOD_BONE_DAGGER = registerSimpleItem("wood_bone_dagger", () -> new AQSimpleWeaponItem(Tiers.WOOD, 60, 3, 0.0F));
     public static final RegistryObject<Item> WOOD_JADE_DAGGER = registerSimpleItem("wood_jade_dagger", () -> new AQSimpleWeaponItem(AQItemTier.JADE, 60, 3, 0.0F));
     public static final RegistryObject<Item> WOOD_OBSIDIAN_DAGGER = registerSimpleItem("wood_obsidian_dagger", () -> new AQSimpleWeaponItem(AQItemTier.OBSIDIAN, 60, 3, 0.0F));
-    public static final RegistryObject<Item> BONE_CLUB = registerSimpleItem("bone_club", () -> new AQSimpleWeaponItem(ItemTier.WOOD, 60, 5, -3.0F));
+    public static final RegistryObject<Item> BONE_CLUB = registerSimpleItem("bone_club", () -> new AQSimpleWeaponItem(Tiers.WOOD, 60, 5, -3.0F));
 
     public static final RegistryObject<Item> BONE_BLOWPIPE = registerSimpleItem("bone_blowpipe", AQCreativeTabs.WEAPONS);
     public static final RegistryObject<Item> WOODEN_BLOWPIPE = registerSimpleItem("wooden_blowpipe", AQCreativeTabs.WEAPONS);
@@ -91,13 +93,13 @@ public class AQItems {
     }
 
 
-    private static RegistryObject<Item> registerSimpleItem(String name, ItemGroup itemGroup, Food food) {
+    private static RegistryObject<Item> registerSimpleItem(String name, CreativeModeTab itemGroup, FoodProperties food) {
         RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Properties().tab(itemGroup).food(food)));
         SIMPLE_ITEMS.add(regObject);
         return regObject;
     }
 
-    private static RegistryObject<Item> registerSimpleItem(String name, ItemGroup itemGroup) {
+    private static RegistryObject<Item> registerSimpleItem(String name, CreativeModeTab itemGroup) {
         RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Properties().tab(itemGroup)));
         SIMPLE_ITEMS.add(regObject);
         return regObject;

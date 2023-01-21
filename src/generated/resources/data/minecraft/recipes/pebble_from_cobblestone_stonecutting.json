@@ -1,8 +1,8 @@
 {
   "type": "minecraft:stonecutting",
+  "count": 9,
   "ingredient": {
     "item": "minecraft:cobblestone"
   },
-  "result": "archaic_quest:pebble",
-  "count": 9
+  "result": "archaic_quest:pebble"
 }

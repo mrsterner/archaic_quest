@@ -1,13 +1,15 @@
 package com.obsidian_core.archaic_quest.common.item.data;
 
 import com.obsidian_core.archaic_quest.common.register.AQItems;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
 
+import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public class AQItemTier implements IItemTier {
+public record AQItemTier(int durability, float speed, float damage, int level, int enchantmentValue,
+                         Supplier<Ingredient> repairMaterial) implements Tier {
 
 
     public static final AQItemTier JADE = new AQItemTier(
@@ -27,24 +29,6 @@ public class AQItemTier implements IItemTier {
             () -> Ingredient.of(Items.OBSIDIAN)
     );
 
-
-
-
-    private AQItemTier(int durability, float speed, float damage, int level, int enchantmentValue, Supplier<Ingredient> repairMaterial) {
-        this.durability = durability;
-        this.speed = speed;
-        this.damage = damage;
-        this.level = level;
-        this.enchantmentValue = enchantmentValue;
-        this.repairMaterial = repairMaterial;
-    }
-
-    private final int durability;
-    private final float speed;
-    private final float damage;
-    private final int level;
-    private final int enchantmentValue;
-    private final Supplier<Ingredient> repairMaterial;
 
     @Override
     public int getUses() {
@@ -71,6 +55,7 @@ public class AQItemTier implements IItemTier {
         return enchantmentValue;
     }
 
+    @Nonnull
     @Override
     public Ingredient getRepairIngredient() {
         return repairMaterial.get();

@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "archaic_quest:block/andesite_aztec_bricks_64_slab_top"
-    },
     "type=bottom": {
       "model": "archaic_quest:block/andesite_aztec_bricks_64_slab"
     },
     "type=double": {
       "model": "archaic_quest:block/andesite_aztec_bricks_64"
+    },
+    "type=top": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_64_slab_top"
     }
   }
 }

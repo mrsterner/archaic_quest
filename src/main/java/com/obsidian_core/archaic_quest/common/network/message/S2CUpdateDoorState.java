@@ -1,16 +1,16 @@
 package com.obsidian_core.archaic_quest.common.network.message;
 
 import com.obsidian_core.archaic_quest.common.network.work.ClientWork;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class S2CUpdateDoorState {
 
-    public final BlockPos doorPos;
-    public final int doorState;
+    public BlockPos doorPos;
+    public int doorState;
 
     public S2CUpdateDoorState(BlockPos doorPos, int doorState) {
         this.doorPos = doorPos;
@@ -26,12 +26,12 @@ public class S2CUpdateDoorState {
         context.setPacketHandled(true);
     }
 
-    public static void encode(S2CUpdateDoorState message, PacketBuffer packetBuffer) {
-        packetBuffer.writeBlockPos(message.doorPos);
-        packetBuffer.writeInt(message.doorState);
+    public static void encode(S2CUpdateDoorState message, FriendlyByteBuf byteBuf) {
+        byteBuf.writeBlockPos(message.doorPos);
+        byteBuf.writeInt(message.doorState);
     }
 
-    public static S2CUpdateDoorState decode(PacketBuffer packetBuffer) {
-        return new S2CUpdateDoorState(packetBuffer.readBlockPos(), packetBuffer.readInt());
+    public static S2CUpdateDoorState decode(FriendlyByteBuf byteBuf) {
+        return new S2CUpdateDoorState(byteBuf.readBlockPos(), byteBuf.readInt());
     }
 }

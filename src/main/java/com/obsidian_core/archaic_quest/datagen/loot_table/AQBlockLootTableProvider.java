@@ -1,26 +1,29 @@
 package com.obsidian_core.archaic_quest.datagen.loot_table;
 
+import com.mojang.math.MethodsReturnNonnullByDefault;
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.register.AQItems;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.advancements.criterion.StatePropertiesPredicate;
-import net.minecraft.block.*;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.loot.conditions.BlockStateProperty;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.ApplyBonus;
-import net.minecraft.loot.functions.SetCount;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
@@ -28,7 +31,7 @@ import java.util.Set;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class AQBlockLootTableProvider extends BlockLootTables {
+public class AQBlockLootTableProvider extends BlockLoot {
 
     private final Set<Block> knownBlocks = new HashSet<>();
 
@@ -161,6 +164,8 @@ public class AQBlockLootTableProvider extends BlockLootTables {
         dungeonDoor(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_0.get());
         dungeonDoor(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_1.get());
 
+        dropSelf(AQBlocks.BRONZE_SPEAR_TRAP.get());
+        dropSelf(AQBlocks.GOLD_SPEAR_TRAP.get());
 
         dropSelf(AQBlocks.STONE_AZTEC_BRICKS_0.get());
 
@@ -206,52 +211,51 @@ public class AQBlockLootTableProvider extends BlockLootTables {
         for (RegistryObject<Block> regObj : AQBlocks.REGISTRY.getEntries()) {
             Block block = regObj.get();
 
-            if (block instanceof SlabBlock || block instanceof StairsBlock || block instanceof VerticalSlabBlock) {
+            if (block instanceof SlabBlock || block instanceof StairBlock || block instanceof VerticalSlabBlock) {
                 dropSelf(block);
             }
-            else if (block instanceof DoubleCropBlock) {
-                DoubleCropBlock crop = (DoubleCropBlock) block;
+            else if (block instanceof DoubleCropBlock crop) {
                 doubleCrop(crop);
             }
         }
     }
 
     private void doubleCrop(DoubleCropBlock crop) {
-        ILootCondition.IBuilder harvestCondition = BlockStateProperty.hasBlockStateProperties(crop)
+        LootItemCondition.Builder harvestCondition = LootItemBlockStatePropertyCondition.hasBlockStateProperties(crop)
                 .setProperties(StatePropertiesPredicate.Builder.properties()
                         .hasProperty(crop.getAgeProperty(), crop.getMaxAge())
                         .hasProperty(DoubleCropBlock.IS_TOP, false));
 
-        ILootCondition.IBuilder retrieveSeedCondition = BlockStateProperty.hasBlockStateProperties(crop)
+        LootItemCondition.Builder retrieveSeedCondition = LootItemBlockStatePropertyCondition.hasBlockStateProperties(crop)
                 .setProperties(StatePropertiesPredicate.Builder.properties()
                         .hasProperty(DoubleCropBlock.IS_TOP, false));
 
         LootTable.Builder builder = applyExplosionDecay(crop, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
-                        .add(ItemLootEntry.lootTableItem(crop.getBaseSeedId())
+                        .add(LootItem.lootTableItem(crop.getBaseSeedId())
                                 .when(retrieveSeedCondition)))
                 .withPool(LootPool.lootPool()
                         .when(harvestCondition)
-                        .add(ItemLootEntry.lootTableItem(crop.getBaseSeedId())
-                                .apply(ApplyBonus.addBonusBinomialDistributionCount(Enchantments.BLOCK_FORTUNE, 0.5714286F, 3)))));
+                        .add(LootItem.lootTableItem(crop.getBaseSeedId())
+                                .apply(ApplyBonusCount.addBonusBinomialDistributionCount(Enchantments.BLOCK_FORTUNE, 0.5714286F, 3)))));
 
         add(crop, builder);
     }
 
     private void rangedOreDrop(Block block, Item item, float min, float max) {
-        this.add(block, (b) -> createSilkTouchDispatchTable(b, applyExplosionDecay(b, ItemLootEntry.lootTableItem(item)
-                .apply(SetCount.setCount(RandomValueRange.between(min, max)))
-                .apply(ApplyBonus.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))));
+        this.add(block, (b) -> createSilkTouchDispatchTable(b, applyExplosionDecay(b, LootItem.lootTableItem(item)
+                .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
+                .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))));
     }
 
     private void dungeonDoor(AztecDungeonDoorBlock block) {
-        ILootCondition.IBuilder condition = BlockStateProperty.hasBlockStateProperties(block)
+        LootItemCondition.Builder condition = LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                 .setProperties(StatePropertiesPredicate.Builder.properties()
                         .hasProperty(AztecDungeonDoorBlock.BLOCK_TYPE, AztecDungeonDoorBlock.BlockType.MASTER));
 
         LootTable.Builder builder = applyExplosionDecay(block, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
-                        .add(ItemLootEntry.lootTableItem(block.asItem())
+                        .add(LootItem.lootTableItem(block.asItem())
                                 .when(condition))));
 
         add(block, builder);

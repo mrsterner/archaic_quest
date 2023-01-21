@@ -1,350 +1,413 @@
 package com.obsidian_core.archaic_quest.common.entity;
 
+import com.google.common.collect.Lists;
+import com.mojang.math.Vector3d;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import com.obsidian_core.archaic_quest.common.misc.AQNBTUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SChangeGameStatePacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
-public class DartEntity extends ProjectileEntity {
+public class DartEntity extends Projectile {
 
-    private static final DataParameter<Byte> ID_FLAGS = EntityDataManager.defineId(DartEntity.class, DataSerializers.BYTE);
+    private static final double ARROW_BASE_DAMAGE = 2.0D;
+    private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(DartEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(DartEntity.class, EntityDataSerializers.BYTE);
+    private static final int FLAG_CRIT = 1;
+    private static final int FLAG_NOPHYSICS = 2;
+    private static final int FLAG_CROSSBOW = 4;
     @Nullable
     private BlockState lastState;
     protected boolean inGround;
     protected int inGroundTime;
-    public PickupStatus pickup = PickupStatus.DISALLOWED;
+    public AbstractArrow.Pickup pickup = AbstractArrow.Pickup.DISALLOWED;
     public int shakeTime;
     private int life;
     private double baseDamage = 2.0D;
     private int knockback;
     private SoundEvent soundEvent = this.getDefaultHitGroundSoundEvent();
+    @Nullable
+    private IntOpenHashSet piercingIgnoreEntityIds;
+    @Nullable
+    private List<Entity> piercedAndKilledEntities;
 
 
-    public DartEntity(EntityType<? extends ProjectileEntity> entityType, World world) {
-        super(entityType, world);
+    public DartEntity(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
     }
 
-    protected DartEntity(EntityType<? extends ProjectileEntity> entityType, double x, double y, double z, World world) {
-        this(entityType, world);
+    public DartEntity(EntityType<? extends Projectile> entityType, double x, double y, double z, Level level) {
+        this(entityType, level);
         setPos(x, y, z);
     }
 
-    protected DartEntity(EntityType<? extends ProjectileEntity> entityType, LivingEntity livingEntity, World world) {
-        this(entityType, livingEntity.getX(), livingEntity.getEyeY() - (double)0.1F, livingEntity.getZ(), world);
-        setOwner(livingEntity);
-
-        if (livingEntity instanceof PlayerEntity) {
-            pickup = PickupStatus.ALLOWED;
-        }
-    }
-
-    public void setSoundEvent(SoundEvent soundEvent) {
-        this.soundEvent = soundEvent;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public boolean shouldRenderAtSqrDistance(double dist) {
-        double size = getBoundingBox().getSize() * 10.0D;
-
-        if (Double.isNaN(size)) {
-            size = 1.0D;
+    protected DartEntity(EntityType<? extends AbstractArrow> p_36717_, LivingEntity p_36718_, Level p_36719_) {
+        this(p_36717_, p_36718_.getX(), p_36718_.getEyeY() - (double)0.1F, p_36718_.getZ(), p_36719_);
+        this.setOwner(p_36718_);
+        if (p_36718_ instanceof Player) {
+            this.pickup = AbstractArrow.Pickup.ALLOWED;
         }
 
-        size = size * 64.0D * getViewScale();
-        return dist < size * size;
+    }
+
+    public void setSoundEvent(SoundEvent p_36741_) {
+        this.soundEvent = p_36741_;
+    }
+
+    public boolean shouldRenderAtSqrDistance(double p_36726_) {
+        double d0 = this.getBoundingBox().getSize() * 10.0D;
+        if (Double.isNaN(d0)) {
+            d0 = 1.0D;
+        }
+
+        d0 *= 64.0D * getViewScale();
+        return p_36726_ < d0 * d0;
     }
 
     protected void defineSynchedData() {
-        entityData.define(ID_FLAGS, (byte)0);
+        this.entityData.define(ID_FLAGS, (byte)0);
+        this.entityData.define(PIERCE_LEVEL, (byte)0);
     }
 
-    @Override
-    public void shoot(double x, double y, double z, float pitch, float yaw) {
-        super.shoot(x, y, z, pitch, yaw);
-        life = 0;
+    public void shoot(double p_36775_, double p_36776_, double p_36777_, float p_36778_, float p_36779_) {
+        super.shoot(p_36775_, p_36776_, p_36777_, p_36778_, p_36779_);
+        this.life = 0;
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void lerpTo(double x, double y, double z, float yRot, float xRot, int p_180426_9_, boolean p_180426_10_) {
-        setPos(x, y, z);
-        setRot(yRot, xRot);
+    public void lerpTo(double p_36728_, double p_36729_, double p_36730_, float p_36731_, float p_36732_, int p_36733_, boolean p_36734_) {
+        this.setPos(p_36728_, p_36729_, p_36730_);
+        this.setRot(p_36731_, p_36732_);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void lerpMotion(double x, double y, double z) {
-        super.lerpMotion(x, y, z);
-        life = 0;
+    public void lerpMotion(double p_36786_, double p_36787_, double p_36788_) {
+        super.lerpMotion(p_36786_, p_36787_, p_36788_);
+        this.life = 0;
     }
 
     public void tick() {
         super.tick();
-        boolean flag = isNoPhysics();
-        Vector3d deltaMovement = getDeltaMovement();
-
-        if (xRotO == 0.0F && yRotO == 0.0F) {
-            float f = MathHelper.sqrt(getHorizontalDistanceSqr(deltaMovement));
-            this.yRot = (float)(MathHelper.atan2(deltaMovement.x, deltaMovement.z) * (double)(180F / (float)Math.PI));
-            this.xRot = (float)(MathHelper.atan2(deltaMovement.y, f) * (double)(180F / (float)Math.PI));
-            this.yRotO = this.yRot;
-            this.xRotO = this.xRot;
+        boolean flag = this.isNoPhysics();
+        Vec3 vec3 = this.getDeltaMovement();
+        if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
+            double d0 = vec3.horizontalDistance();
+            this.setYRot((float)(Mth.atan2(vec3.x, vec3.z) * (double)(180F / (float)Math.PI)));
+            this.setXRot((float)(Mth.atan2(vec3.y, d0) * (double)(180F / (float)Math.PI)));
+            this.yRotO = this.getYRot();
+            this.xRotO = this.getXRot();
         }
 
-        BlockPos blockpos = blockPosition();
-        BlockState blockstate = level.getBlockState(blockpos);
-
-        if (!blockstate.isAir(level, blockpos) && !flag) {
-            VoxelShape voxelshape = blockstate.getCollisionShape(level, blockpos);
+        BlockPos blockpos = this.blockPosition();
+        BlockState blockstate = this.level.getBlockState(blockpos);
+        if (!blockstate.isAir() && !flag) {
+            VoxelShape voxelshape = blockstate.getCollisionShape(this.level, blockpos);
             if (!voxelshape.isEmpty()) {
-                Vector3d vector3d1 = this.position();
+                Vec3 vec31 = this.position();
 
-                for(AxisAlignedBB axisalignedbb : voxelshape.toAabbs()) {
-                    if (axisalignedbb.move(blockpos).contains(vector3d1)) {
-                        inGround = true;
+                for(AABB aabb : voxelshape.toAabbs()) {
+                    if (aabb.move(blockpos).contains(vec31)) {
+                        this.inGround = true;
                         break;
                     }
                 }
             }
         }
 
-        if (shakeTime > 0) {
-            --shakeTime;
+        if (this.shakeTime > 0) {
+            --this.shakeTime;
         }
 
-        if (isInWaterOrRain()) {
-            clearFire();
+        if (this.isInWaterOrRain() || blockstate.is(Blocks.POWDER_SNOW) || this.isInFluidType((fluidType, height) -> this.canFluidExtinguish(fluidType))) {
+            this.clearFire();
         }
 
-        if (inGround && !flag) {
-            if (lastState != blockstate && shouldFall()) {
-                startFalling();
-            }
-            else if (!level.isClientSide) {
-                tickDespawn();
-            }
-
-            ++inGroundTime;
-        }
-        else {
-            inGroundTime = 0;
-            Vector3d vector3d2 = position();
-            Vector3d vector3d3 = vector3d2.add(deltaMovement);
-            RayTraceResult traceResult = level.clip(new RayTraceContext(vector3d2, vector3d3, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-
-            if (traceResult.getType() != RayTraceResult.Type.MISS) {
-                vector3d3 = traceResult.getLocation();
+        if (this.inGround && !flag) {
+            if (this.lastState != blockstate && this.shouldFall()) {
+                this.startFalling();
+            } else if (!this.level.isClientSide) {
+                this.tickDespawn();
             }
 
-            while(isAlive()) {
-                EntityRayTraceResult entityResult = findHitEntity(vector3d2, vector3d3);
-                if (entityResult != null) {
-                    traceResult = entityResult;
+            ++this.inGroundTime;
+        } else {
+            this.inGroundTime = 0;
+            Vec3 vec32 = this.position();
+            Vec3 vec33 = vec32.add(vec3);
+            HitResult hitresult = this.level.clip(new ClipContext(vec32, vec33, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            if (hitresult.getType() != HitResult.Type.MISS) {
+                vec33 = hitresult.getLocation();
+            }
+
+            while(!this.isRemoved()) {
+                EntityHitResult entityhitresult = this.findHitEntity(vec32, vec33);
+                if (entityhitresult != null) {
+                    hitresult = entityhitresult;
                 }
 
-                if (traceResult != null && traceResult.getType() == RayTraceResult.Type.ENTITY) {
-                    Entity entity = ((EntityRayTraceResult)traceResult).getEntity();
-                    Entity owner = getOwner();
-
-                    if (entity instanceof PlayerEntity && owner instanceof PlayerEntity && !((PlayerEntity) owner).canHarmPlayer((PlayerEntity) entity)) {
-                        traceResult = null;
-                        entityResult = null;
+                if (hitresult != null && hitresult.getType() == HitResult.Type.ENTITY) {
+                    Entity entity = ((EntityHitResult)hitresult).getEntity();
+                    Entity entity1 = this.getOwner();
+                    if (entity instanceof Player && entity1 instanceof Player && !((Player)entity1).canHarmPlayer((Player)entity)) {
+                        hitresult = null;
+                        entityhitresult = null;
                     }
                 }
 
-                if (traceResult != null && traceResult.getType() != RayTraceResult.Type.MISS && !flag && !ForgeEventFactory.onProjectileImpact(this, traceResult)) {
-                    onHit(traceResult);
-                    hasImpulse = true;
+                if (hitresult != null && hitresult.getType() != HitResult.Type.MISS && !flag && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
+                    this.onHit(hitresult);
+                    this.hasImpulse = true;
                 }
 
-                if (entityResult == null) {
+                if (entityhitresult == null || this.getPierceLevel() <= 0) {
                     break;
                 }
-                traceResult = null;
+
+                hitresult = null;
             }
 
-            deltaMovement = getDeltaMovement();
-            double xVel = deltaMovement.x;
-            double yVel = deltaMovement.y;
-            double zVel = deltaMovement.z;
-            double newX = getX() + xVel;
-            double newY = getY() + yVel;
-            double newZ = getZ() + zVel;
-            float f1 = MathHelper.sqrt(getHorizontalDistanceSqr(deltaMovement));
-
-            if (flag) {
-                yRot = (float)(MathHelper.atan2(-xVel, -zVel) * (double)(180F / (float)Math.PI));
-            }
-            else {
-                yRot = (float)(MathHelper.atan2(xVel, zVel) * (double)(180F / (float)Math.PI));
-            }
-
-            xRot = (float)(MathHelper.atan2(yVel, f1) * (double)(180F / (float)Math.PI));
-            xRot = lerpRotation(xRotO, xRot);
-            yRot = lerpRotation(yRotO, yRot);
-            float f2 = 0.99F;
-
-            if (isInWater()) {
-                for(int j = 0; j < 4; ++j) {
-                    level.addParticle(ParticleTypes.BUBBLE, newX - xVel * 0.25D, newY - yVel * 0.25D, newZ - zVel * 0.25D, xVel, yVel, zVel);
+            vec3 = this.getDeltaMovement();
+            double d5 = vec3.x;
+            double d6 = vec3.y;
+            double d1 = vec3.z;
+            if (this.isCritArrow()) {
+                for(int i = 0; i < 4; ++i) {
+                    this.level.addParticle(ParticleTypes.CRIT, this.getX() + d5 * (double)i / 4.0D, this.getY() + d6 * (double)i / 4.0D, this.getZ() + d1 * (double)i / 4.0D, -d5, -d6 + 0.2D, -d1);
                 }
-                f2 = getWaterInertia();
             }
-            setDeltaMovement(deltaMovement.scale(f2));
 
-            if (!isNoGravity() && !flag) {
-                Vector3d vector3d4 = getDeltaMovement();
-                setDeltaMovement(vector3d4.x, vector3d4.y - (double)0.05F, vector3d4.z);
+            double d7 = this.getX() + d5;
+            double d2 = this.getY() + d6;
+            double d3 = this.getZ() + d1;
+            double d4 = vec3.horizontalDistance();
+            if (flag) {
+                this.setYRot((float)(Mth.atan2(-d5, -d1) * (double)(180F / (float)Math.PI)));
+            } else {
+                this.setYRot((float)(Mth.atan2(d5, d1) * (double)(180F / (float)Math.PI)));
             }
-            setPos(newX, newY, newZ);
-            checkInsideBlocks();
+
+            this.setXRot((float)(Mth.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
+            this.setXRot(lerpRotation(this.xRotO, this.getXRot()));
+            this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
+            float f = 0.99F;
+            float f1 = 0.05F;
+            if (this.isInWater()) {
+                for(int j = 0; j < 4; ++j) {
+                    float f2 = 0.25F;
+                    this.level.addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
+                }
+
+                f = this.getWaterInertia();
+            }
+
+            this.setDeltaMovement(vec3.scale(f));
+            if (!this.isNoGravity() && !flag) {
+                Vec3 vec34 = this.getDeltaMovement();
+                this.setDeltaMovement(vec34.x, vec34.y - (double)0.05F, vec34.z);
+            }
+
+            this.setPos(d7, d2, d3);
+            this.checkInsideBlocks();
         }
     }
 
     private boolean shouldFall() {
-        return inGround && level.noCollision((new AxisAlignedBB(position(), position())).inflate(0.06D));
+        return this.inGround && this.level.noCollision((new AABB(this.position(), this.position())).inflate(0.06D));
     }
 
     private void startFalling() {
-        inGround = false;
-        Vector3d vector3d = getDeltaMovement();
-        setDeltaMovement(vector3d.multiply(random.nextFloat() * 0.2F, random.nextFloat() * 0.2F, random.nextFloat() * 0.2F));
-        life = 0;
+        this.inGround = false;
+        Vec3 vec3 = this.getDeltaMovement();
+        this.setDeltaMovement(vec3.multiply(this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F));
+        this.life = 0;
     }
 
-    @Override
-    public void move(MoverType moverType, Vector3d vec3d) {
-        super.move(moverType, vec3d);
-
-        if (moverType != MoverType.SELF && shouldFall()) {
-            startFalling();
+    public void move(MoverType p_36749_, Vec3 p_36750_) {
+        super.move(p_36749_, p_36750_);
+        if (p_36749_ != MoverType.SELF && this.shouldFall()) {
+            this.startFalling();
         }
+
     }
 
     protected void tickDespawn() {
-        ++life;
-
-        if (life >= 1200) {
-            remove();
+        ++this.life;
+        if (this.life >= 1200) {
+            this.discard();
         }
+
     }
 
-    @Override
-    protected void onHitEntity(EntityRayTraceResult traceResult) {
-        super.onHitEntity(traceResult);
-        Entity entity = traceResult.getEntity();
-        float f = (float)this.getDeltaMovement().length();
-        int i = MathHelper.ceil(MathHelper.clamp((double)f * baseDamage, 0.0D, 2.147483647E9D));
-        Entity owner = this.getOwner();
-        DamageSource damagesource;
+    private void resetPiercedEntities() {
+        if (this.piercedAndKilledEntities != null) {
+            this.piercedAndKilledEntities.clear();
+        }
 
-        if (owner == null) {
+        if (this.piercingIgnoreEntityIds != null) {
+            this.piercingIgnoreEntityIds.clear();
+        }
+
+    }
+
+    protected void onHitEntity(EntityHitResult p_36757_) {
+        super.onHitEntity(p_36757_);
+        Entity entity = p_36757_.getEntity();
+        float f = (float)this.getDeltaMovement().length();
+        int i = Mth.ceil(Mth.clamp((double)f * this.baseDamage, 0.0D, 2.147483647E9D));
+        if (this.getPierceLevel() > 0) {
+            if (this.piercingIgnoreEntityIds == null) {
+                this.piercingIgnoreEntityIds = new IntOpenHashSet(5);
+            }
+
+            if (this.piercedAndKilledEntities == null) {
+                this.piercedAndKilledEntities = Lists.newArrayListWithCapacity(5);
+            }
+
+            if (this.piercingIgnoreEntityIds.size() >= this.getPierceLevel() + 1) {
+                this.discard();
+                return;
+            }
+
+            this.piercingIgnoreEntityIds.add(entity.getId());
+        }
+
+        if (this.isCritArrow()) {
+            long j = (long)this.random.nextInt(i / 2 + 2);
+            i = (int)Math.min(j + (long)i, 2147483647L);
+        }
+
+        Entity entity1 = this.getOwner();
+        DamageSource damagesource;
+        if (entity1 == null) {
             damagesource = AQDamageSources.dart(this, this);
         }
         else {
-            damagesource = AQDamageSources.dart(this, owner);
-
-            if (owner instanceof LivingEntity) {
-                ((LivingEntity)owner).setLastHurtMob(entity);
+            damagesource = AQDamageSources.dart(this, entity1);
+            if (entity1 instanceof LivingEntity) {
+                ((LivingEntity)entity1).setLastHurtMob(entity);
             }
         }
-        boolean isEnderman = entity.getType() == EntityType.ENDERMAN;
-        int targetFireTicks = entity.getRemainingFireTicks();
 
-        if (isOnFire() && !isEnderman) {
+        boolean flag = entity.getType() == EntityType.ENDERMAN;
+        int k = entity.getRemainingFireTicks();
+        if (this.isOnFire() && !flag) {
             entity.setSecondsOnFire(5);
         }
 
         if (entity.hurt(damagesource, (float)i)) {
-            if (isEnderman) {
+            if (flag) {
                 return;
             }
 
             if (entity instanceof LivingEntity) {
                 LivingEntity livingentity = (LivingEntity)entity;
-
-                if (!level.isClientSide) {
+                if (!this.level.isClientSide && this.getPierceLevel() <= 0) {
                     livingentity.setArrowCount(livingentity.getArrowCount() + 1);
                 }
 
-                if (knockback > 0) {
-                    Vector3d vector3d = getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double)knockback * 0.6D);
-
-                    if (vector3d.lengthSqr() > 0.0D) {
-                        livingentity.push(vector3d.x, 0.1D, vector3d.z);
+                if (this.knockback > 0) {
+                    double d0 = Math.max(0.0D, 1.0D - livingentity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+                    Vec3 vec3 = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double)this.knockback * 0.6D * d0);
+                    if (vec3.lengthSqr() > 0.0D) {
+                        livingentity.push(vec3.x, 0.1D, vec3.z);
                     }
                 }
 
-                if (!level.isClientSide && owner instanceof LivingEntity) {
-                    EnchantmentHelper.doPostHurtEffects(livingentity, owner);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity)owner, livingentity);
+                if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
+                    EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
+                    EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity);
                 }
+
                 this.doPostHurtEffects(livingentity);
+                if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !this.isSilent()) {
+                    ((ServerPlayer)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+                }
 
-                if (owner != null && livingentity != owner && livingentity instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !isSilent()) {
-                    ((ServerPlayerEntity)owner).connection.send(new SChangeGameStatePacket(SChangeGameStatePacket.ARROW_HIT_PLAYER, 0.0F));
+                if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
+                    this.piercedAndKilledEntities.add(livingentity);
+                }
+
+                if (!this.level.isClientSide && entity1 instanceof ServerPlayer) {
+                    ServerPlayer serverplayer = (ServerPlayer)entity1;
+                    if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
+                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, this.piercedAndKilledEntities);
+                    } else if (!entity.isAlive() && this.shotFromCrossbow()) {
+                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, Arrays.asList(entity));
+                    }
                 }
             }
-            playSound(soundEvent, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
-            remove();
-        }
-        else {
-            entity.setRemainingFireTicks(targetFireTicks);
-            setDeltaMovement(getDeltaMovement().scale(-0.1D));
-            yRot += 180.0F;
-            yRotO += 180.0F;
 
-            if (!level.isClientSide && getDeltaMovement().lengthSqr() < 1.0E-7D) {
-                if (pickup == PickupStatus.ALLOWED) {
-                    spawnAtLocation(getPickupItem(), 0.1F);
+            this.playSound(this.soundEvent, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+            if (this.getPierceLevel() <= 0) {
+                this.discard();
+            }
+        } else {
+            entity.setRemainingFireTicks(k);
+            this.setDeltaMovement(this.getDeltaMovement().scale(-0.1D));
+            this.setYRot(this.getYRot() + 180.0F);
+            this.yRotO += 180.0F;
+            if (!this.level.isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
+                if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
+                    this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }
-                remove();
+
+                this.discard();
             }
         }
+
     }
 
-    @Override
-    protected void onHitBlock(BlockRayTraceResult traceResult) {
-        lastState = level.getBlockState(traceResult.getBlockPos());
-        super.onHitBlock(traceResult);
-        Vector3d vector3d = traceResult.getLocation().subtract(getX(), getY(), getZ());
-        setDeltaMovement(vector3d);
-        Vector3d vector3d1 = vector3d.normalize().scale(0.05F);
-        setPosRaw(getX() - vector3d1.x, getY() - vector3d1.y, getZ() - vector3d1.z);
-        playSound(getHitGroundSoundEvent(), 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
-        inGround = true;
-        shakeTime = 7;
-        setSoundEvent(SoundEvents.ARROW_HIT);
+    protected void onHitBlock(BlockHitResult p_36755_) {
+        this.lastState = this.level.getBlockState(p_36755_.getBlockPos());
+        super.onHitBlock(p_36755_);
+        Vec3 vec3 = p_36755_.getLocation().subtract(this.getX(), this.getY(), this.getZ());
+        this.setDeltaMovement(vec3);
+        Vec3 vec31 = vec3.normalize().scale((double)0.05F);
+        this.setPosRaw(this.getX() - vec31.x, this.getY() - vec31.y, this.getZ() - vec31.z);
+        this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+        this.inGround = true;
+        this.shakeTime = 7;
+        this.setCritArrow(false);
+        this.setPierceLevel((byte)0);
+        this.setSoundEvent(SoundEvents.ARROW_HIT);
+        this.setShotFromCrossbow(false);
+        this.resetPiercedEntities();
     }
 
     protected SoundEvent getDefaultHitGroundSoundEvent() {
@@ -355,170 +418,200 @@ public class DartEntity extends ProjectileEntity {
         return this.soundEvent;
     }
 
-    protected void doPostHurtEffects(LivingEntity livingEntity) {
+    protected void doPostHurtEffects(LivingEntity p_36744_) {
     }
 
     @Nullable
-    protected EntityRayTraceResult findHitEntity(Vector3d pos, Vector3d nextPos) {
-        return ProjectileHelper.getEntityHitResult(this.level, this, pos, nextPos, getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D), this::canHitEntity);
+    protected EntityHitResult findHitEntity(Vec3 p_36758_, Vec3 p_36759_) {
+        return ProjectileUtil.getEntityHitResult(this.level, this, p_36758_, p_36759_, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), this::canHitEntity);
     }
 
-    @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
-        super.addAdditionalSaveData(compoundNBT);
-        compoundNBT.putShort("life", (short) life);
-
-        if (lastState != null) {
-            compoundNBT.put("inBlockState", AQNBTUtil.writeBlockState(lastState));
-        }
-
-        compoundNBT.putByte("shake", (byte)shakeTime);
-        compoundNBT.putBoolean("inGround", inGround);
-        compoundNBT.putByte("pickup", (byte)pickup.ordinal());
-        compoundNBT.putDouble("damage", baseDamage);
-        compoundNBT.putString("SoundEvent", ForgeRegistries.SOUND_EVENTS.getKey(soundEvent).toString());
+    protected boolean canHitEntity(Entity p_36743_) {
+        return super.canHitEntity(p_36743_) && (this.piercingIgnoreEntityIds == null || !this.piercingIgnoreEntityIds.contains(p_36743_.getId()));
     }
 
-    @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
-        super.readAdditionalSaveData(compoundNBT);
-        life = compoundNBT.getShort("life");
-
-        if (compoundNBT.contains("inBlockState", Constants.NBT.TAG_COMPOUND)) {
-            lastState = NBTUtil.readBlockState(compoundNBT.getCompound("inBlockState"));
+    public void addAdditionalSaveData(CompoundTag p_36772_) {
+        super.addAdditionalSaveData(p_36772_);
+        p_36772_.putShort("life", (short)this.life);
+        if (this.lastState != null) {
+            p_36772_.put("inBlockState", NbtUtils.writeBlockState(this.lastState));
         }
 
-        shakeTime = compoundNBT.getByte("shake") & 255;
-        inGround = compoundNBT.getBoolean("inGround");
-
-        if (compoundNBT.contains("damage", Constants.NBT.TAG_ANY_NUMERIC)) {
-            baseDamage = compoundNBT.getDouble("damage");
-        }
-
-        if (compoundNBT.contains("pickup", Constants.NBT.TAG_ANY_NUMERIC)) {
-            pickup = PickupStatus.byOrdinal(compoundNBT.getByte("pickup"));
-        }
-        else if (compoundNBT.contains("player", Constants.NBT.TAG_ANY_NUMERIC)) {
-            pickup = compoundNBT.getBoolean("player")
-                    ? PickupStatus.ALLOWED
-                    : PickupStatus.DISALLOWED;
-        }
-
-        if (compoundNBT.contains("SoundEvent", Constants.NBT.TAG_STRING)) {
-            ResourceLocation soundLocation = new ResourceLocation(compoundNBT.getString("SoundEvent"));
-
-            if (ForgeRegistries.SOUND_EVENTS.containsKey(soundLocation)) {
-                soundEvent = ForgeRegistries.SOUND_EVENTS.getValue(soundLocation);
-            }
-            else {
-                soundEvent = getDefaultHitGroundSoundEvent();
-            }
-        }
+        p_36772_.putByte("shake", (byte)this.shakeTime);
+        p_36772_.putBoolean("inGround", this.inGround);
+        p_36772_.putByte("pickup", (byte)this.pickup.ordinal());
+        p_36772_.putDouble("damage", this.baseDamage);
+        p_36772_.putBoolean("crit", this.isCritArrow());
+        p_36772_.putByte("PierceLevel", this.getPierceLevel());
+        p_36772_.putString("SoundEvent", Registry.SOUND_EVENT.getKey(this.soundEvent).toString());
+        p_36772_.putBoolean("ShotFromCrossbow", this.shotFromCrossbow());
     }
 
-    @Override
-    public void setOwner(@Nullable Entity entity) {
-        super.setOwner(entity);
-
-        if (entity instanceof PlayerEntity) {
-            pickup = ((PlayerEntity)entity).abilities.instabuild
-                    ? PickupStatus.CREATIVE_ONLY
-                    : PickupStatus.ALLOWED;
+    public void readAdditionalSaveData(CompoundTag p_36761_) {
+        super.readAdditionalSaveData(p_36761_);
+        this.life = p_36761_.getShort("life");
+        if (p_36761_.contains("inBlockState", 10)) {
+            this.lastState = NbtUtils.readBlockState(p_36761_.getCompound("inBlockState"));
         }
+
+        this.shakeTime = p_36761_.getByte("shake") & 255;
+        this.inGround = p_36761_.getBoolean("inGround");
+        if (p_36761_.contains("damage", 99)) {
+            this.baseDamage = p_36761_.getDouble("damage");
+        }
+
+        this.pickup = AbstractArrow.Pickup.byOrdinal(p_36761_.getByte("pickup"));
+        this.setCritArrow(p_36761_.getBoolean("crit"));
+        this.setPierceLevel(p_36761_.getByte("PierceLevel"));
+        if (p_36761_.contains("SoundEvent", 8)) {
+            this.soundEvent = Registry.SOUND_EVENT.getOptional(new ResourceLocation(p_36761_.getString("SoundEvent"))).orElse(this.getDefaultHitGroundSoundEvent());
+        }
+
+        this.setShotFromCrossbow(p_36761_.getBoolean("ShotFromCrossbow"));
     }
 
-    @Override
-    public void playerTouch(PlayerEntity player) {
-        if (!level.isClientSide && (inGround || isNoPhysics()) && shakeTime <= 0) {
-            boolean flag = pickup == PickupStatus.ALLOWED || pickup == PickupStatus.CREATIVE_ONLY && player.abilities.instabuild || isNoPhysics() && getOwner().getUUID() == player.getUUID();
+    public void setOwner(@Nullable Entity p_36770_) {
+        super.setOwner(p_36770_);
+        if (p_36770_ instanceof Player) {
+            this.pickup = ((Player)p_36770_).getAbilities().instabuild ? AbstractArrow.Pickup.CREATIVE_ONLY : AbstractArrow.Pickup.ALLOWED;
+        }
 
-            if (pickup == PickupStatus.ALLOWED && !player.inventory.add(getPickupItem())) {
-                flag = false;
+    }
+
+    public void playerTouch(Player p_36766_) {
+        if (!this.level.isClientSide && (this.inGround || this.isNoPhysics()) && this.shakeTime <= 0) {
+            if (this.tryPickup(p_36766_)) {
+                p_36766_.take(this, 1);
+                this.discard();
             }
 
-            if (flag) {
-                player.take(this, 1);
-                remove();
-            }
         }
     }
 
-    public ItemStack getPickupItem() {
-        return null;
+    protected boolean tryPickup(Player p_150121_) {
+        switch (this.pickup) {
+            case ALLOWED:
+                return p_150121_.getInventory().add(this.getPickupItem());
+            case CREATIVE_ONLY:
+                return p_150121_.getAbilities().instabuild;
+            default:
+                return false;
+        }
     }
 
-    @Override
-    protected boolean isMovementNoisy() {
-        return false;
+    protected ItemStack getPickupItem() {
+        return ItemStack.EMPTY;
     }
 
-    public void setBaseDamage(double baseDamage) {
-        this.baseDamage = baseDamage;
+    protected Entity.MovementEmission getMovementEmission() {
+        return Entity.MovementEmission.NONE;
+    }
+
+    public void setBaseDamage(double p_36782_) {
+        this.baseDamage = p_36782_;
     }
 
     public double getBaseDamage() {
-        return baseDamage;
+        return this.baseDamage;
     }
 
-    public void setKnockback(int knockback) {
-        this.knockback = knockback;
+    public void setKnockback(int p_36736_) {
+        this.knockback = p_36736_;
     }
 
-    @Override
+    public int getKnockback() {
+        return this.knockback;
+    }
+
     public boolean isAttackable() {
         return false;
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    protected float getEyeHeight(Pose pose, EntitySize size) {
+    protected float getEyeHeight(Pose p_36752_, EntityDimensions p_36753_) {
         return 0.13F;
     }
 
-    private void setFlag(int flag, boolean value) {
-        byte b0 = this.entityData.get(ID_FLAGS);
+    public void setCritArrow(boolean p_36763_) {
+        this.setFlag(1, p_36763_);
+    }
 
-        if (value) {
-            this.entityData.set(ID_FLAGS, (byte)(b0 | flag));
+    public void setPierceLevel(byte p_36768_) {
+        this.entityData.set(PIERCE_LEVEL, p_36768_);
+    }
+
+    private void setFlag(int p_36738_, boolean p_36739_) {
+        byte b0 = this.entityData.get(ID_FLAGS);
+        if (p_36739_) {
+            this.entityData.set(ID_FLAGS, (byte)(b0 | p_36738_));
+        } else {
+            this.entityData.set(ID_FLAGS, (byte)(b0 & ~p_36738_));
         }
-        else {
-            this.entityData.set(ID_FLAGS, (byte)(b0 & ~flag));
+
+    }
+
+    public boolean isCritArrow() {
+        byte b0 = this.entityData.get(ID_FLAGS);
+        return (b0 & 1) != 0;
+    }
+
+    public boolean shotFromCrossbow() {
+        byte b0 = this.entityData.get(ID_FLAGS);
+        return (b0 & 4) != 0;
+    }
+
+    public byte getPierceLevel() {
+        return this.entityData.get(PIERCE_LEVEL);
+    }
+
+    public void setEnchantmentEffectsFromEntity(LivingEntity p_36746_, float p_36747_) {
+        int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER_ARROWS, p_36746_);
+        int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH_ARROWS, p_36746_);
+        this.setBaseDamage((double)(p_36747_ * 2.0F) + this.random.triangle((double)this.level.getDifficulty().getId() * 0.11D, 0.57425D));
+        if (i > 0) {
+            this.setBaseDamage(this.getBaseDamage() + (double)i * 0.5D + 0.5D);
         }
+
+        if (j > 0) {
+            this.setKnockback(j);
+        }
+
+        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAMING_ARROWS, p_36746_) > 0) {
+            this.setSecondsOnFire(100);
+        }
+
     }
 
     protected float getWaterInertia() {
         return 0.6F;
     }
 
-    public void setNoPhysics(boolean noPhysics) {
-        this.noPhysics = noPhysics;
-        this.setFlag(2, noPhysics);
+    public void setNoPhysics(boolean p_36791_) {
+        this.noPhysics = p_36791_;
+        this.setFlag(2, p_36791_);
     }
 
     public boolean isNoPhysics() {
         if (!this.level.isClientSide) {
             return this.noPhysics;
-        }
-        else {
+        } else {
             return (this.entityData.get(ID_FLAGS) & 2) != 0;
         }
     }
 
-    public IPacket<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+    public void setShotFromCrossbow(boolean p_36794_) {
+        this.setFlag(4, p_36794_);
     }
 
-    public enum PickupStatus {
+    public enum Pickup {
         DISALLOWED,
         ALLOWED,
         CREATIVE_ONLY;
 
-        public static PickupStatus byOrdinal(int ordinal) {
-            if (ordinal < 0 || ordinal > values().length) {
-                ordinal = 0;
+        public static Pickup byOrdinal(int index) {
+            if (index < 0 || index > values().length) {
+                index = 0;
             }
-
-            return values()[ordinal];
+            return values()[index];
         }
     }
 }

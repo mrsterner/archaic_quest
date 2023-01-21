@@ -1,8 +1,8 @@
 {
   "parent": "archaic_quest:block/vertical_slab",
   "textures": {
-    "side": "archaic_quest:block/andesite_aztec_bricks_84",
     "bottom": "archaic_quest:block/andesite_aztec_bricks_84",
+    "side": "archaic_quest:block/andesite_aztec_bricks_84",
     "top": "archaic_quest:block/andesite_aztec_bricks_84"
   }
 }

@@ -1,11 +1,14 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import net.minecraft.block.OreBlock;
-import net.minecraft.util.math.MathHelper;
 
-import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.DropExperienceBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class AQOreBlock extends OreBlock {
+public class AQOreBlock extends DropExperienceBlock {
 
     private final int minXp, maxXp;
 
@@ -20,8 +23,8 @@ public class AQOreBlock extends OreBlock {
     }
 
     @Override
-    protected int xpOnDrop(Random random) {
+    public int getExpDrop(BlockState state, LevelReader level, RandomSource randomSource, BlockPos pos, int fortuneLevel, int silkTouchLevel) {
         if (minXp < 0) return 0;
-        return MathHelper.nextInt(random, minXp, maxXp);
+        return Mth.nextInt(randomSource, minXp, maxXp);
     }
 }

@@ -1,26 +1,23 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "archaic_quest:tin_ingot_from_smelting"
-    ]
-  },
   "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "archaic_quest:tin_ingot_from_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
     "has_tin_ingot": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "archaic_quest:tin_ore"
+            "items": [
+              "archaic_quest:tin_ore"
+            ]
           }
         ]
-      }
-    },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "archaic_quest:tin_ingot_from_smelting"
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
@@ -28,5 +25,10 @@
       "has_tin_ingot",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "archaic_quest:tin_ingot_from_smelting"
+    ]
+  }
 }

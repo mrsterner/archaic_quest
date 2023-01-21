@@ -1,20 +1,23 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorTileEntity;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 
-public class FoundryBlock extends Block {
+public class FoundryBlock extends Block implements EntityBlock {
 
     public FoundryBlock() {
-        super(AbstractBlock.Properties.of(Material.STONE)
+        super(BlockBehaviour.Properties.of(Material.STONE)
                 .requiresCorrectToolForDrops()
                 .randomTicks()
                 .sound(SoundType.STONE)
@@ -22,12 +25,15 @@ public class FoundryBlock extends Block {
     }
 
     @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new AztecDungeonDoorTileEntity();
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return null;
     }
 
+    @Nullable
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return null;
+        //return (lvl, blockState, pos, blockEntity) -> FoundryBlockEntity.tick(lvl, blockState, pos, (FoundryBlockEntity) blockEntity);
     }
 }

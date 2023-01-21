@@ -2,21 +2,20 @@ package com.obsidian_core.archaic_quest.datagen.blockstate;
 
 import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
+import com.obsidian_core.archaic_quest.common.block.SpearTrapBlock;
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.block.Block;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.VineBlock;
+import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
@@ -27,7 +26,7 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
     }
 
     protected String name(Block block) {
-        return Objects.requireNonNull(block.getRegistryName()).getPath();
+        return Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block)).getPath();
     }
 
     public void simpleBlockAndItem(Block block) {
@@ -143,9 +142,27 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         generatedItem(vineBlock);
     }
 
+    public void spearTrap(SpearTrapBlock trapBlock) {
+        getVariantBuilder(trapBlock).forAllStatesExcept((state) -> {
+            boolean extended = state.getValue(SpearTrapBlock.EXTENDED);
+            ResourceLocation modelName = resLoc("block/spear_trap");
+
+            return ConfiguredModel.builder()
+                    .modelFile(models().withExistingParent(extended ? name(trapBlock) + "_extended" : name(trapBlock), modelName)
+                            .texture("texture", extended ? texture("spear_trap_base") : texture(name(trapBlock))))
+                    .build();
+        }, SpearTrapBlock.WATERLOGGED);
+        generateItemBlockTexture(trapBlock);
+    }
+
     private void generatedItem(Block block) {
         itemModels().withExistingParent(name(block), mcLoc("item/generated"))
                 .texture("layer0", itemTexture(name(block)));
+    }
+
+    private void generateItemBlockTexture(Block block) {
+        itemModels().withExistingParent(name(block), mcLoc("item/generated"))
+                .texture("layer0", texture(name(block)));
     }
 
     public static ResourceLocation resLoc(String path) {

@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 1.0,
   "ingredient": {
     "item": "archaic_quest:diorite_jade_ore"
   },
-  "result": "archaic_quest:jade",
-  "experience": 1.0,
-  "cookingtime": 200
+  "result": "archaic_quest:jade"
 }

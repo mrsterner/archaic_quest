@@ -1,34 +1,31 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-public class ChiselPillarBlock extends Block implements IWaterLoggable {
+public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
 
     public static final EnumProperty<Type> PILLAR_TYPE = EnumProperty.create("pillar_type", Type.class);
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -48,30 +45,24 @@ public class ChiselPillarBlock extends Block implements IWaterLoggable {
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        switch (state.getValue(FACING)) {
-            case NORTH:
-            case SOUTH:
-                return SHAPES[0];
-            case EAST:
-            case WEST:
-                return SHAPES[1];
-            case UP:
-            default:
-                return SHAPES[2];
-        }
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return switch (state.getValue(FACING)) {
+            case NORTH, SOUTH -> SHAPES[0];
+            case EAST, WEST -> SHAPES[1];
+            default -> SHAPES[2];
+        };
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         Type type = Type.BOTTOM;
         Direction clickedFace = context.getClickedFace();
         BlockPos clickedPos = context.getClickedPos();
-        World world = context.getLevel();
-        boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
+        Level level = context.getLevel();
+        boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
         if (context.getPlayer() != null) {
-            BlockState clickedState = world.getBlockState(clickedPos.relative(clickedFace.getOpposite()));
+            BlockState clickedState = level.getBlockState(clickedPos.relative(clickedFace.getOpposite()));
 
             if (clickedState.is(this)) {
                 Direction clickedStateFace = clickedState.getValue(FACING);
@@ -85,17 +76,17 @@ public class ChiselPillarBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         if (!state.is(this))
-            super.setPlacedBy(world, pos, state, livingEntity, itemStack);
+            super.setPlacedBy(level, pos, state, livingEntity, itemStack);
 
         Direction facing = state.getValue(FACING);
         BlockPos behindPos = pos.relative(facing.getOpposite());
-        BlockState behindState = world.getBlockState(behindPos);
+        BlockState behindState = level.getBlockState(behindPos);
 
         if (behindState.is(this)) {
             if (behindState.getValue(PILLAR_TYPE) == Type.TOP && behindState.getValue(FACING) == facing) {
-                world.setBlock(behindPos, behindState.setValue(PILLAR_TYPE, Type.SMOOTH), 3);
+                level.setBlock(behindPos, behindState.setValue(PILLAR_TYPE, Type.SMOOTH), 3);
             }
         }
     }
@@ -107,11 +98,11 @@ public class ChiselPillarBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(PILLAR_TYPE, FACING, WATERLOGGED);
     }
 
-    public enum Type implements IStringSerializable {
+    public enum Type implements StringRepresentable {
 
         BOTTOM("bottom"),
         TOP("top"),

@@ -1,22 +1,20 @@
 package com.obsidian_core.archaic_quest.common.loot_modifier;
 
-import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.obsidian_core.archaic_quest.common.register.AQGlobalLootModifiers;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Objects;
+import java.util.function.Supplier;
 
 /** Simple loot modifier to removing an item from a loot table */
 public class LootModifierRemove extends LootModifier {
@@ -24,7 +22,21 @@ public class LootModifierRemove extends LootModifier {
     private final Item itemToRemove;
     private final ResourceLocation targetLootTable;
 
-    public LootModifierRemove(ILootCondition[] conditions, ResourceLocation lootTable, Item itemToRemove) {
+    public static final Supplier<Codec<LootModifierRemove>> CODEC = () -> RecordCodecBuilder.create(inst -> LootModifier.codecStart(inst)
+            .and(inst.group(
+                            ForgeRegistries.ITEMS.getCodec()
+                                    .fieldOf("item")
+                                    .forGetter(m -> m.itemToRemove),
+                            ResourceLocation.CODEC
+                                    .fieldOf("lootTable")
+                                    .forGetter(m -> m.targetLootTable)
+                    )
+            )
+            .apply(inst, LootModifierRemove::new)
+    );
+
+
+    public LootModifierRemove(LootItemCondition[] conditions, Item itemToRemove, ResourceLocation lootTable) {
         super(conditions);
         this.itemToRemove = itemToRemove;
         this.targetLootTable = lootTable;
@@ -33,31 +45,15 @@ public class LootModifierRemove extends LootModifier {
 
     @Nonnull
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+    protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if (context.getQueriedLootTableId().equals(this.targetLootTable)) {
             generatedLoot.removeIf((itemStack) -> itemStack.getItem() == this.itemToRemove);
         }
         return generatedLoot;
     }
 
-    public static class LootModifierRemoveSerializer extends GlobalLootModifierSerializer<LootModifierRemove> {
-
-        @Override
-        public LootModifierRemove read(ResourceLocation location, JsonObject object, ILootCondition[] lootConditions) {
-            Item itemToRemove = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(object, "item")));
-            ResourceLocation lootTable = new ResourceLocation(JSONUtils.getAsString(object, "lootTable"));
-
-            return new LootModifierRemove(lootConditions, lootTable, itemToRemove);
-        }
-
-        @Override
-        public JsonObject write(LootModifierRemove instance) {
-            final JsonObject json = this.makeConditions(instance.conditions);
-            json.addProperty("item", Objects.requireNonNull(instance.itemToRemove.getRegistryName()).toString());
-            json.add("lootTable", ResourceLocation.CODEC.encodeStart(JsonOps.INSTANCE, instance.targetLootTable)
-                    .getOrThrow(false, (s) -> ArchaicQuest.LOGGER.log(Level.ERROR, s)));
-
-            return json;
-        }
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec() {
+        return AQGlobalLootModifiers.REMOVE_ITEM_MODIFIER.get();
     }
 }

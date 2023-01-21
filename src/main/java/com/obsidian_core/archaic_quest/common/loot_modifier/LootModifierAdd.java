@@ -1,39 +1,61 @@
 package com.obsidian_core.archaic_quest.common.loot_modifier;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import com.obsidian_core.archaic_quest.common.register.AQGlobalLootModifiers;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class LootModifierAdd extends LootModifier {
 
-    private final Item itemToAdd;
-    private final int maxStackCount;
-    private final int minStackCount;
-    private final ResourceLocation targetLootTable;
+    public final Item itemToAdd;
+    public final int maxStackCount;
+    public final int minStackCount;
+    public final ResourceLocation targetLootTable;
+
+
+    public static final Supplier<Codec<LootModifierAdd>> CODEC = () -> RecordCodecBuilder.create(inst -> LootModifier.codecStart(inst)
+            .and(inst.group(
+                    ForgeRegistries.ITEMS.getCodec()
+                            .fieldOf("item")
+                            .forGetter(m -> m.itemToAdd),
+                    Codec.INT.fieldOf("maxCount")
+                            .forGetter(m -> m.maxStackCount),
+                    Codec.INT.fieldOf("minCount")
+                            .forGetter(m -> m.minStackCount),
+                    ResourceLocation.CODEC
+                            .fieldOf("lootTable")
+                            .forGetter(m -> m.targetLootTable)
+                    )
+            )
+            .apply(inst, LootModifierAdd::new)
+    );
 
     /**
      * Constructs a LootModifier.
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
-    public LootModifierAdd(ILootCondition[] conditionsIn, ResourceLocation lootTable, Item itemToAdd, int maxStackCount, int minStackCount) {
+    public LootModifierAdd(LootItemCondition[] conditionsIn, Item itemToAdd, int maxStackCount, int minStackCount, ResourceLocation lootTable) {
         super(conditionsIn);
         this.itemToAdd = itemToAdd;
         this.maxStackCount = maxStackCount;
@@ -43,7 +65,7 @@ public class LootModifierAdd extends LootModifier {
 
     @Nonnull
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+    protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if (context.getQueriedLootTableId().equals(targetLootTable)) {
             Random random = new Random();
             ItemStack stack = new ItemStack(this.itemToAdd, random.nextInt(this.maxStackCount + 1));
@@ -53,28 +75,8 @@ public class LootModifierAdd extends LootModifier {
         return generatedLoot;
     }
 
-    public static class LootModifierAddSerializer extends GlobalLootModifierSerializer<LootModifierAdd> {
-
-        @Override
-        public LootModifierAdd read(ResourceLocation location, JsonObject object, ILootCondition[] lootConditions) {
-            Item itemToAdd = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(object, "item")));
-            int maxStackCount = JSONUtils.getAsInt(object, "maxCount");
-            int minStackCount = JSONUtils.getAsInt(object, "minCount");
-            ResourceLocation lootTable = new ResourceLocation(JSONUtils.getAsString(object, "lootTable"));
-
-            return new LootModifierAdd(lootConditions, lootTable, itemToAdd, maxStackCount, minStackCount);
-        }
-
-        @Override
-        public JsonObject write(LootModifierAdd instance) {
-            final JsonObject json = this.makeConditions(instance.conditions);
-            json.addProperty("item", Objects.requireNonNull(instance.itemToAdd.getRegistryName()).toString());
-            json.addProperty("maxCount", instance.maxStackCount);
-            json.addProperty("minCount", instance.minStackCount);
-            json.add("lootTable", ResourceLocation.CODEC.encodeStart(JsonOps.INSTANCE, instance.targetLootTable)
-                    .getOrThrow(false, (s) -> ArchaicQuest.LOGGER.log(Level.ERROR, s)));
-
-            return json;
-        }
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec() {
+        return AQGlobalLootModifiers.ADD_ITEM_MODIFIER.get();
     }
 }

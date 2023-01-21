@@ -2,6 +2,5 @@
 @MethodsReturnNonnullByDefault
 package com.obsidian_core.archaic_quest.client.screen;
 
-import mcp.MethodsReturnNonnullByDefault;
-
+import com.mojang.math.MethodsReturnNonnullByDefault;
 import javax.annotation.ParametersAreNonnullByDefault;

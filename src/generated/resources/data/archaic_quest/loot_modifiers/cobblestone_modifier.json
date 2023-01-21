@@ -1,4 +1,5 @@
 {
+  "type": "archaic_quest:example_codec",
   "conditions": [
     {
       "condition": "minecraft:match_tool",
@@ -6,8 +7,7 @@
     }
   ],
   "item": "archaic_quest:pebble",
-  "maxCount": 9,
-  "minCount": 5,
   "lootTable": "minecraft:blocks/cobblestone",
-  "type": "archaic_quest:add_item_modifier"
+  "maxCount": 9,
+  "minCount": 5
 }

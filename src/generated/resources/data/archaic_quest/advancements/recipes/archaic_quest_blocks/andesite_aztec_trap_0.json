@@ -1,36 +1,35 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "archaic_quest:andesite_aztec_trap_0"
-    ]
-  },
   "criteria": {
-    "has_dispenser": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "item": "minecraft:dispenser"
-          }
-        ]
-      }
-    },
     "has_andesite_aztec_bricks_25": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "archaic_quest:andesite_aztec_bricks_25"
+            "items": [
+              "archaic_quest:andesite_aztec_bricks_25"
+            ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_dispenser": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:dispenser"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "archaic_quest:andesite_aztec_trap_0"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -39,5 +38,10 @@
       "has_andesite_aztec_bricks_25",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "archaic_quest:andesite_aztec_trap_0"
+    ]
+  }
 }

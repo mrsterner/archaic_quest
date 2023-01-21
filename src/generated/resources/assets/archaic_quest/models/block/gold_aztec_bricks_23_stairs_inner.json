@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/inner_stairs",
   "textures": {
-    "side": "archaic_quest:block/gold_aztec_bricks_23",
     "bottom": "archaic_quest:block/gold_aztec_bricks_23",
+    "side": "archaic_quest:block/gold_aztec_bricks_23",
     "top": "archaic_quest:block/gold_aztec_bricks_23"
   }
 }

@@ -1,26 +1,23 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "archaic_quest:turquoise_from_smelting"
-    ]
-  },
   "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "archaic_quest:turquoise_from_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
     "has_turquoise": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "archaic_quest:andesite_turquoise_ore"
+            "items": [
+              "archaic_quest:andesite_turquoise_ore"
+            ]
           }
         ]
-      }
-    },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "archaic_quest:turquoise_from_smelting"
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
@@ -28,5 +25,10 @@
       "has_turquoise",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "archaic_quest:turquoise_from_smelting"
+    ]
+  }
 }

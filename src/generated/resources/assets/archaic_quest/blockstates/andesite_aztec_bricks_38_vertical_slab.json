@@ -1,26 +1,26 @@
 {
   "variants": {
+    "type=double": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_38"
+    },
+    "type=east": {
+      "model": "archaic_quest:block/andesite_aztec_bricks_38_vertical_slab",
+      "uvlock": true,
+      "y": 90
+    },
     "type=north": {
       "model": "archaic_quest:block/andesite_aztec_bricks_38_vertical_slab",
       "uvlock": true
     },
-    "type=east": {
-      "model": "archaic_quest:block/andesite_aztec_bricks_38_vertical_slab",
-      "y": 90,
-      "uvlock": true
-    },
     "type=south": {
       "model": "archaic_quest:block/andesite_aztec_bricks_38_vertical_slab",
-      "y": 180,
-      "uvlock": true
+      "uvlock": true,
+      "y": 180
     },
     "type=west": {
       "model": "archaic_quest:block/andesite_aztec_bricks_38_vertical_slab",
-      "y": 270,
-      "uvlock": true
-    },
-    "type=double": {
-      "model": "archaic_quest:block/andesite_aztec_bricks_38"
+      "uvlock": true,
+      "y": 270
     }
   }
 }

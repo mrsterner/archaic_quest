@@ -3,29 +3,29 @@
     "age=0,top=false": {
       "model": "archaic_quest:block/corn_crop_stage_0"
     },
-    "age=1,top=false": {
-      "model": "archaic_quest:block/corn_crop_stage_1"
-    },
-    "age=2,top=false": {
-      "model": "archaic_quest:block/corn_crop_stage_2"
-    },
-    "age=3,top=false": {
-      "model": "archaic_quest:block/corn_crop_stage_3"
-    },
-    "age=4,top=false": {
-      "model": "archaic_quest:block/corn_crop_stage_4"
-    },
     "age=0,top=true": {
       "model": "archaic_quest:block/corn_crop_stage_0_top"
+    },
+    "age=1,top=false": {
+      "model": "archaic_quest:block/corn_crop_stage_1"
     },
     "age=1,top=true": {
       "model": "archaic_quest:block/corn_crop_stage_1_top"
     },
+    "age=2,top=false": {
+      "model": "archaic_quest:block/corn_crop_stage_2"
+    },
     "age=2,top=true": {
       "model": "archaic_quest:block/corn_crop_stage_2_top"
     },
+    "age=3,top=false": {
+      "model": "archaic_quest:block/corn_crop_stage_3"
+    },
     "age=3,top=true": {
       "model": "archaic_quest:block/corn_crop_stage_3_top"
+    },
+    "age=4,top=false": {
+      "model": "archaic_quest:block/corn_crop_stage_4"
     },
     "age=4,top=true": {
       "model": "archaic_quest:block/corn_crop_stage_4_top"
