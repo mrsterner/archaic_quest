@@ -11,7 +11,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
-import static com.obsidian_core.archaic_quest.common.register.AQBlocks.*;
+import static com.obsidian_core.archaic_quest.common.core.register.AQBlocks.*;
 
 
 public class AQBlockStateProvider extends AbstractBlockStateProvider {

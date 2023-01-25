@@ -1,6 +1,6 @@
 package com.obsidian_core.archaic_quest.common.item.data;
 
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;

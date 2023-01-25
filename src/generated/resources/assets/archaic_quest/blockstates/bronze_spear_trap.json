@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "extended=false": {
+      "model": "archaic_quest:block/bronze_spear_trap"
+    },
+    "extended=true": {
+      "model": "archaic_quest:block/bronze_spear_trap_extended"
+    }
+  }
+}

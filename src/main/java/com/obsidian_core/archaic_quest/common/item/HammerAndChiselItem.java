@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.item;
 
 import com.obsidian_core.archaic_quest.common.block.ChiselPillarBlock;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;

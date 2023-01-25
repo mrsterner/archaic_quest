@@ -41,11 +41,10 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
 
 
     public SpearTrapBlock(float baseDamage, Properties properties) {
-        super(properties);
+        super(properties.speedFactor(0.4F));
         registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false).setValue(EXTENDED, false));
         this.damageMult = Math.max(0.0F, baseDamage);
     }
-
 
     @Override
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallHeight) {

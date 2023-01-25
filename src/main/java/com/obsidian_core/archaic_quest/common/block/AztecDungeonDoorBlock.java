@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -4,8 +4,8 @@ import com.mojang.math.MethodsReturnNonnullByDefault;
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
+import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.item.Item;
@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
@@ -48,6 +47,8 @@ public class AQBlockLootTableProvider extends BlockLoot {
 
     @Override
     public void addTables() {
+        dropSelf(AQBlocks.AZTEC_JUNGLE_SAPLING.get());
+
         dropSelf(AQBlocks.TIN_ORE.get());
         dropSelf(AQBlocks.SILVER_ORE.get());
         add(AQBlocks.DIORITE_JADE_ORE.get(), createOreDrop(AQBlocks.DIORITE_JADE_ORE.get(), AQItems.JADE.get()));
@@ -103,6 +104,7 @@ public class AQBlockLootTableProvider extends BlockLoot {
         dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_34_VERT_SLAB.get());
         dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_35.get());
         dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_36.get());
+        dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_36_VERT_SLAB.get());
         dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_37.get());
         dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_38.get());
         dropSelf(AQBlocks.ANDESITE_AZTEC_BRICKS_39.get());

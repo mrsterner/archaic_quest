@@ -1,0 +1,6 @@
+{
+  "type":"archaic_quest:add_ore",
+  "biomes":"#minecraft:is_overworld",
+  "ore":"silver",
+  "step":"underground_ores"
+}

@@ -1,8 +1,8 @@
 package com.obsidian_core.archaic_quest.datagen.recipe;
 
 import com.mojang.math.MethodsReturnNonnullByDefault;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
+import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;

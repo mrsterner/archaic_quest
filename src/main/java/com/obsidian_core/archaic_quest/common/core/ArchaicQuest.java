@@ -1,14 +1,16 @@
 package com.obsidian_core.archaic_quest.common.core;
 
+import com.obsidian_core.archaic_quest.common.compat.terrablender.AQTerraBlender;
 import com.obsidian_core.archaic_quest.common.event.BiomeEvents;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import com.obsidian_core.archaic_quest.common.network.PacketHandler;
-import com.obsidian_core.archaic_quest.common.register.*;
-import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
+import com.obsidian_core.archaic_quest.common.core.register.*;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
+import com.obsidian_core.archaic_quest.common.worldgen.feature.decorators.AQTreeDecoratorType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -44,10 +46,17 @@ public class ArchaicQuest {
         AQSoundEvents.REGISTRY.register(eventBus);
         AQContainers.REGISTRY.register(eventBus);
         AQBlockEntities.REGISTRY.register(eventBus);
+        AQConfiguredFeatures.CF_REGISTRY.register(eventBus);
+        AQConfiguredFeatures.P_REGISTRY.register(eventBus);
+        AQTreeDecoratorType.REGISTRY.register(eventBus);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(AQConfiguredFeatures::register);
+        event.enqueueWork(() -> {
+            if (ModList.get().isLoaded("terrablender")) {
+                AQTerraBlender.setup();
+            }
+        });
     }
 
     public static ResourceLocation resourceLoc(String path) {

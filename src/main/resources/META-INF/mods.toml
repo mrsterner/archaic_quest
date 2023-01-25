@@ -24,3 +24,10 @@ license="All rights reserved"
     versionRange="[1.19.2]"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.archaic_quest]]
+modId="terrablender"
+mandatory=true
+versionRange="[2.0.1.136,)"
+ordering="NONE"
+side="BOTH"

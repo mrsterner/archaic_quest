@@ -2,7 +2,7 @@ package com.obsidian_core.archaic_quest.datagen.tag;
 
 import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -26,6 +26,10 @@ public class AQBlockTagProvider extends BlockTagsProvider {
         tag(AQBlockTags.ORE_TIN).add(AQBlocks.TIN_ORE.get());
         tag(AQBlockTags.ORE_SILVER).add(AQBlocks.SILVER_ORE.get());
         tag(AQBlockTags.ORE_QUARTZ).add(AQBlocks.GRANITE_QUARTZ_ORE.get());
+
+        tag(BlockTags.SAPLINGS).add(
+                AQBlocks.AZTEC_JUNGLE_SAPLING.get()
+        );
 
         TagsProvider.TagAppender<Block> CLIMBABLE = tag(BlockTags.CLIMBABLE);
 

@@ -2,7 +2,7 @@ package com.obsidian_core.archaic_quest.common.loot_modifier;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.obsidian_core.archaic_quest.common.register.AQGlobalLootModifiers;
+import com.obsidian_core.archaic_quest.common.core.register.AQGlobalLootModifiers;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

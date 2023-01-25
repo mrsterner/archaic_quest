@@ -6,7 +6,11 @@ import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 public abstract class AbstractLanguageProvider extends LanguageProvider {
 
@@ -16,6 +20,10 @@ public abstract class AbstractLanguageProvider extends LanguageProvider {
 
     protected void addItemGroup(CreativeModeTab creativeTab, String localized) {
         this.add("itemGroup." + creativeTab.getRecipeFolderName(), "Archaic Quest - " + localized);
+    }
+
+    protected void addBiome(RegistryObject<Biome> biome, String localized) {
+        this.add("biome.archaic_quest." + biome.getId().getPath(), localized);
     }
 
     protected void addJeiInfo(Item item, String localized) {

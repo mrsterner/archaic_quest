@@ -3,7 +3,7 @@ package com.obsidian_core.archaic_quest.common.tile;
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.network.NetworkHelper;
-import com.obsidian_core.archaic_quest.common.register.AQBlockEntities;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

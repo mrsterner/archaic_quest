@@ -3,8 +3,9 @@ package com.obsidian_core.archaic_quest.datagen.lang;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import com.obsidian_core.archaic_quest.common.misc.TranslationReferences;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.core.register.AQBiomes;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
+import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.data.DataGenerator;
 
 public class AQLanguageProvider extends AbstractLanguageProvider {
@@ -22,6 +23,8 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         addItemGroup(AQCreativeTabs.TOOLS, "Tools");
         addItemGroup(AQCreativeTabs.WEAPONS, "Weapons");
         addItemGroup(AQCreativeTabs.ARMOR, "Armor");
+
+        addBlock(AQBlocks.AZTEC_JUNGLE_SAPLING, "Aztec Jungle Sapling");
 
         addBlock(AQBlocks.TIN_ORE, "Tin Ore");
         addBlock(AQBlocks.SILVER_ORE, "Silver Ore");
@@ -92,6 +95,7 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         addItem(AQItems.BONE_DART, "Bone Dart");
         addItem(AQItems.BONE_CLUB, "Bone Club");
 
+        addBiome(AQBiomes.AZTEC_JUNGLE, "Aztec Jungle");
 
         addTranslationComponent(TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME, "Knapping Table");
 

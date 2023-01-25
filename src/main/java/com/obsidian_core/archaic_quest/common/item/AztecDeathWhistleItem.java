@@ -1,6 +1,6 @@
 package com.obsidian_core.archaic_quest.common.item;
 
-import com.obsidian_core.archaic_quest.common.register.AQSoundEvents;
+import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

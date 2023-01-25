@@ -1,8 +1,8 @@
 package com.obsidian_core.archaic_quest.common.item;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
+import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

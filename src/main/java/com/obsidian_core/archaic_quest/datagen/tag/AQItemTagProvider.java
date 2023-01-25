@@ -1,12 +1,14 @@
 package com.obsidian_core.archaic_quest.datagen.tag;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
 import com.obsidian_core.archaic_quest.common.tag.AQItemTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -24,6 +26,8 @@ public class AQItemTagProvider extends ItemTagsProvider {
         this.copy(AQBlockTags.ORE_TIN, AQItemTags.ORE_TIN);
         this.copy(AQBlockTags.ORE_SILVER, AQItemTags.ORE_SILVER);
         this.copy(AQBlockTags.ORE_QUARTZ, AQItemTags.ORE_QUARTZ);
+
+        this.copy(BlockTags.SAPLINGS, ItemTags.SAPLINGS);
 
         this.tag(AQItemTags.INGOT_TIN).add(AQItems.TIN_INGOT.get());
         this.tag(AQItemTags.INGOT_SILVER).add(AQItems.SILVER_INGOT.get());

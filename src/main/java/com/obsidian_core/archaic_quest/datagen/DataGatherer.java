@@ -7,6 +7,7 @@ import com.obsidian_core.archaic_quest.datagen.loot_modifier.AQGlobalLootModifie
 import com.obsidian_core.archaic_quest.datagen.loot_table.AQLootTableProvider;
 import com.obsidian_core.archaic_quest.datagen.model.AQItemModelProvider;
 import com.obsidian_core.archaic_quest.datagen.recipe.AQRecipeProvider;
+import com.obsidian_core.archaic_quest.datagen.tag.AQBiomeTagProvider;
 import com.obsidian_core.archaic_quest.datagen.tag.AQBlockTagProvider;
 import com.obsidian_core.archaic_quest.datagen.tag.AQItemTagProvider;
 import net.minecraft.data.DataGenerator;
@@ -35,6 +36,7 @@ public class DataGatherer {
             AQBlockTagProvider blockTagProvider = new AQBlockTagProvider(dataGenerator, fileHelper);
             dataGenerator.addProvider(true, blockTagProvider);
             dataGenerator.addProvider(true, new AQItemTagProvider(dataGenerator, blockTagProvider, fileHelper));
+            dataGenerator.addProvider(true, new AQBiomeTagProvider(dataGenerator, fileHelper));
         }
     }
 }

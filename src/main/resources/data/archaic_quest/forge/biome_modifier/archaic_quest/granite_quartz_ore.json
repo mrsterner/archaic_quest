@@ -1,0 +1,6 @@
+{
+  "type":"archaic_quest:add_ore",
+  "biomes":"#minecraft:is_overworld",
+  "ore":"granite_quartz",
+  "step":"underground_ores"
+}

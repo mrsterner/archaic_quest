@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.tile;
 
 import com.obsidian_core.archaic_quest.common.misc.TranslationReferences;
-import com.obsidian_core.archaic_quest.common.register.AQBlockEntities;
+import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;

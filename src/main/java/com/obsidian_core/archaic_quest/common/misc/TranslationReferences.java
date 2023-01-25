@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.misc;
 
 import com.obsidian_core.archaic_quest.common.compat.jei.AQJeiPlugin;
-import com.obsidian_core.archaic_quest.common.register.AQItems;
+import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

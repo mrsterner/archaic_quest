@@ -1,13 +1,12 @@
 package com.obsidian_core.archaic_quest.common.inventory.container;
 
-import com.obsidian_core.archaic_quest.common.register.AQContainers;
+import com.obsidian_core.archaic_quest.common.core.register.AQContainers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.FurnaceMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
