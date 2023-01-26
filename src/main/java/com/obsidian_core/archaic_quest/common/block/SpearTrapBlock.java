@@ -1,5 +1,6 @@
 package com.obsidian_core.archaic_quest.common.block;
 
+import com.obsidian_core.archaic_quest.common.block.state.AQStateProperties;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +31,7 @@ import javax.annotation.Nullable;
 public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final BooleanProperty EXTENDED = BooleanProperty.create("extended");
+    public static final BooleanProperty EXTENDED = AQStateProperties.EXTENDED;
 
     private final float damageMult;
 

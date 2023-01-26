@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.network;
 
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateDoorState;
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

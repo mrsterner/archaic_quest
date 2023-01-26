@@ -2,7 +2,7 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity.DoorState;
+import static com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity.DoorState;
 
 public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 

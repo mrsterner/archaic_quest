@@ -1,13 +1,13 @@
 package com.obsidian_core.archaic_quest.common.network.work;
 
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateDoorState;
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import static com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity.DoorState;
+import static com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity.DoorState;
 
 public class ClientWork {
 

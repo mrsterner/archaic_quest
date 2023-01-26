@@ -1,9 +1,8 @@
 package com.obsidian_core.archaic_quest.client;
 
-import com.obsidian_core.archaic_quest.client.render.tile.*;
-import com.obsidian_core.archaic_quest.client.render.tile.bewlr.BEWLRS;
+import com.obsidian_core.archaic_quest.client.render.blockentity.*;
+import com.obsidian_core.archaic_quest.client.render.blockentity.bewlr.BEWLRS;
 import com.obsidian_core.archaic_quest.client.screen.KnappingTableScreen;
-import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
@@ -12,11 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.FoliageColor;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -26,7 +22,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = ArchaicQuest.MODID)
 public class ClientRegister {
@@ -49,13 +44,14 @@ public class ClientRegister {
     public static void registerLayerDefs(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(AQModelLayers.AZTEC_DUNGEON_DOOR, AztecDungeonDoorRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.AZTEC_CRAFTING_STATION, AztecCraftingStationRenderer::createBodyLayer);
+        event.registerLayerDefinition(AQModelLayers.AZTEC_THRONE, AztecThroneRenderer::createBodyLayer);
     }
 
     @SubscribeEvent
     public static void registerBERs(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_DUNGEON_DOOR.get(), AztecDungeonDoorRenderer::new);
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_CRAFTING_STATION.get(), AztecCraftingStationRenderer::new);
-
+        event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_THRONE.get(), AztecThroneRenderer::new);
 
         for (BEWLRS.Holder holder : BEWLRS.BEWLR_LIST) {
             holder.populate(Minecraft.getInstance().getBlockEntityRenderDispatcher());

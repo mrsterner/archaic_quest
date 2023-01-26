@@ -2,11 +2,13 @@ package com.obsidian_core.archaic_quest.common.core.register;
 
 import com.obsidian_core.archaic_quest.common.block.*;
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
+import com.obsidian_core.archaic_quest.common.block.data.ThroneType;
 import com.obsidian_core.archaic_quest.common.block.tree.AztecJungleTreeGrower;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecCraftingStationBlockItem;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecDungeonDoorBlockItem;
+import com.obsidian_core.archaic_quest.common.item.blockitem.AztecThroneBlockItem;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
@@ -172,7 +174,8 @@ public class AQBlocks {
     public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_1 = registerDungeonDoor("aztec_dungeon_door_1", DungeonDoorType.AZTEC_DOOR_1, BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_FRAME_0 = registerDungeonDoor("aztec_dungeon_door_frame_0", DungeonDoorType.AZTEC_DOOR_FRAME_0, BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_FRAME_1 = registerDungeonDoor("aztec_dungeon_door_frame_1", DungeonDoorType.AZTEC_DOOR_FRAME_1, BlockTags.MINEABLE_WITH_PICKAXE);
-
+    public static final RegistryObject<AztecThroneBlock> AZTEC_THRONE = registerThrone("aztec_throne", ThroneType.THRONE, BlockTags.MINEABLE_WITH_PICKAXE);
+    public static final RegistryObject<AztecThroneBlock> MOSSY_AZTEC_THRONE = registerThrone("mossy_aztec_throne", ThroneType.MOSSY_THRONE, BlockTags.MINEABLE_WITH_PICKAXE);
 
 
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_0 = registerBlock("andesite_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
@@ -335,6 +338,17 @@ public class AQBlocks {
     private static RegistryObject<AztecDungeonDoorBlock> registerDungeonDoor(String name, DungeonDoorType doorType, TagKey<Block>... tags) {
         RegistryObject<AztecDungeonDoorBlock> registryObject = REGISTRY.register(name, () -> new AztecDungeonDoorBlock(doorType));
         AQItems.REGISTRY.register(name, () -> new AztecDungeonDoorBlockItem(registryObject.get()));
+
+        if (tags != null && tags.length > 0) {
+            BLOCK_TAGS.put(registryObject, tags);
+        }
+        return registryObject;
+    }
+
+    @SafeVarargs
+    private static RegistryObject<AztecThroneBlock> registerThrone(String name, ThroneType throneType, TagKey<Block>... tags) {
+        RegistryObject<AztecThroneBlock> registryObject = REGISTRY.register(name, () -> new AztecThroneBlock(throneType));
+        AQItems.REGISTRY.register(name, () -> new AztecThroneBlockItem(registryObject.get(), throneType));
 
         if (tags != null && tags.length > 0) {
             BLOCK_TAGS.put(registryObject, tags);

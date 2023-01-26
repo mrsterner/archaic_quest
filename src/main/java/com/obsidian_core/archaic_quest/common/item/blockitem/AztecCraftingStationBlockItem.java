@@ -1,6 +1,6 @@
 package com.obsidian_core.archaic_quest.common.item.blockitem;
 
-import com.obsidian_core.archaic_quest.client.render.tile.bewlr.BEWLRS;
+import com.obsidian_core.archaic_quest.client.render.blockentity.bewlr.BEWLRS;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;

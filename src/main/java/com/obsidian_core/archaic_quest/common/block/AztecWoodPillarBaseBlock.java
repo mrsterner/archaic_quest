@@ -3,16 +3,29 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class AztecWoodPillarBaseBlock extends AztecWoodPillarBlock {
+import javax.annotation.Nullable;
+
+public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterloggedBlock {
+
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     private static final VoxelShape SHAPE =
             Shapes.or(
@@ -23,26 +36,32 @@ public class AztecWoodPillarBaseBlock extends AztecWoodPillarBlock {
 
     public AztecWoodPillarBaseBlock(Properties properties) {
         super(properties);
+        registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
     }
 
-    @Override
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (!state.canSurvive(level, pos)) {
-            level.scheduleTick(pos, this, 1);
-        }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-    }
-
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockPos clickedPos = context.getClickedPos();
+        Level level = context.getLevel();
+        boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
+
+        return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);
+    }
+
+    @Override
     @SuppressWarnings("deprecation")
-    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-        BlockState belowState = world.getBlockState(pos.below());
-        return !(belowState.getBlock() instanceof AztecWoodPillarBlock);
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+        stateBuilder.add(WATERLOGGED);
     }
 }

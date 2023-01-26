@@ -1,11 +1,7 @@
 package com.obsidian_core.archaic_quest.datagen.blockstate;
 
-import com.obsidian_core.archaic_quest.common.block.CoolVinesBlock;
-import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
-import com.obsidian_core.archaic_quest.common.block.SpearTrapBlock;
-import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
+import com.obsidian_core.archaic_quest.common.block.*;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -155,6 +151,69 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
                     .build();
         }, SpearTrapBlock.WATERLOGGED);
         generateItemBlockTexture(trapBlock);
+    }
+
+    public void woodPillar(AztecWoodPillarBlock woodPillarBlock) {
+        final String[] extendedModels = new String[] {
+                "_extended",
+                "_connect_x_extended",
+                "_connect_z_extended",
+                "_connect_xz_extended"
+        };
+        final String normal = "";
+        final String x = "_x";
+        final String z = "_z";
+        final String connectX = "_connect_x";
+        final String connectZ = "_connect_z";
+        final String connectXZ = "_connect_xz";
+
+        getVariantBuilder(woodPillarBlock).forAllStatesExcept((state) -> {
+            boolean extended = state.getValue(AztecWoodPillarBlock.EXTENDED);
+            Direction.Axis axis = state.getValue(AztecWoodPillarBlock.AXIS);
+            boolean connectedX = state.getValue(AztecWoodPillarBlock.CONNECTED_X);
+            boolean connectedZ = state.getValue(AztecWoodPillarBlock.CONNECTED_Z);
+
+            String modelName = normal;
+
+            if (extended) {
+                if (connectedX && connectedZ)
+                    modelName = extendedModels[3];
+                else if (connectedZ)
+                    modelName = extendedModels[2];
+                else if (connectedX)
+                    modelName = extendedModels[1];
+                else {
+                    switch (axis) {
+                        case X -> modelName = x;
+                        case Z -> modelName = z;
+                        case Y -> modelName = extendedModels[0];
+                    }
+                }
+            }
+            else {
+                if (connectedX && connectedZ)
+                    modelName = connectXZ;
+                else if (connectedZ)
+                    modelName = connectZ;
+                else if (connectedX)
+                    modelName = connectX;
+                else {
+                    switch (axis) {
+                        case X -> modelName = x;
+                        case Z -> modelName = z;
+                        case Y -> {
+                            // Do nothing; model already initialized as the normal variant
+                        }
+                    }
+                }
+            }
+
+            return ConfiguredModel.builder()
+                    .modelFile(models().withExistingParent(name(woodPillarBlock) + modelName, resLoc("block/wood_pillar" + modelName))
+                            .texture("texture", texture(name(woodPillarBlock))))
+                    .build();
+        }, AztecWoodPillarBlock.WATERLOGGED);
+        simpleBlockItem(woodPillarBlock, models().withExistingParent(name(woodPillarBlock), resLoc("block/wood_pillar")));
     }
 
     private void generatedItem(Block block) {

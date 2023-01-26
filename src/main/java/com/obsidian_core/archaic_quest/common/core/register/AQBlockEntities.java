@@ -1,10 +1,12 @@
 package com.obsidian_core.archaic_quest.common.core.register;
 
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
+import com.obsidian_core.archaic_quest.common.block.AztecThroneBlock;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecThroneBlockEntity;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.tile.AztecCraftingStationBlockEntity;
-import com.obsidian_core.archaic_quest.common.tile.AztecDungeonDoorBlockEntity;
-import com.obsidian_core.archaic_quest.common.tile.FoundryBlockEntity;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecCraftingStationBlockEntity;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
+import com.obsidian_core.archaic_quest.common.blockentity.FoundryBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -27,9 +29,16 @@ public class AQBlockEntities {
                     AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_1.get()
             };
 
+    private static final Supplier<AztecThroneBlock[]> AZTEC_THRONES = () ->
+            new AztecThroneBlock[] {
+                    AQBlocks.AZTEC_THRONE.get(),
+                    AQBlocks.MOSSY_AZTEC_THRONE.get()
+            };
+
 
     public static final RegistryObject<BlockEntityType<AztecCraftingStationBlockEntity>> AZTEC_CRAFTING_STATION = register("aztec_crafting_station", () -> BlockEntityType.Builder.of(AztecCraftingStationBlockEntity::new, AQBlocks.AZTEC_CRAFTING_STATION.get()).build(null));
     public static final RegistryObject<BlockEntityType<AztecDungeonDoorBlockEntity>> AZTEC_DUNGEON_DOOR = register("aztec_dungeon_door", () -> BlockEntityType.Builder.of(AztecDungeonDoorBlockEntity::new, DUNGEON_DOORS.get()).build(null));
+    public static final RegistryObject<BlockEntityType<AztecThroneBlockEntity>> AZTEC_THRONE = register("aztec_throne", () -> BlockEntityType.Builder.of(AztecThroneBlockEntity::new, AZTEC_THRONES.get()).build(null));
     public static final RegistryObject<BlockEntityType<FoundryBlockEntity>> FOUNDRY = register("foundry", () -> BlockEntityType.Builder.of(FoundryBlockEntity::new, AQBlocks.FOUNDRY.get()).build(null));
 
 

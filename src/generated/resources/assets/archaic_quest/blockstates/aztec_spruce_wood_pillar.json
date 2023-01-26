@@ -1,0 +1,76 @@
+{
+  "variants": {
+    "axis=x,connected_x=false,connected_z=false,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_x"
+    },
+    "axis=x,connected_x=false,connected_z=false,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_x"
+    },
+    "axis=x,connected_x=false,connected_z=true,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_z"
+    },
+    "axis=x,connected_x=false,connected_z=true,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_z_extended"
+    },
+    "axis=x,connected_x=true,connected_z=false,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_x"
+    },
+    "axis=x,connected_x=true,connected_z=false,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_x_extended"
+    },
+    "axis=x,connected_x=true,connected_z=true,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_xz"
+    },
+    "axis=x,connected_x=true,connected_z=true,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_xz_extended"
+    },
+    "axis=y,connected_x=false,connected_z=false,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar"
+    },
+    "axis=y,connected_x=false,connected_z=false,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_extended"
+    },
+    "axis=y,connected_x=false,connected_z=true,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_z"
+    },
+    "axis=y,connected_x=false,connected_z=true,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_z_extended"
+    },
+    "axis=y,connected_x=true,connected_z=false,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_x"
+    },
+    "axis=y,connected_x=true,connected_z=false,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_x_extended"
+    },
+    "axis=y,connected_x=true,connected_z=true,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_xz"
+    },
+    "axis=y,connected_x=true,connected_z=true,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_xz_extended"
+    },
+    "axis=z,connected_x=false,connected_z=false,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_z"
+    },
+    "axis=z,connected_x=false,connected_z=false,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_z"
+    },
+    "axis=z,connected_x=false,connected_z=true,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_z"
+    },
+    "axis=z,connected_x=false,connected_z=true,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_z_extended"
+    },
+    "axis=z,connected_x=true,connected_z=false,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_x"
+    },
+    "axis=z,connected_x=true,connected_z=false,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_x_extended"
+    },
+    "axis=z,connected_x=true,connected_z=true,extended=false": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_xz"
+    },
+    "axis=z,connected_x=true,connected_z=true,extended=true": {
+      "model": "archaic_quest:block/aztec_spruce_wood_pillar_connect_xz_extended"
+    }
+  }
+}

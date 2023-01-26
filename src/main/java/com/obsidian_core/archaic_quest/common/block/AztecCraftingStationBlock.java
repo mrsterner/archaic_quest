@@ -1,7 +1,6 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import com.obsidian_core.archaic_quest.common.tile.AztecCraftingStationBlockEntity;
-import net.minecraft.client.renderer.RenderType;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecCraftingStationBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -12,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -35,7 +33,7 @@ public class AztecCraftingStationBlock extends Block implements EntityBlock {
     // Whether this block state is the "master" block or a sub-block for collision purposes.
     public static final EnumProperty<BlockType> BLOCK_TYPE = EnumProperty.create("block_type", BlockType.class);
 
-    private static final VoxelShape[] dummyBlockCollisions = new VoxelShape[] {
+    private static final VoxelShape[] shapes = new VoxelShape[] {
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
@@ -74,7 +72,7 @@ public class AztecCraftingStationBlock extends Block implements EntityBlock {
         }
         else {
             int i = state.getValue(FACING).get2DDataValue();
-            return dummyBlockCollisions[type == BlockType.LEFT ? i : i + 4];
+            return shapes[type == BlockType.LEFT ? i : i + 4];
         }
     }
 

@@ -41,6 +41,8 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         addBlock(AQBlocks.AZTEC_DUNGEON_DOOR_1, "Aztec Dungeon Door 1");
         addBlock(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_0, "Aztec Dungeon Door Frame 0");
         addBlock(AQBlocks.AZTEC_DUNGEON_DOOR_FRAME_1, "Aztec Dungeon Door Frame 1");
+        addBlock(AQBlocks.AZTEC_THRONE, "Aztec Throne");
+        addBlock(AQBlocks.MOSSY_AZTEC_THRONE, "Ass-tech Throne");
 
         addBlock(AQBlocks.BRONZE_SPEAR_TRAP, "Bronze Spear Trap");
         addBlock(AQBlocks.GOLD_SPEAR_TRAP, "Gold Spear Trap");

@@ -65,7 +65,7 @@ public class AQConfiguredFeatures {
                     new MegaJungleTrunkPlacer(10, 2, 19), BlockStateProvider.simple(Blocks.JUNGLE_LEAVES),
                     new MegaJungleFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 2),
                     new TwoLayersFeatureSize(1, 1, 2)))
-                    .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F)))
+                    .decorators(ImmutableList.of(TrunkVineVarDecorator.INSTANCE, new LeafVineVarDecorator(0.40F)))
                     .build());
 
     public static final RegistryObject<ConfiguredFeature<OreConfiguration, ?>> TIN_ORE = registerOre("tin_ore", () -> new OreConfiguration(OreFeatures.NATURAL_STONE, AQBlocks.TIN_ORE.get().defaultBlockState(), 9));
