@@ -4,5 +4,23 @@
     "sounds": [
       "archaic_quest:misc/death_whistle_shriek"
     ]
+  },
+  "vase_break": {
+    "subtitle": "sound_event.archaic_quest.block.vase_break",
+    "sounds": [
+      "archaic_quest:block/vase_break"
+    ]
+  },
+  "aztec_door_opening": {
+    "subtitle": "sound_event.archaic_quest.misc.aztec_door_opening",
+    "sounds": [
+      "archaic_quest:misc/aztec_door_toggle"
+    ]
+  },
+  "aztec_door_closing": {
+    "subtitle": "sound_event.archaic_quest.misc.aztec_door_closing",
+    "sounds": [
+      "archaic_quest:misc/aztec_door_toggle"
+    ]
   }
 }

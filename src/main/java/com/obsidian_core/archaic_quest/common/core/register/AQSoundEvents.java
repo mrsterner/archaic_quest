@@ -11,6 +11,10 @@ public class AQSoundEvents {
     public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ArchaicQuest.MODID);
 
     public static final RegistryObject<SoundEvent> DEATH_WHISTLE_SHRIEK = registerSound("death_whistle_shriek");
+    public static final RegistryObject<SoundEvent> AZTEC_DOOR_OPENING = registerSound("aztec_door_opening");
+    public static final RegistryObject<SoundEvent> AZTEC_DOOR_CLOSING = registerSound("aztec_door_closing");
+    public static final RegistryObject<SoundEvent> VASE_BREAK = registerSound("vase_break");
+
 
 
     private static RegistryObject<SoundEvent> registerSound(String name) {

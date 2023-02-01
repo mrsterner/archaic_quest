@@ -3,8 +3,10 @@ package com.obsidian_core.archaic_quest.common.block;
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
+import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -185,7 +187,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
 
     public AztecDungeonDoorBlock(DungeonDoorType doorType) {
-        super(BlockBehaviour.Properties.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get()).noOcclusion());
+        super(BlockBehaviour.Properties.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get()));
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(BLOCK_TYPE, BlockType.MASTER).setValue(IS_OPEN, false));
         this.doorType = doorType;
     }
@@ -226,8 +228,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
                         for (BlockPos p : BlockPos.betweenClosed(masterPos.west(), masterPos.east().above(2))) {
                             level.destroyBlock(p, false);
                         }
-                    }
-                    else {
+                    } else {
                         for (BlockPos p : BlockPos.betweenClosed(masterPos.south(), masterPos.north().above(2))) {
                             level.destroyBlock(p, false);
                         }
@@ -236,6 +237,12 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
             }
         }
         super.onRemove(state, level, pos, newState, flag);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
     }
 
     @Override
@@ -271,10 +278,12 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
                     if (dungeonDoor.isOpen()) {
                         dungeonDoor.setDoorState(DoorState.CLOSING);
                         dungeonDoor.sendDoorStateUpdate();
+                        level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_CLOSING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                     }
                     else if (dungeonDoor.isClosed()) {
                         dungeonDoor.setDoorState(DoorState.OPENING);
                         dungeonDoor.sendDoorStateUpdate();
+                        level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_OPENING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                     }
                 }
             }

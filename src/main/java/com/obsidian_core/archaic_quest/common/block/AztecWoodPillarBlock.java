@@ -25,6 +25,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
@@ -36,6 +37,27 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
     public static final BooleanProperty CONNECTED_X = BooleanProperty.create("connected_x");
     public static final BooleanProperty CONNECTED_Z = BooleanProperty.create("connected_z");
+
+
+    private static final VoxelShape[] shapes = new VoxelShape[] {
+            // normal
+            Block.box(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D),
+            // Z axis
+            Block.box(0.0D, 10.0D, 0.0D, 6.0D, 16.0D, 16.0D),
+            // X axis
+            Block.box(0.0D, 4.0D, 0.0D, 16.0D, 10.0D, 6.0D),
+            // Connect Z
+            Shapes.or(Block.box(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D),
+                    Block.box(0.0D, 10.0D, 0.0D, 6.0D, 16.0D, 16.0D)),
+            // Connect X
+            Shapes.or(Block.box(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D),
+                    Block.box(0.0D, 4.0D, 0.0D, 16.0D, 10.0D, 6.0D)),
+            // Connect XZ
+            Shapes.or(Block.box(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D),
+                Block.box(0.0D, 10.0D, 0.0D, 6.0D, 16.0D, 16.0D),
+                Block.box(0.0D, 4.0D, 0.0D, 16.0D, 10.0D, 6.0D))
+    };
+
 
     private static final VoxelShape SHAPE = Block.box(5.0D, 5.0D, 5.0D, 11.0D, 11.0D, 11.0D);
 
@@ -52,7 +74,22 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
     @Override
     @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        boolean connectedX = state.getValue(CONNECTED_X);
+        boolean connectedZ = state.getValue(CONNECTED_Z);
+        Direction.Axis axis = state.getValue(AXIS);
+
+        switch (axis) {
+            case Z: return shapes[1];
+            case X: return shapes[2];
+            default: {
+                if (connectedX && connectedZ)
+                    return shapes[5];
+                else if (connectedZ)
+                    return shapes[3];
+
+                return connectedX ? shapes[4] : shapes[0];
+            }
+        }
     }
 
     @Override
@@ -77,23 +114,13 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
     public BlockState updateShape(BlockState newState, Direction neighborDir, BlockState state, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         boolean waterlogged = level.getBlockState(pos).getFluidState().is(FluidTags.WATER);
         Direction.Axis axis = newState.getValue(AXIS);
-        boolean extended = newState.getValue(EXTENDED);
-        boolean slabTopAbove = level.getBlockState(pos.above()).getBlock() instanceof SlabBlock && level.getBlockState(pos.above()).getValue(SlabBlock.TYPE) == SlabType.TOP;
 
-        if (!extended) {
-            if (slabTopAbove)
-                newState = newState.setValue(EXTENDED, true);
-        }
-        else {
-            if (!slabTopAbove)
-                newState = newState.setValue(EXTENDED, false);
-        }
-        if ((level.getBlockState(pos.north()).is(this) || level.getBlockState(pos.south()).is(this)) && axis == Direction.Axis.Y) {
-            newState = newState.setValue(CONNECTED_Z, true);
-        }
-        if ((level.getBlockState(pos.east()).is(this) || level.getBlockState(pos.west()).is(this)) && axis == Direction.Axis.Y) {
-            newState = newState.setValue(CONNECTED_X, true);
-        }
+        boolean slabTopAbove = level.getBlockState(pos.above()).getBlock() instanceof SlabBlock && level.getBlockState(pos.above()).getValue(SlabBlock.TYPE) == SlabType.TOP;
+        boolean zConnectable = areZNeighborsConnectable(level, pos) && axis == Direction.Axis.Y;
+        boolean xConnectable = areXNeighborsConnectable(level, pos) && axis == Direction.Axis.Y;
+
+        newState = newState.setValue(EXTENDED, slabTopAbove).setValue(CONNECTED_Z, zConnectable).setValue(CONNECTED_X, xConnectable);
+
         return newState.setValue(WATERLOGGED, waterlogged);
     }
 
@@ -109,16 +136,29 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
             if (level.getBlockState(clickedPos.above()).getValue(SlabBlock.TYPE) == SlabType.TOP)
                 placeState = placeState.setValue(EXTENDED, true);
         }
-        if ((level.getBlockState(clickedPos.north()).is(this) || level.getBlockState(clickedPos.south()).is(this)) && axis == Direction.Axis.Y) {
+        if (areZNeighborsConnectable(level, clickedPos) && axis == Direction.Axis.Y) {
             placeState = placeState.setValue(CONNECTED_Z, true);
         }
-        if ((level.getBlockState(clickedPos.east()).is(this) || level.getBlockState(clickedPos.west()).is(this)) && axis == Direction.Axis.Y) {
+        if (areXNeighborsConnectable(level, clickedPos) && axis == Direction.Axis.Y) {
             placeState = placeState.setValue(CONNECTED_X, true);
         }
-        ArchaicQuest.LOGGER.info("State: " + placeState);
-
         return placeState.setValue(WATERLOGGED, waterlogged);
     }
+
+    private boolean areZNeighborsConnectable(LevelAccessor level, BlockPos origin) {
+        BlockState northState = level.getBlockState(origin.north());
+        BlockState southState = level.getBlockState(origin.south());
+
+        return (northState.is(this) && northState.getValue(AXIS) != Direction.Axis.Y) || (southState.is(this) && southState.getValue(AXIS) != Direction.Axis.Y);
+    }
+
+    private boolean areXNeighborsConnectable(LevelAccessor level, BlockPos origin) {
+        BlockState eastState = level.getBlockState(origin.east());
+        BlockState westState = level.getBlockState(origin.west());
+
+        return (eastState.is(this) && eastState.getValue(AXIS) != Direction.Axis.Y) || (westState.is(this) && westState.getValue(AXIS) != Direction.Axis.Y);
+    }
+
 
     @Override
     @SuppressWarnings("deprecation")
