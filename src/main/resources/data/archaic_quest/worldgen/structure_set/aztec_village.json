@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "archaic_quest:aztec_village",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1555222111,
+    "spacing": 20,
+    "separation": 16
+  }
+}

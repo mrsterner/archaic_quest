@@ -60,7 +60,7 @@ public class LootModifierAdd extends LootModifier {
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if (context.getQueriedLootTableId().equals(targetLootTable)) {
             Random random = new Random();
-            ItemStack stack = new ItemStack(this.itemToAdd, random.nextInt(this.maxStackCount + 1));
+            ItemStack stack = new ItemStack(itemToAdd, random.nextInt(maxStackCount + 1));
 
             generatedLoot.add(stack);
         }

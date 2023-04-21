@@ -7,20 +7,15 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
-import java.util.Map;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @JeiPlugin
 public class AQJeiPlugin implements IModPlugin {
-
-    public static final Map<ItemStack, Component> ITEM_INGREDIENT_INFO = new HashMap<>();
 
     private static final ResourceLocation ID = ArchaicQuest.resourceLoc("jei_plugin");
 
@@ -52,8 +47,9 @@ public class AQJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        ITEM_INGREDIENT_INFO.forEach((itemStack, textComponent) -> {
-            registration.addIngredientInfo(itemStack, VanillaTypes.ITEM_STACK, textComponent);
+        ItemDescs.ITEM_INGREDIENT_INFO.forEach((supplier, function) -> {
+            ItemStack itemStack = supplier.get();
+            registration.addIngredientInfo(itemStack, VanillaTypes.ITEM_STACK, function.apply(supplier));
         });
     }
 

@@ -34,6 +34,7 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         addBlock(AQBlocks.GRANITE_QUARTZ_ORE, "Granite Quartz Ore");
         addBlock(AQBlocks.ONYX, "Onyx");
 
+        addBlock(AQBlocks.AZTEC_VASE, "Aztec Vase");
         addBlock(AQBlocks.AZTEC_PILLAR, "Aztec Pillar");
         addBlock(AQBlocks.AZTEC_SPRUCE_WOOD_PILLAR, "Aztec Spruce Pillar");
         addBlock(AQBlocks.AZTEC_SPRUCE_WOOD_PILLAR_ANDESITE_BASE, "Aztec Spruce Pillar Base");

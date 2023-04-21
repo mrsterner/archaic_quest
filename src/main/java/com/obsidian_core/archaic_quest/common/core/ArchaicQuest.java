@@ -8,6 +8,8 @@ import com.obsidian_core.archaic_quest.common.core.register.*;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.decorators.AQTreeDecoratorType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -49,6 +51,7 @@ public class ArchaicQuest {
         AQConfiguredFeatures.CF_REGISTRY.register(eventBus);
         AQConfiguredFeatures.P_REGISTRY.register(eventBus);
         AQTreeDecoratorType.REGISTRY.register(eventBus);
+        AQStructures.REGISTRY.register(eventBus);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

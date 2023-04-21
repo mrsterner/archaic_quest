@@ -1,0 +1,15 @@
+{
+  "name": "archaic_quest:aztec_village/cross_path",
+  "fallback": "archaic_quest:aztec_village/path_stop",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "archaic_quest:aztec_village/cross_path",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

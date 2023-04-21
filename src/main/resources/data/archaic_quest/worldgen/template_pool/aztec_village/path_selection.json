@@ -1,0 +1,24 @@
+{
+  "name": "archaic_quest:aztec_village/path_selection",
+  "fallback": "archaic_quest:aztec_village/path_stop",
+  "elements": [
+    {
+      "weight": 50,
+      "element": {
+        "location": "archaic_quest:aztec_village/long_path",
+        "processors": [],
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "location": "archaic_quest:aztec_village/branch_path",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

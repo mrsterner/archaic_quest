@@ -105,6 +105,7 @@ dependencies {
     implementation fg.deobf("curse.maven:jei-238222:${jei_version}")
     implementation fg.deobf("curse.maven:terrablender-563928:${terra_version}")
 
+    runtimeOnly fg.deobf("curse.maven:worldedit-225608:${we_version}")
     runtimeOnly fg.deobf("curse.maven:mekanism-268560:${mekanism_version}")
 }
 

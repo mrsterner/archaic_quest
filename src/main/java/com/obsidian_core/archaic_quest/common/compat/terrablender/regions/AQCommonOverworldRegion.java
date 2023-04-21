@@ -6,6 +6,7 @@ import com.obsidian_core.archaic_quest.common.core.register.AQBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.Climate;
 import terrablender.api.ParameterUtils;
 import terrablender.api.Region;
@@ -23,25 +24,13 @@ public class AQCommonOverworldRegion extends Region {
     @Override
     public void addBiomes(Registry<Biome> registry, Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper) {
         // AZTEC JUNGLE
-        List<Climate.ParameterPoint> parameterPoints = new ParameterUtils.ParameterPointListBuilder()
-                .continentalness(ParameterUtils.Continentalness.INLAND, ParameterUtils.Continentalness.FAR_INLAND, ParameterUtils.Continentalness.COAST)
-                        .depth(ParameterUtils.Depth.SURFACE, ParameterUtils.Depth.FLOOR)
-                                .erosion(ParameterUtils.Erosion.EROSION_0, ParameterUtils.Erosion.EROSION_1)
-                                        .humidity(ParameterUtils.Humidity.HUMID, ParameterUtils.Humidity.WET)
-                                                .weirdness(ParameterUtils.Weirdness.MID_SLICE_NORMAL_ASCENDING, ParameterUtils.Weirdness.LOW_SLICE_VARIANT_ASCENDING, ParameterUtils.Weirdness.HIGH_SLICE_NORMAL_DESCENDING)
-                                                        .temperature(ParameterUtils.Temperature.WARM)
-                                                                .build();
 
-        parameterPoints.forEach((parameterPoint) -> addBiome(mapper, parameterPoint, AQBiomes.AZTEC_JUNGLE.getKey()));
-
-
-        /*
         addModifiedVanillaOverworldBiomes(mapper, builder -> {
-            builder.replaceBiome(Biomes.DESERT, AQBiomes.AZTEC_JUNGLE.getKey());
             builder.replaceBiome(Biomes.JUNGLE, AQBiomes.AZTEC_JUNGLE.getKey());
             builder.replaceBiome(Biomes.SPARSE_JUNGLE, AQBiomes.AZTEC_JUNGLE.getKey());
+            builder.replaceBiome(Biomes.BAMBOO_JUNGLE, AQBiomes.AZTEC_JUNGLE.getKey());
+            builder.replaceBiome(Biomes.DESERT, AQBiomes.AZTEC_JUNGLE.getKey());
+            builder.replaceBiome(Biomes.PLAINS, AQBiomes.AZTEC_JUNGLE.getKey());
         });
-
-         */
     }
 }

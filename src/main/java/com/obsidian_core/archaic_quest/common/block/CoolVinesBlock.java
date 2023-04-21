@@ -9,15 +9,13 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.IForgeShearable;
@@ -85,14 +83,19 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction face = context.getClickedFace();
-        BlockPos behindPos = context.getClickedPos().relative(face.getOpposite());
+        BlockPos pos = context.getClickedPos();
+        BlockPos behindPos = pos.relative(face.getOpposite());
         Level level = context.getLevel();
 
-        if (face != Direction.DOWN && face != Direction.UP) {
-            if (Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
-                    || level.getBlockState(behindPos).isFaceSturdy(level, behindPos, face)) {
-                return defaultBlockState().setValue(FACING, face);
-            }
+        if (face == Direction.DOWN || face == Direction.UP) {
+            face = context.getHorizontalDirection().getOpposite();
+        }
+
+        if (Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
+                || level.getBlockState(behindPos).isFaceSturdy(level, behindPos, face)
+                || (level.getBlockState(behindPos).getBlock() instanceof SlabBlock && level.getBlockState(behindPos).getValue(SlabBlock.TYPE) == SlabType.TOP)
+                || level.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN)) {
+            return defaultBlockState().setValue(FACING, face);
         }
         return null;
     }
@@ -106,6 +109,8 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
         return Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
                 || level.getBlockState(behindPos).isFaceSturdy(level, behindPos, face)
+                || (level.getBlockState(behindPos).getBlock() instanceof SlabBlock && level.getBlockState(behindPos).getValue(SlabBlock.TYPE) == SlabType.TOP)
+                || level.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN)
                 || (aboveState.is(this) && aboveState.getValue(FACING) == face && !aboveState.getValue(CUT));
     }
 

@@ -1,0 +1,78 @@
+{
+  "name": "archaic_quest:aztec_village/path_or_structure",
+  "fallback": "archaic_quest:aztec_village/path_stop",
+  "elements": [
+    {
+      "weight": 40,
+      "element": {
+        "location": "archaic_quest:aztec_village/long_path",
+        "processors": [],
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 15,
+      "element": {
+        "location": "archaic_quest:aztec_village/path_turn",
+        "processors": [],
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "location": "archaic_quest:aztec_village/branch_path",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "archaic_quest:aztec_village/cross_path",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 8,
+      "element": {
+        "location": "archaic_quest:aztec_village/house_1",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "location": "archaic_quest:aztec_village/blacksmith",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 8,
+      "element": {
+        "location": "archaic_quest:aztec_village/plantation",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "location": "archaic_quest:aztec_village/quarry_building",
+        "processors": [],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
