@@ -180,8 +180,8 @@ public class AQBlocks {
 
     public static final RegistryObject<Block> BRONZE_SPEAR_TRAP = registerBlock("bronze_spear_trap", AQCreativeTabs.DECORATION, () -> new SpearTrapBlock(2.0F, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_BROWN).strength(1.0F).sound(SoundType.WOOD)), BlockTags.MINEABLE_WITH_AXE);
     public static final RegistryObject<Block> GOLD_SPEAR_TRAP = registerBlock("gold_spear_trap", AQCreativeTabs.DECORATION, () -> new SpearTrapBlock(1.75F, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.GOLD).strength(0.9F).sound(SoundType.WOOD)), BlockTags.MINEABLE_WITH_AXE);
-    public static final RegistryObject<AztecPoisonTrapBlock> AZTEC_POISON_TRAP = registerBlock("aztec_poison_trap", AQCreativeTabs.BLOCKS, () -> new AztecPoisonTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
-    public static final RegistryObject<SpikeTrapBlock> AZTEC_ANDESITE_SPIKE_TRAP = registerBlock("aztec_andesite_spike_trap", AQCreativeTabs.BLOCKS, () -> new SpikeTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
+    public static final RegistryObject<AztecPoisonTrapBlock> AZTEC_POISON_TRAP = registerBlock("aztec_poison_trap", AQCreativeTabs.DECORATION, () -> new AztecPoisonTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
+    public static final RegistryObject<SpikeTrapBlock> AZTEC_ANDESITE_SPIKE_TRAP = registerBlock("aztec_andesite_spike_trap", AQCreativeTabs.DECORATION, () -> new SpikeTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_0 = registerBlock("andesite_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_1 = registerBlock("andesite_aztec_trap_1", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<Block> STONE_AZTEC_BRICKS_0 = simpleBlockWithVars("stone_aztec_bricks_0", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP, BlockTags.MINEABLE_WITH_PICKAXE);
@@ -190,7 +190,7 @@ public class AQBlocks {
     public static final RegistryObject<Block> AZTEC_SPRUCE_WOOD_PILLAR_ANDESITE_BASE = registerBlock("aztec_spruce_wood_pillar_andesite_base", AQCreativeTabs.DECORATION, () -> new AztecWoodPillarBaseBlock(BlockBehaviour.Properties.copy(Blocks.COBBLESTONE)), BlockTags.MINEABLE_WITH_PICKAXE);
 
     public static final RegistryObject<CeramicVaseBlock> AZTEC_VASE = registerBlock("aztec_vase", AQCreativeTabs.DECORATION, () -> new CeramicVaseBlock(BlockBehaviour.Properties.of(Material.STONE).sound(AQSoundTypes.CERAMIC_VASE).strength(0.7F)), BlockTags.MINEABLE_WITH_PICKAXE);
-    public static final RegistryObject<Block> INFESTED_VASE = registerBlock("infested_vase", AQCreativeTabs.DECORATION, () -> new CeramicVaseBlock(BlockBehaviour.Properties.of(Material.STONE).sound(AQSoundTypes.CERAMIC_VASE).strength(0.35F)), BlockTags.MINEABLE_WITH_PICKAXE);
+    public static final RegistryObject<Block> INFESTED_VASE = registerBlock("aztec_infested_vase", AQCreativeTabs.DECORATION, () -> new CeramicVaseBlock(BlockBehaviour.Properties.of(Material.STONE).sound(AQSoundTypes.CERAMIC_VASE).strength(0.35F)), BlockTags.MINEABLE_WITH_PICKAXE);
 
     public static final RegistryObject<Block> AZTEC_CRAFTING_STATION = registerBlock("aztec_crafting_station",
             () -> new AztecCraftingStationBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion().strength(1.5F, 4.0F).sound(SoundType.STONE)),
