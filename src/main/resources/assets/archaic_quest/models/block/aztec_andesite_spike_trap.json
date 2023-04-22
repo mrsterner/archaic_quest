@@ -1,0 +1,6 @@
+{
+  "parent": "archaic_quest:block/spike_trap_base",
+  "textures": {
+    "texture": "archaic_quest:block/aztec_andesite_spike_trap"
+  }
+}

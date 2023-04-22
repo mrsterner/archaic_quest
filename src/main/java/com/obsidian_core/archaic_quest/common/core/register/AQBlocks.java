@@ -178,6 +178,10 @@ public class AQBlocks {
     public static final RegistryObject<AztecThroneBlock> MOSSY_AZTEC_THRONE = registerThrone("mossy_aztec_throne", ThroneType.MOSSY_THRONE, BlockTags.MINEABLE_WITH_PICKAXE);
 
 
+    public static final RegistryObject<Block> BRONZE_SPEAR_TRAP = registerBlock("bronze_spear_trap", AQCreativeTabs.DECORATION, () -> new SpearTrapBlock(2.0F, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_BROWN).strength(1.0F).sound(SoundType.WOOD)), BlockTags.MINEABLE_WITH_AXE);
+    public static final RegistryObject<Block> GOLD_SPEAR_TRAP = registerBlock("gold_spear_trap", AQCreativeTabs.DECORATION, () -> new SpearTrapBlock(1.75F, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.GOLD).strength(0.9F).sound(SoundType.WOOD)), BlockTags.MINEABLE_WITH_AXE);
+    public static final RegistryObject<AztecPoisonTrapBlock> AZTEC_POISON_TRAP = registerBlock("aztec_poison_trap", AQCreativeTabs.BLOCKS, () -> new AztecPoisonTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
+    public static final RegistryObject<SpikeTrapBlock> AZTEC_ANDESITE_SPIKE_TRAP = registerBlock("aztec_andesite_spike_trap", AQCreativeTabs.BLOCKS, () -> new SpikeTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_0 = registerBlock("andesite_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<Block> ANDESITE_AZTEC_TRAP_1 = registerBlock("andesite_aztec_trap_1", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.ANDESITE_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<Block> STONE_AZTEC_BRICKS_0 = simpleBlockWithVars("stone_aztec_bricks_0", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP, BlockTags.MINEABLE_WITH_PICKAXE);
@@ -223,8 +227,6 @@ public class AQBlocks {
     public static final RegistryObject<Block> GOLD_AZTEC_TRAP_0 = registerBlock("gold_aztec_trap_0", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.GOLD_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
     public static final RegistryObject<Block> GOLD_AZTEC_TRAP_1 = registerBlock("gold_aztec_trap_1", AQCreativeTabs.BLOCKS, () -> new AztecTrapBlock(AQBlocks.GOLD_BRICKS_PROP), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-    public static final RegistryObject<Block> BRONZE_SPEAR_TRAP = registerBlock("bronze_spear_trap", AQCreativeTabs.DECORATION, () -> new SpearTrapBlock(2.0F, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_BROWN).strength(1.0F).sound(SoundType.WOOD)));
-    public static final RegistryObject<Block> GOLD_SPEAR_TRAP = registerBlock("gold_spear_trap", AQCreativeTabs.DECORATION, () -> new SpearTrapBlock(1.75F, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.GOLD).strength(0.9F).sound(SoundType.WOOD)));
 
 
     // MISC

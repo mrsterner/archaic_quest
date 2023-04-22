@@ -47,6 +47,8 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
 
         addBlock(AQBlocks.BRONZE_SPEAR_TRAP, "Bronze Spear Trap");
         addBlock(AQBlocks.GOLD_SPEAR_TRAP, "Gold Spear Trap");
+        addBlock(AQBlocks.AZTEC_POISON_TRAP, "Aztec Poison Trap");
+        addBlock(AQBlocks.AZTEC_ANDESITE_SPIKE_TRAP, "Andesite Aztec Spike Trap");
 
         addBlock(AQBlocks.KNAPPING_TABLE, "Knapping Table");
         addBlock(AQBlocks.AZTEC_CRAFTING_STATION, "Aztec Crafting Station");

@@ -43,6 +43,7 @@ public class ArchaicQuest {
         AQItems.REGISTRY.register(eventBus);
         AQEntities.REGISTRY.register(eventBus);
         AQBiomes.REGISTRY.register(eventBus);
+        AQParticles.REGISTRY.register(eventBus);
         AQBiomeModifiers.REGISTRY.register(eventBus);
         AQGlobalLootModifiers.REGISTRY.register(eventBus);
         AQSoundEvents.REGISTRY.register(eventBus);

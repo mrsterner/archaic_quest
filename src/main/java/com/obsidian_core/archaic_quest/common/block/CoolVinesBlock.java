@@ -1,5 +1,6 @@
 package com.obsidian_core.archaic_quest.common.block;
 
+import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -90,11 +91,14 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
         if (face == Direction.DOWN || face == Direction.UP) {
             face = context.getHorizontalDirection().getOpposite();
         }
+        BlockState behindState = level.getBlockState(behindPos);
+        BlockState aboveState = level.getBlockState(pos.above());
 
         if (Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
-                || level.getBlockState(behindPos).isFaceSturdy(level, behindPos, face)
-                || (level.getBlockState(behindPos).getBlock() instanceof SlabBlock && level.getBlockState(behindPos).getValue(SlabBlock.TYPE) == SlabType.TOP)
-                || level.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN)) {
+                || behindState.isFaceSturdy(level, behindPos, face)
+                || (behindState.getBlock() instanceof SlabBlock && behindState.getValue(SlabBlock.TYPE) == SlabType.TOP)
+                || (aboveState.getBlock() instanceof VerticalSlabBlock && aboveState.getValue(VerticalSlabBlock.SLAB_STATE).getDirection() == face )
+                || aboveState.isFaceSturdy(level, pos.above(), Direction.DOWN)) {
             return defaultBlockState().setValue(FACING, face);
         }
         return null;
@@ -105,12 +109,14 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         Direction face = state.getValue(FACING);
         BlockPos behindPos = pos.relative(face.getOpposite());
+        BlockState behindState = level.getBlockState(behindPos);
         BlockState aboveState = level.getBlockState(pos.above());
 
         return Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
-                || level.getBlockState(behindPos).isFaceSturdy(level, behindPos, face)
-                || (level.getBlockState(behindPos).getBlock() instanceof SlabBlock && level.getBlockState(behindPos).getValue(SlabBlock.TYPE) == SlabType.TOP)
-                || level.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN)
+                || behindState.isFaceSturdy(level, behindPos, face)
+                || (behindState.getBlock() instanceof SlabBlock && behindState.getValue(SlabBlock.TYPE) == SlabType.TOP)
+                || (aboveState.getBlock() instanceof VerticalSlabBlock && aboveState.getValue(VerticalSlabBlock.SLAB_STATE).getDirection() == face )
+                || aboveState.isFaceSturdy(level, pos.above(), Direction.DOWN)
                 || (aboveState.is(this) && aboveState.getValue(FACING) == face && !aboveState.getValue(CUT));
     }
 

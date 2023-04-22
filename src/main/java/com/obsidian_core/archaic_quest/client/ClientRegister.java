@@ -1,5 +1,6 @@
 package com.obsidian_core.archaic_quest.client;
 
+import com.obsidian_core.archaic_quest.client.particle.PoisonCloudParticle;
 import com.obsidian_core.archaic_quest.client.render.blockentity.*;
 import com.obsidian_core.archaic_quest.client.render.blockentity.bewlr.BEWLRS;
 import com.obsidian_core.archaic_quest.client.screen.KnappingTableScreen;
@@ -7,6 +8,7 @@ import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.core.register.AQContainers;
+import com.obsidian_core.archaic_quest.common.core.register.AQParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -18,6 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -36,6 +39,11 @@ public class ClientRegister {
         addSkippedHighlightBlocks();
     }
 
+    @SubscribeEvent
+    public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
+        event.register(AQParticles.POISON_CLOUD.get(), PoisonCloudParticle.Factory::new);
+    }
+
     private static void registerScreenMenus() {
         MenuScreens.register(AQContainers.KNAPPING.get(), KnappingTableScreen::new);
     }
@@ -45,6 +53,7 @@ public class ClientRegister {
         event.registerLayerDefinition(AQModelLayers.AZTEC_DUNGEON_DOOR, AztecDungeonDoorRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.AZTEC_CRAFTING_STATION, AztecCraftingStationRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.AZTEC_THRONE, AztecThroneRenderer::createBodyLayer);
+        event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP, SpikeTrapRenderer::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -52,6 +61,7 @@ public class ClientRegister {
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_DUNGEON_DOOR.get(), AztecDungeonDoorRenderer::new);
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_CRAFTING_STATION.get(), AztecCraftingStationRenderer::new);
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_THRONE.get(), AztecThroneRenderer::new);
+        event.registerBlockEntityRenderer(AQBlockEntities.SPIKE_TRAP.get(), SpikeTrapRenderer::new);
 
         for (BEWLRS.Holder holder : BEWLRS.BEWLR_LIST) {
             holder.populate(Minecraft.getInstance().getBlockEntityRenderDispatcher());

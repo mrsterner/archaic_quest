@@ -12,15 +12,21 @@
     ]
   },
   "aztec_door_opening": {
-    "subtitle": "sound_event.archaic_quest.misc.aztec_door_opening",
+    "subtitle": "sound_event.archaic_quest.block.aztec_door_opening",
     "sounds": [
-      "archaic_quest:misc/aztec_door_toggle"
+      "archaic_quest:block/aztec_door_toggle"
     ]
   },
   "aztec_door_closing": {
-    "subtitle": "sound_event.archaic_quest.misc.aztec_door_closing",
+    "subtitle": "sound_event.archaic_quest.block.aztec_door_closing",
     "sounds": [
-      "archaic_quest:misc/aztec_door_toggle"
+      "archaic_quest:block/aztec_door_toggle"
+    ]
+  },
+  "poison_trap_activate": {
+    "subtitle": "sound_event.archaic_quest.block.poison_trap_activate",
+    "sounds": [
+      "archaic_quest:block/poison_trap_activate"
     ]
   }
 }

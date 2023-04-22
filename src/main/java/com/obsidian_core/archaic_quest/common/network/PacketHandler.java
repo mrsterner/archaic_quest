@@ -2,6 +2,7 @@ package com.obsidian_core.archaic_quest.common.network;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateDoorState;
+import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateSpikeTrap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -35,7 +36,7 @@ public class PacketHandler {
     public final void registerMessages() {
         // Server -> Client
         registerMessage(S2CUpdateDoorState.class, S2CUpdateDoorState::encode, S2CUpdateDoorState::decode, S2CUpdateDoorState::handle);
-
+        registerMessage(S2CUpdateSpikeTrap.class, S2CUpdateSpikeTrap::encode, S2CUpdateSpikeTrap::decode, S2CUpdateSpikeTrap::handle);
         // Client -> Server
     }
 

@@ -14,6 +14,7 @@ public class AQSoundEvents {
     public static final RegistryObject<SoundEvent> AZTEC_DOOR_OPENING = registerSound("aztec_door_opening");
     public static final RegistryObject<SoundEvent> AZTEC_DOOR_CLOSING = registerSound("aztec_door_closing");
     public static final RegistryObject<SoundEvent> VASE_BREAK = registerSound("vase_break");
+    public static final RegistryObject<SoundEvent> POISON_TRAP_ACTIVATE = registerSound("poison_trap_activate");
 
 
 

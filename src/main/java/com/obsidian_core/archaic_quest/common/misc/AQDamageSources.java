@@ -10,8 +10,8 @@ import javax.annotation.Nullable;
 
 public class AQDamageSources {
 
-    public static final DamageSource SPEAR_TRAP = create("spear_trap").bypassArmor().setIsFall();
-
+    public static final DamageSource SPEAR_TRAP = create("spear_trap").bypassArmor().bypassEnchantments().bypassMagic().setIsFall();
+    public static final DamageSource SPIKE_TRAP = create("spike_trap").bypassArmor().bypassEnchantments();
 
     public static DamageSource dart(DartEntity dartEntity, @Nullable Entity entity) {
         return new IndirectEntityDamageSource("archaic_quest.dart", dartEntity, entity).setProjectile();

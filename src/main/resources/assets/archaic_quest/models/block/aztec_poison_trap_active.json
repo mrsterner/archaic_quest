@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "archaic_quest:block/aztec_poison_trap_bottom",
+    "up": "archaic_quest:block/aztec_poison_trap_top_active",
+    "north": "archaic_quest:block/aztec_poison_trap_side_active",
+    "south": "archaic_quest:block/aztec_poison_trap_side_active",
+    "west": "archaic_quest:block/aztec_poison_trap_side_active",
+    "east": "archaic_quest:block/aztec_poison_trap_side_active",
+    "particle": "archaic_quest:block/aztec_poison_trap_side_active"
+  }
+}

@@ -1,7 +1,9 @@
 package com.obsidian_core.archaic_quest.common.network.work;
 
+import com.obsidian_core.archaic_quest.common.blockentity.SpikeTrapBlockEntity;
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateDoorState;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
+import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateSpikeTrap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -23,6 +25,20 @@ public class ClientWork {
         if (blockEntity instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
             if (doorState == null) return;
             dungeonDoor.setDoorState(doorState);
+        }
+    }
+
+    public static void handleUpdateSpikeTrap(S2CUpdateSpikeTrap message) {
+        BlockPos pos = message.doorPos;
+        boolean active = message.active;
+        ClientLevel level = Minecraft.getInstance().level;
+
+        if (level == null) return;
+
+        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
+
+        if (blockEntity instanceof SpikeTrapBlockEntity spikeTrap) {
+            spikeTrap.setActive(active);
         }
     }
 }
