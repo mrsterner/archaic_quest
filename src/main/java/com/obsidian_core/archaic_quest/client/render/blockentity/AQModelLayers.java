@@ -10,6 +10,7 @@ public class AQModelLayers {
     public static final ModelLayerLocation AZTEC_DUNGEON_DOOR = create("aztec_dungeon_door");
     public static final ModelLayerLocation AZTEC_THRONE = create("aztec_throne");
     public static final ModelLayerLocation SPIKE_TRAP = create("spike_trap");
+    public static final ModelLayerLocation SPIKE_TRAP_OVERLAY = create("spike_trap_overlay");
 
 
     private static ModelLayerLocation create(String path) {

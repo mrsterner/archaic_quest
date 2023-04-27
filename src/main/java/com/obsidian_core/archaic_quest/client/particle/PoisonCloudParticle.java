@@ -2,8 +2,10 @@ package com.obsidian_core.archaic_quest.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 
+/** Modified copy-paste of {@link CampfireSmokeParticle} */
 public class PoisonCloudParticle extends TextureSheetParticle {
 
     PoisonCloudParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
@@ -27,7 +29,13 @@ public class PoisonCloudParticle extends TextureSheetParticle {
         if (age++ < lifetime && !(alpha <= 0.0F)) {
             xd += (random.nextFloat() / 5000.0F * (float)(random.nextBoolean() ? 1 : -1));
             zd += (random.nextFloat() / 5000.0F * (float)(random.nextBoolean() ? 1 : -1));
-            yd -= gravity;
+
+            if (level.getBlockState(new BlockPos(x, (y + 0.35) - 1, z)).isAir()) {
+                yd -= gravity;
+            }
+            else {
+                yd = 0.0D;
+            }
             move(xd, yd, zd);
 
             if (age >= lifetime - 60 && alpha > 0.01F) {

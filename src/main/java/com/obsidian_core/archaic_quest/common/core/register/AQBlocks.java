@@ -190,7 +190,7 @@ public class AQBlocks {
     public static final RegistryObject<Block> AZTEC_SPRUCE_WOOD_PILLAR_ANDESITE_BASE = registerBlock("aztec_spruce_wood_pillar_andesite_base", AQCreativeTabs.DECORATION, () -> new AztecWoodPillarBaseBlock(BlockBehaviour.Properties.copy(Blocks.COBBLESTONE)), BlockTags.MINEABLE_WITH_PICKAXE);
 
     public static final RegistryObject<CeramicVaseBlock> AZTEC_VASE = registerBlock("aztec_vase", AQCreativeTabs.DECORATION, () -> new CeramicVaseBlock(BlockBehaviour.Properties.of(Material.STONE).sound(AQSoundTypes.CERAMIC_VASE).strength(0.7F)), BlockTags.MINEABLE_WITH_PICKAXE);
-    public static final RegistryObject<Block> INFESTED_VASE = registerBlock("aztec_infested_vase", AQCreativeTabs.DECORATION, () -> new CeramicVaseBlock(BlockBehaviour.Properties.of(Material.STONE).sound(AQSoundTypes.CERAMIC_VASE).strength(0.35F)), BlockTags.MINEABLE_WITH_PICKAXE);
+    public static final RegistryObject<Block> INFESTED_VASE = registerBlock("aztec_infested_vase", AQCreativeTabs.DECORATION, () -> new InfestedVaseBlock(BlockBehaviour.Properties.of(Material.STONE).sound(AQSoundTypes.CERAMIC_VASE).strength(0.35F)), BlockTags.MINEABLE_WITH_PICKAXE);
 
     public static final RegistryObject<Block> AZTEC_CRAFTING_STATION = registerBlock("aztec_crafting_station",
             () -> new AztecCraftingStationBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion().strength(1.5F, 4.0F).sound(SoundType.STONE)),

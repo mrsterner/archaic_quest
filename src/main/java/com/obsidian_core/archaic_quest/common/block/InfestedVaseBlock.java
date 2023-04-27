@@ -25,12 +25,15 @@ public class InfestedVaseBlock extends CeramicVaseBlock {
 
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-        Silverfish silverfish = EntityType.SILVERFISH.create(level);
+        if (!player.isCreative()) {
 
-        if (silverfish != null) {
-            silverfish.moveTo((double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D, 0.0F, 0.0F);
-            level.addFreshEntity(silverfish);
-            silverfish.spawnAnim();
+            Silverfish silverfish = EntityType.SILVERFISH.create(level);
+
+            if (silverfish != null) {
+                silverfish.moveTo((double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D, 0.0F, 0.0F);
+                level.addFreshEntity(silverfish);
+                silverfish.spawnAnim();
+            }
         }
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }

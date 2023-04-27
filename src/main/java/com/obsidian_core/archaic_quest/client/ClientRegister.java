@@ -54,6 +54,7 @@ public class ClientRegister {
         event.registerLayerDefinition(AQModelLayers.AZTEC_CRAFTING_STATION, AztecCraftingStationRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.AZTEC_THRONE, AztecThroneRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP, SpikeTrapRenderer::createBodyLayer);
+        event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP_OVERLAY, SpikeTrapRenderer::createOverlayBodyLayer);
     }
 
     @SubscribeEvent

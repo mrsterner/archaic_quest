@@ -1,17 +1,22 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.blockentity.AztecPoisonTrapBlockEntity;
-import com.obsidian_core.archaic_quest.common.blockentity.SpikeTrapBlockEntity;
 import com.obsidian_core.archaic_quest.common.core.register.AQParticles;
-import com.obsidian_core.archaic_quest.common.network.NetworkHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,6 +25,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -52,7 +59,7 @@ public class AztecPoisonTrapBlock extends Block implements EntityBlock {
                 final double z = center.z() + (random.nextGaussian() * 1.5D);
 
                 if (level.getBlockState(pos.above().offset((int) x, 0, (int) z)).isAir()) {
-                    level.addParticle(AQParticles.POISON_CLOUD.get(), x, center.y(), z, 0.0D, 0.0D, 0.0D);
+                    level.addParticle(AQParticles.POISON_CLOUD.get(), x, center.y(), z, 0.0D, -0.01D, 0.0D);
                 }
             }
         }

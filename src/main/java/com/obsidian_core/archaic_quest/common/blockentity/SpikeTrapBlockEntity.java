@@ -1,6 +1,7 @@
 package com.obsidian_core.archaic_quest.common.blockentity;
 
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
+import com.obsidian_core.archaic_quest.common.block.SpikeTrapBlock;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import net.minecraft.core.BlockPos;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import static com.obsidian_core.archaic_quest.common.block.SpikeTrapBlock.Mode;
 
 import java.util.List;
 
@@ -30,6 +32,8 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
     private final int maxSpikeRise = 3;
     private int spikeRise = 0;
+
+    private Mode mode = Mode.NORMAL;
 
 
     public SpikeTrapBlockEntity(BlockPos pos, BlockState state) {
@@ -78,6 +82,14 @@ public class SpikeTrapBlockEntity extends BlockEntity {
         return spikeRise;
     }
 
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
     @Override
     public void load(CompoundTag compoundTag) {
         super.load(compoundTag);
@@ -89,6 +101,11 @@ public class SpikeTrapBlockEntity extends BlockEntity {
         if (compoundTag.contains("SpikeRise", Tag.TAG_ANY_NUMERIC)) {
             spikeRise = Mth.clamp(compoundTag.getInt("SpikeRise"), 0, maxSpikeRise);
         }
+
+        if (compoundTag.contains("Mode", Tag.TAG_STRING)) {
+            Mode mode = Mode.getFromName(compoundTag.getString("Mode"));
+            this.mode = mode == null ? Mode.NORMAL : mode;
+        }
     }
 
     @Override
@@ -97,11 +114,13 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
         compoundTag.putBoolean("Active", active);
         compoundTag.putInt("SpikeRise", spikeRise);
+        compoundTag.putString("Mode", mode.getSerializedName());
     }
 
     private void writeUpdateData(CompoundTag compoundTag) {
         compoundTag.putBoolean("Active", active);
         compoundTag.putInt("SpikeRise", spikeRise);
+        compoundTag.putString("Mode", mode.getSerializedName());
     }
 
 
@@ -127,13 +146,17 @@ public class SpikeTrapBlockEntity extends BlockEntity {
         if (tag.contains("SpikeRise", Tag.TAG_ANY_NUMERIC)) {
             spikeRise = Mth.clamp(tag.getInt("SpikeRise"), 0, maxSpikeRise);
         }
+        if (tag.contains("Mode", Tag.TAG_STRING)) {
+            Mode mode = Mode.getFromName(tag.getString("Mode"));
+            this.mode = mode == null ? Mode.NORMAL : mode;
+        }
     }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         if(level.isClientSide) {
             if (pkt.getTag() != null)
-                this.handleUpdateTag(pkt.getTag());
+                handleUpdateTag(pkt.getTag());
         }
     }
 
@@ -147,7 +170,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
     public AABB getRenderBoundingBox() {
         BlockPos pos = getBlockPos();
         return getBlockState().getBlock() instanceof AztecDungeonDoorBlock
-                ? new AABB(pos.offset(0, 0, 0), pos.offset(0, 2, 0))
+                ? new AABB(pos.offset(0, -1, 0), pos.offset(0, 2, 0))
                 : INFINITE_EXTENT_AABB;
     }
 }

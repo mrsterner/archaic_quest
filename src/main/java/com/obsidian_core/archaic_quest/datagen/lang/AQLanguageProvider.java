@@ -2,6 +2,7 @@ package com.obsidian_core.archaic_quest.datagen.lang;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
+import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import com.obsidian_core.archaic_quest.common.misc.TranslationReferences;
 import com.obsidian_core.archaic_quest.common.core.register.AQBiomes;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
@@ -104,6 +105,13 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         addBiome(AQBiomes.AZTEC_JUNGLE, "Aztec Jungle");
 
         addTranslationComponent(TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME, "Knapping Table");
+
+        addDamageSource(AQDamageSources.SPEAR_TRAP,
+                "%1$s was impaled on a spear trap",
+                "%1$s landed on a spear trap whilst running from %2$s");
+        addDamageSource(AQDamageSources.SPIKE_TRAP,
+                "%1$s got skewered by a spike trap",
+                "%1$s got skewered by a spike trap whilst running from %2$s");
 
         addJeiInfo(AQItems.MACHETE.get(), "The machete is a light weapon that can be swung faster, but deals less damage than a sword. It can also be used to cut vines. " +
                 "Right-clicking will cut a vine shorter and stop it from growing, while sneak-right-clicking will only make the vine stop growing.");

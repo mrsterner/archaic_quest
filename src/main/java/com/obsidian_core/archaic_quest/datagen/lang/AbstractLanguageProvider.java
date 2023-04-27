@@ -4,6 +4,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
@@ -28,6 +29,13 @@ public abstract class AbstractLanguageProvider extends LanguageProvider {
 
     protected void addJeiInfo(Item item, String localized) {
         this.add(item.getDescriptionId() + ".jei_desc", localized);
+    }
+
+    protected void addDamageSource(DamageSource damageSource, String death, String combatloggedDath) {
+        String deathString = "death.attack." + damageSource.getMsgId();
+        String combatloggedDeathString = deathString + ".player";
+        this.add(deathString, death);
+        this.add(combatloggedDeathString, combatloggedDath);
     }
 
     protected void addTranslationComponent(Component component, String localized) {
