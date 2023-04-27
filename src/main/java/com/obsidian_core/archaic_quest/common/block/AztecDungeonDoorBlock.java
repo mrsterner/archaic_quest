@@ -271,20 +271,25 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
             return;
 
         if (isMaster(level.getBlockState(masterPos)) && !level.isClientSide) {
-            if (level.hasNeighborSignal(pos)) {
-                BlockEntity be = level.getExistingBlockEntity(masterPos);
+            for (Direction direction : Direction.values()) {
+                BlockPos offsetPos = pos.relative(direction);
 
-                if (be instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
-                    if (dungeonDoor.isOpen()) {
-                        dungeonDoor.setDoorState(DoorState.CLOSING);
-                        dungeonDoor.sendDoorStateUpdate();
-                        level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_CLOSING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (level.hasNeighborSignal(offsetPos)) {
+                    BlockEntity be = level.getExistingBlockEntity(masterPos);
+
+                    if (be instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
+                        if (dungeonDoor.isOpen()) {
+                            dungeonDoor.setDoorState(DoorState.CLOSING);
+                            dungeonDoor.sendDoorStateUpdate();
+                            level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_CLOSING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
+                        else if (dungeonDoor.isClosed()) {
+                            dungeonDoor.setDoorState(DoorState.OPENING);
+                            dungeonDoor.sendDoorStateUpdate();
+                            level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_OPENING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
                     }
-                    else if (dungeonDoor.isClosed()) {
-                        dungeonDoor.setDoorState(DoorState.OPENING);
-                        dungeonDoor.sendDoorStateUpdate();
-                        level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_OPENING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                    }
+                    break;
                 }
             }
         }
