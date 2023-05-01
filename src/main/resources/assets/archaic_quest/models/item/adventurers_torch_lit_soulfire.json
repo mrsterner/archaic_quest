@@ -1,0 +1,7 @@
+{
+  "parent": "archaic_quest:item/adventurers_torch_base",
+  "textures": {
+    "base": "archaic_quest:item/adventurers_torch_lit_soulfire",
+    "flame": "archaic_quest:item/adventurers_torch_flame_soulfire"
+  }
+}

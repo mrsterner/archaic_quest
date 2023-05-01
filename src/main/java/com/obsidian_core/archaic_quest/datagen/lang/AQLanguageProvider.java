@@ -63,11 +63,12 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
         addItem(AQItems.TURQUOISE, "Turquoise");
         addItem(AQItems.PEBBLE, "Pebble");
 
-        addItem(AQItems.ADVENTURERS_BAG, "Adventurers Bag");
-        addItem(AQItems.ADVENTURERS_GLOBE, "Adventurers Globe");
-        addItem(AQItems.ADVENTURERS_HAT, "Adventurers Hat");
-        addItem(AQItems.ADVENTURERS_MAGNIFYING_GLASS, "Adventurers Magnifying Glass");
-        addItem(AQItems.ADVENTURERS_SPYGLASS, "Adventurers Spyglass");
+        addItem(AQItems.ADVENTURERS_BAG, "Adventurer's Bag");
+        addItem(AQItems.ADVENTURERS_GLOBE, "Adventurer's Globe");
+        addItem(AQItems.ADVENTURERS_HAT, "Adventurer's Hat");
+        addItem(AQItems.ADVENTURERS_MAGNIFYING_GLASS, "Adventurer's Magnifying Glass");
+        addItem(AQItems.ADVENTURERS_SPYGLASS, "Adventurer's Spyglass");
+        addItem(AQItems.ADVENTURERS_TORCH, "Adventurer's Torch");
         addItem(AQItems.AMBER, "Amber");
         addItem(AQItems.AMBER_FOSSIL_0, "Amber Fossil 0");
         addItem(AQItems.AMBER_FOSSIL_1, "Amber Fossil 1");

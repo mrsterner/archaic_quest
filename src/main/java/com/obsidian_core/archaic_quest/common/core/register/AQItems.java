@@ -41,6 +41,7 @@ public class AQItems {
     public static final RegistryObject<Item> ADVENTURERS_HAT = registerSimpleItem("adventurers_hat", AQCreativeTabs.ITEMS);
     public static final RegistryObject<Item> ADVENTURERS_MAGNIFYING_GLASS = registerSimpleItem("adventurers_magnifying_glass", AQCreativeTabs.ITEMS);
     public static final RegistryObject<Item> ADVENTURERS_SPYGLASS = registerSimpleItem("adventurers_spyglass", AQCreativeTabs.ITEMS);
+    public static final RegistryObject<Item> ADVENTURERS_TORCH = registerItem("adventurers_torch", AdventurersTorchItem::new);
     public static final RegistryObject<Item> AMBER = registerSimpleItem("amber", AQCreativeTabs.ITEMS);
     public static final RegistryObject<Item> AMBER_FOSSIL_0 = registerSimpleItem("amber_fossil_0", AQCreativeTabs.ITEMS);
     public static final RegistryObject<Item> AMBER_FOSSIL_1 = registerSimpleItem("amber_fossil_1", AQCreativeTabs.ITEMS);
@@ -90,7 +91,6 @@ public class AQItems {
         SIMPLE_ITEMS.add(regObject);
         return regObject;
     }
-
 
     private static RegistryObject<Item> registerSimpleItem(String name, CreativeModeTab itemGroup, FoodProperties food) {
         RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Properties().tab(itemGroup).food(food)));

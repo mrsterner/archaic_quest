@@ -1,0 +1,101 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "minecraft:block/cube_all",
+  "elements": [
+    {
+      "from": [7, 0, 7],
+      "to": [9, 14, 9],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+      "faces": {
+        "north": {"uv": [3, 0, 1, 14], "texture": "#base"},
+        "east": {"uv": [4, 0, 2, 14], "texture": "#base"},
+        "south": {"uv": [1, 0, 3, 14], "texture": "#base"},
+        "west": {"uv": [0, 0, 2, 14], "texture": "#base"},
+        "up": {"uv": [0, 0, 2, 2], "texture": "#base"},
+        "down": {"uv": [0, 0, 2, 2], "texture": "#base"}
+      }
+    },
+    {
+      "from": [6.5, 14, 6.5],
+      "to": [9.5, 19, 9.5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+      "faces": {
+        "north": {"uv": [4, 0, 7, 5], "texture": "#base"},
+        "east": {"uv": [7, 0, 10, 5], "texture": "#base"},
+        "south": {"uv": [8, 0, 11, 5], "texture": "#base"},
+        "west": {"uv": [6, 0, 9, 5], "texture": "#base"},
+        "up": {"uv": [12, 0, 15, 3], "texture": "#base"},
+        "down": {"uv": [13, 3, 16, 6], "texture": "#base"}
+      }
+    },
+    {
+      "name": "flame",
+      "from": [5.75, 18, 8],
+      "to": [9.75, 24, 8],
+      "rotation": {"angle": 45, "axis": "z", "origin": [8, 18, 8]},
+      "faces": {
+        "north": {"uv": [4, 5, 8, 11], "texture": "#flame"},
+        "east": {"uv": [0, 0, 0, 6], "texture": "#flame"},
+        "south": {"uv": [8, 5, 4, 11], "texture": "#flame"},
+        "west": {"uv": [0, 0, 0, 6], "texture": "#flame"},
+        "up": {"uv": [0, 0, 4, 0], "texture": "#flame"},
+        "down": {"uv": [0, 0, 4, 0], "texture": "#flame"}
+      }
+    },
+    {
+      "from": [2, 18, 6],
+      "to": [8, 18, 10],
+      "rotation": {"angle": -45, "axis": "z", "origin": [8, 18, 8]},
+      "faces": {
+        "north": {"uv": [0, 0, 0, 6], "rotation": 90, "texture": "#flame"},
+        "east": {"uv": [0, 0, 0, 4], "rotation": 270, "texture": "#flame"},
+        "south": {"uv": [0, 0, 0, 6], "rotation": 270, "texture": "#flame"},
+        "west": {"uv": [0, 0, 0, 4], "rotation": 270, "texture": "#flame"},
+        "up": {"uv": [9, 5, 13, 11], "rotation": 270, "texture": "#flame"},
+        "down": {"uv": [13, 5, 9, 11], "rotation": 270, "texture": "#flame"}
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [0, 90, 0],
+      "translation": [0, 1.5, 1.5],
+      "scale": [0.8, 0.8, 0.8]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [0, -90, 0],
+      "translation": [0, 1.5, 1.5],
+      "scale": [0.8, 0.8, 0.8]
+    },
+    "firstperson_righthand": {
+      "rotation": [-15, 90, -9],
+      "translation": [5, -1, -2.75]
+    },
+    "firstperson_lefthand": {
+      "rotation": [-30, -90, -9],
+      "translation": [5, -1, -2.75]
+    },
+    "ground": {
+      "rotation": [0, 0, -42],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "gui": {
+      "rotation": [0, 0, -45],
+      "translation": [-0.75, -2.75, 0],
+      "scale": [0.8, 0.8, 0.8]
+    },
+    "fixed": {
+      "rotation": [0, 90, -45],
+      "translation": [0, -0.75, 0],
+      "scale": [1.2, 1.2, 1.2]
+    }
+  },
+  "groups": [
+    {
+      "name": "torch",
+      "origin": [8, 8, 8],
+      "color": 0,
+      "children": [0, 1, 2, 3]
+    }
+  ]
+}

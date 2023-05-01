@@ -53,12 +53,13 @@ public class AztecPoisonTrapBlockEntity extends BlockEntity {
                 beActive = true;
             }
 
-            if (beActive && !state.getValue(AztecPoisonTrapBlock.ACTIVE)) {
-                level.setBlockAndUpdate(pos, state.setValue(AztecPoisonTrapBlock.ACTIVE, true));
-                level.playSound(null, pos, AQSoundEvents.POISON_TRAP_ACTIVATE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            }
-            else if (!beActive && state.getValue(AztecPoisonTrapBlock.ACTIVE)) {
-                level.setBlockAndUpdate(pos, state.setValue(AztecPoisonTrapBlock.ACTIVE, false));
+            if (!level.isClientSide) {
+                if (beActive && !state.getValue(AztecPoisonTrapBlock.ACTIVE)) {
+                    level.setBlockAndUpdate(pos, state.setValue(AztecPoisonTrapBlock.ACTIVE, true));
+                    level.playSound(null, pos, AQSoundEvents.POISON_TRAP_ACTIVATE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                } else if (!beActive && state.getValue(AztecPoisonTrapBlock.ACTIVE)) {
+                    level.setBlockAndUpdate(pos, state.setValue(AztecPoisonTrapBlock.ACTIVE, false));
+                }
             }
         }
     }

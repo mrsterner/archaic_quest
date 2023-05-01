@@ -37,6 +37,10 @@ public class ClientRegister {
         setBlockRenderTypes();
         registerScreenMenus();
         addSkippedHighlightBlocks();
+
+        event.enqueueWork(() -> {
+            AQItemModelProps.register();
+        });
     }
 
     @SubscribeEvent

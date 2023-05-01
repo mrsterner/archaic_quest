@@ -1,0 +1,11 @@
+{
+  "parent": "archaic_quest:item/adventurers_torch_unlit",
+  "textures": {
+    "texture": "archaic_quest:item/adventurers_torch"
+  },
+  "overrides": [
+    { "predicate": { "archaic_quest:lit": 0.0 }, "model": "archaic_quest:item/adventurers_torch_unlit" },
+    { "predicate": { "archaic_quest:lit": 1.0 }, "model": "archaic_quest:item/adventurers_torch_lit" },
+    { "predicate": { "archaic_quest:lit": 2.0 }, "model": "archaic_quest:item/adventurers_torch_lit_soulfire" }
+  ]
+}

@@ -2,6 +2,7 @@ package com.obsidian_core.archaic_quest.common.core;
 
 import com.obsidian_core.archaic_quest.common.compat.terrablender.AQTerraBlender;
 import com.obsidian_core.archaic_quest.common.event.BiomeEvents;
+import com.obsidian_core.archaic_quest.common.item.AdventurersTorchItem;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import com.obsidian_core.archaic_quest.common.network.PacketHandler;
 import com.obsidian_core.archaic_quest.common.core.register.*;
@@ -10,6 +11,7 @@ import com.obsidian_core.archaic_quest.common.worldgen.feature.decorators.AQTree
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -57,6 +59,8 @@ public class ArchaicQuest {
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            AdventurersTorchItem.registerDefaults();
+
             if (ModList.get().isLoaded("terrablender")) {
                 AQTerraBlender.setup();
             }
