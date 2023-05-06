@@ -46,6 +46,11 @@ public class AQBlockEntities {
                     AQBlocks.AZTEC_ANDESITE_SPIKE_TRAP.get()
     };
 
+    private static final Supplier<AztecDungeonChestBlock[]> DUNGEON_CHESTS = () ->
+            new AztecDungeonChestBlock[] {
+                    AQBlocks.AZTEC_DUNGEON_CHEST.get()
+    };
+
 
     public static final RegistryObject<BlockEntityType<VaseBlockEntity>> VASE = register("vase", () -> BlockEntityType.Builder.of(VaseBlockEntity::new, VASES.get()).build(null));
     public static final RegistryObject<BlockEntityType<AztecPoisonTrapBlockEntity>> POISON_TRAP = register("aztec_poison_trap", () -> BlockEntityType.Builder.of(AztecPoisonTrapBlockEntity::new, POISON_TRAPS.get()).build(null));
@@ -53,6 +58,7 @@ public class AQBlockEntities {
     public static final RegistryObject<BlockEntityType<AztecCraftingStationBlockEntity>> AZTEC_CRAFTING_STATION = register("aztec_crafting_station", () -> BlockEntityType.Builder.of(AztecCraftingStationBlockEntity::new, AQBlocks.AZTEC_CRAFTING_STATION.get()).build(null));
     public static final RegistryObject<BlockEntityType<AztecDungeonDoorBlockEntity>> AZTEC_DUNGEON_DOOR = register("aztec_dungeon_door", () -> BlockEntityType.Builder.of(AztecDungeonDoorBlockEntity::new, DUNGEON_DOORS.get()).build(null));
     public static final RegistryObject<BlockEntityType<AztecThroneBlockEntity>> AZTEC_THRONE = register("aztec_throne", () -> BlockEntityType.Builder.of(AztecThroneBlockEntity::new, AZTEC_THRONES.get()).build(null));
+    public static final RegistryObject<BlockEntityType<AztecDungeonChestBlockEntity>> AZTEC_DUNGEON_CHEST = register("aztec_dungeon_chest", () -> BlockEntityType.Builder.of(AztecDungeonChestBlockEntity::new, DUNGEON_CHESTS.get()).build(null));
     public static final RegistryObject<BlockEntityType<FoundryBlockEntity>> FOUNDRY = register("foundry", () -> BlockEntityType.Builder.of(FoundryBlockEntity::new, AQBlocks.FOUNDRY.get()).build(null));
 
 

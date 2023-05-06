@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,6 +31,11 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
     private int doorPosition = minDoorPos;
     private DungeonDoorType doorType;
 
+
+
+    protected AztecDungeonDoorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
 
     public AztecDungeonDoorBlockEntity(BlockPos pos, BlockState state) {
         super(AQBlockEntities.AZTEC_DUNGEON_DOOR.get(), pos, state);

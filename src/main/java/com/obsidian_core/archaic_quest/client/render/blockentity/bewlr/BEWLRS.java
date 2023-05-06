@@ -16,6 +16,7 @@ public class BEWLRS {
 
     public static final Holder AZTEC_CRAFTING_STATION = new Holder(AztecCraftingStationBEWLR::new);
     public static final Holder AZTEC_THRONE = new Holder(AztecThroneBEWLR::new);
+    public static final Holder AZTEC_DUNGEON_CHEST = new Holder(AztecDungeonChestBEWLR::new);
 
 
     public static class Holder {

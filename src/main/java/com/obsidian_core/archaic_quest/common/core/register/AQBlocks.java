@@ -7,6 +7,7 @@ import com.obsidian_core.archaic_quest.common.block.tree.AztecJungleTreeGrower;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecCraftingStationBlockItem;
+import com.obsidian_core.archaic_quest.common.item.blockitem.AztecDungeonChestBlockItem;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecDungeonDoorBlockItem;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecThroneBlockItem;
 import net.minecraft.tags.BlockTags;
@@ -176,6 +177,11 @@ public class AQBlocks {
     public static final RegistryObject<AztecDungeonDoorBlock> AZTEC_DUNGEON_DOOR_FRAME_1 = registerDungeonDoor("aztec_dungeon_door_frame_1", DungeonDoorType.AZTEC_DOOR_FRAME_1, BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<AztecThroneBlock> AZTEC_THRONE = registerThrone("aztec_throne", ThroneType.THRONE, BlockTags.MINEABLE_WITH_PICKAXE);
     public static final RegistryObject<AztecThroneBlock> MOSSY_AZTEC_THRONE = registerThrone("mossy_aztec_throne", ThroneType.MOSSY_THRONE, BlockTags.MINEABLE_WITH_PICKAXE);
+    public static final RegistryObject<AztecDungeonChestBlock> AZTEC_DUNGEON_CHEST = registerBlock("aztec_dungeon_chest",
+            () -> new AztecDungeonChestBlock(AQBlocks.ANDESITE_BRICKS_PROP),
+            () -> new AztecDungeonChestBlockItem(AQBlocks.AZTEC_DUNGEON_CHEST.get(), new Item.Properties().tab(AQCreativeTabs.DECORATION)),
+            BlockTags.MINEABLE_WITH_PICKAXE
+    );
 
 
     public static final RegistryObject<Block> BRONZE_SPEAR_TRAP = registerBlock("bronze_spear_trap", AQCreativeTabs.DECORATION, () -> new SpearTrapBlock(2.0F, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_BROWN).strength(1.0F).sound(SoundType.WOOD)), BlockTags.MINEABLE_WITH_AXE);

@@ -4,6 +4,7 @@ import com.obsidian_core.archaic_quest.client.particle.PoisonCloudParticle;
 import com.obsidian_core.archaic_quest.client.render.blockentity.*;
 import com.obsidian_core.archaic_quest.client.render.blockentity.bewlr.BEWLRS;
 import com.obsidian_core.archaic_quest.client.screen.KnappingTableScreen;
+import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonChestBlockEntity;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
@@ -59,6 +60,7 @@ public class ClientRegister {
         event.registerLayerDefinition(AQModelLayers.AZTEC_THRONE, AztecThroneRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP, SpikeTrapRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP_OVERLAY, SpikeTrapRenderer::createOverlayBodyLayer);
+        event.registerLayerDefinition(AQModelLayers.AZTEC_DUNGEON_CHEST, AztecDungeonChestRenderer::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -67,6 +69,7 @@ public class ClientRegister {
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_CRAFTING_STATION.get(), AztecCraftingStationRenderer::new);
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_THRONE.get(), AztecThroneRenderer::new);
         event.registerBlockEntityRenderer(AQBlockEntities.SPIKE_TRAP.get(), SpikeTrapRenderer::new);
+        event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_DUNGEON_CHEST.get(), AztecDungeonChestRenderer::new);
 
         for (BEWLRS.Holder holder : BEWLRS.BEWLR_LIST) {
             holder.populate(Minecraft.getInstance().getBlockEntityRenderDispatcher());

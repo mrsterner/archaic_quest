@@ -3,6 +3,7 @@ package com.obsidian_core.archaic_quest.common.item;
 import com.mojang.datafixers.util.Pair;
 import com.obsidian_core.archaic_quest.api.TorchInteraction;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
