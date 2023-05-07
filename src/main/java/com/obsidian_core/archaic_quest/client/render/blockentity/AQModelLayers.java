@@ -14,6 +14,10 @@ public class AQModelLayers {
     public static final ModelLayerLocation AZTEC_DUNGEON_CHEST = create("aztec_dungeon_chest");
 
 
+    public static final ModelLayerLocation TLATLAOMI = create("tlatlaomi");
+
+
+
     private static ModelLayerLocation create(String path) {
         return create(path, "main");
     }

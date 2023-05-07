@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.misc;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.entity.DartEntity;
+import com.obsidian_core.archaic_quest.common.entity.projectile.DartEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;

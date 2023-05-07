@@ -50,16 +50,27 @@ public class AdventurersTorchItem extends Item {
         registerTorchLightable(Blocks.CAMPFIRE, (state) -> state.getValue(CampfireBlock.LIT), false);
         registerTorchLightable(Blocks.SOUL_CAMPFIRE, (state) -> state.getValue(CampfireBlock.LIT), true);
 
-        registerTorchInteraction(Blocks.CAMPFIRE, (level, state, pos) -> {
+        registerTorchInteraction(Blocks.CAMPFIRE, (level, state, pos, soulfire) -> {
             if (!state.getValue(CampfireBlock.LIT)) {
-                level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                if (soulfire) {
+                    level.setBlockAndUpdate(pos, Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+                }
+                else {
+                    level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                }
                 return true;
             }
             return false;
         });
-        registerTorchInteraction(Blocks.SOUL_CAMPFIRE, (level, state, pos) -> {
+
+        registerTorchInteraction(Blocks.SOUL_CAMPFIRE, (level, state, pos, soulfire) -> {
             if (!state.getValue(CampfireBlock.LIT)) {
-                level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                if (soulfire) {
+                    level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                }
+                else {
+                    level.setBlockAndUpdate(pos, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+                }
                 return true;
             }
             return false;
@@ -110,7 +121,7 @@ public class AdventurersTorchItem extends Item {
 
         if (getLitState(torch) > 0) {
             if (clickedState.getFluidState().isEmpty() && TORCH_INTERACTABLES.containsKey(clickedState.getBlock())) {
-                return TORCH_INTERACTABLES.get(clickedState.getBlock()).interact(context.getLevel(), clickedState, context.getClickedPos())
+                return TORCH_INTERACTABLES.get(clickedState.getBlock()).interact(context.getLevel(), clickedState, context.getClickedPos(), getLitState(torch) == SOULFIRE)
                         ? InteractionResult.SUCCESS
                         : InteractionResult.FAIL;
             }

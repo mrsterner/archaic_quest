@@ -38,6 +38,7 @@ public class ArchaicQuest {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         eventBus.addListener(this::onCommonSetup);
+        eventBus.addListener(AQEntities::registerAttributes);
 
         MinecraftForge.EVENT_BUS.register(new BiomeEvents());
 

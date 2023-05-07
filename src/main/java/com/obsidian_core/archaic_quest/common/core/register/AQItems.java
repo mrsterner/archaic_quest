@@ -3,8 +3,13 @@ package com.obsidian_core.archaic_quest.common.core.register;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.item.*;
 import com.obsidian_core.archaic_quest.common.item.data.AQItemTier;
+import net.minecraft.data.BlockFamily;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -19,6 +24,7 @@ public class AQItems {
 
 
     public static final List<RegistryObject<? extends Item>> SIMPLE_ITEMS = new ArrayList<>();
+    public static final List<RegistryObject<ForgeSpawnEggItem>> SPAWN_EGGS = new ArrayList<>();
 
 
     // FOOD
@@ -102,5 +108,11 @@ public class AQItems {
         RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Properties().tab(itemGroup)));
         SIMPLE_ITEMS.add(regObject);
         return regObject;
+    }
+
+    protected static <T extends Mob> RegistryObject<ForgeSpawnEggItem> registerSpawnEgg(RegistryObject<EntityType<T>> entityType, int primaryColor, int secondaryColor) {
+        RegistryObject<ForgeSpawnEggItem> regObj = REGISTRY.register(entityType.getId().getPath() + "_spawn_egg", () -> new ForgeSpawnEggItem(entityType, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+        SPAWN_EGGS.add(regObj);
+        return regObj;
     }
 }

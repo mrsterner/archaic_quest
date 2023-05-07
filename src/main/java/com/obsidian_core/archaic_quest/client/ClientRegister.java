@@ -3,13 +3,12 @@ package com.obsidian_core.archaic_quest.client;
 import com.obsidian_core.archaic_quest.client.particle.PoisonCloudParticle;
 import com.obsidian_core.archaic_quest.client.render.blockentity.*;
 import com.obsidian_core.archaic_quest.client.render.blockentity.bewlr.BEWLRS;
+import com.obsidian_core.archaic_quest.client.render.entity.living.TlatlaomiRenderer;
+import com.obsidian_core.archaic_quest.client.render.entity.model.TlatlaomiModel;
 import com.obsidian_core.archaic_quest.client.screen.KnappingTableScreen;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonChestBlockEntity;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
-import com.obsidian_core.archaic_quest.common.core.register.AQContainers;
-import com.obsidian_core.archaic_quest.common.core.register.AQParticles;
+import com.obsidian_core.archaic_quest.common.core.register.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -61,10 +60,12 @@ public class ClientRegister {
         event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP, SpikeTrapRenderer::createBodyLayer);
         event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP_OVERLAY, SpikeTrapRenderer::createOverlayBodyLayer);
         event.registerLayerDefinition(AQModelLayers.AZTEC_DUNGEON_CHEST, AztecDungeonChestRenderer::createBodyLayer);
+
+        event.registerLayerDefinition(AQModelLayers.TLATLAOMI, TlatlaomiModel::createBodyLayer);
     }
 
     @SubscribeEvent
-    public static void registerBERs(EntityRenderersEvent.RegisterRenderers event) {
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_DUNGEON_DOOR.get(), AztecDungeonDoorRenderer::new);
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_CRAFTING_STATION.get(), AztecCraftingStationRenderer::new);
         event.registerBlockEntityRenderer(AQBlockEntities.AZTEC_THRONE.get(), AztecThroneRenderer::new);
@@ -74,6 +75,8 @@ public class ClientRegister {
         for (BEWLRS.Holder holder : BEWLRS.BEWLR_LIST) {
             holder.populate(Minecraft.getInstance().getBlockEntityRenderDispatcher());
         }
+
+        event.registerEntityRenderer(AQEntities.TLATLAOMI.get(), TlatlaomiRenderer::new);
     }
 
     @SubscribeEvent

@@ -1,15 +1,18 @@
 package com.obsidian_core.archaic_quest.common.core.register;
 
+import com.mojang.datafixers.util.Pair;
 import com.obsidian_core.archaic_quest.common.block.*;
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.block.data.ThroneType;
 import com.obsidian_core.archaic_quest.common.block.tree.AztecJungleTreeGrower;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import com.obsidian_core.archaic_quest.common.core.register.util.BlockFamRegObject;
 import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecCraftingStationBlockItem;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecDungeonChestBlockItem;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecDungeonDoorBlockItem;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecThroneBlockItem;
+import net.minecraft.data.BlockFamily;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
@@ -62,6 +65,7 @@ public class AQBlocks {
     public static final RegistryObject<Block> ANDESITE_TURQUOISE_ORE = simpleBlock("andesite_turquoise_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(2, 5, BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
     public static final RegistryObject<Block> DIORITE_JADE_ORE = simpleBlock("diorite_jade_ore", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(2, 5, BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
     public static final RegistryObject<Block> ONYX = simpleBlock("onyx", AQCreativeTabs.BLOCKS, () -> new AQOreBlock(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
+
 
     // AZTEC STUFF
     public static final RegistryObject<Block> ANDESITE_BRICKS = simpleBlockWithVars("andesite_bricks", AQCreativeTabs.BLOCKS, AQBlocks.ANDESITE_BRICKS_PROP, BlockTags.MINEABLE_WITH_PICKAXE);
@@ -283,6 +287,15 @@ public class AQBlocks {
             BLOCK_TAGS.put(vertSlabRegObject, tags);
             BLOCK_TAGS.put(stairsRegObject, tags);
         }
+        /*
+        BlockFamRegObject famRegObject = new BlockFamRegObject(new Pair<BlockFamily.Variant, RegistryObject<Block>>[]{
+                Pair.of(null, registryObject),
+                Pair.of(BlockFamily.Variant.SLAB, slabRegObject)
+            }
+        );
+
+         */
+
         return registryObject;
     }
 

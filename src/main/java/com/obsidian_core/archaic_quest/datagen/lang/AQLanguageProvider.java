@@ -8,6 +8,7 @@ import com.obsidian_core.archaic_quest.common.core.register.AQBiomes;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.data.DataGenerator;
+import org.apache.commons.lang3.text.WordUtils;
 
 public class AQLanguageProvider extends AbstractLanguageProvider {
 
@@ -116,5 +117,10 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
 
         addJeiInfo(AQItems.MACHETE.get(), "The machete is a light weapon that can be swung faster, but deals less damage than a sword. It can also be used to cut vines. " +
                 "Right-clicking will cut a vine shorter and stop it from growing, while sneak-right-clicking will only make the vine stop growing.");
+
+        AQItems.SPAWN_EGGS.forEach((egg) -> {
+            String translation = egg.getId().getPath().replaceAll("_", " ");
+            addItem(egg, WordUtils.capitalizeFully(translation));
+        });
     }
 }
