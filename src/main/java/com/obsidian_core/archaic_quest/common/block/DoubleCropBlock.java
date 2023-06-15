@@ -3,7 +3,7 @@ package com.obsidian_core.archaic_quest.common.block;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -14,8 +14,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.World;
+import net.minecraft.world.level.WorldReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
@@ -112,7 +112,7 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource) {
+    public void randomTick(BlockState state, ServerWorld level, BlockPos pos, RandomSource randomSource) {
         if (!level.isAreaLoaded(pos, 1)) return;
 
         if (level.getRawBrightness(pos, 0) >= 9) {
@@ -136,7 +136,7 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult use(BlockState state, World world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (getAge(state) >= maxAge()) {
             if (isTop(state)) {
                 world.setBlock(pos, getStateForAge(getOnHarvestAge()).setValue(IS_TOP, true), 2);
@@ -147,7 +147,7 @@ public abstract class DoubleCropBlock extends CropBlock {
                 world.setBlock(pos.above(), getStateForAge(getOnHarvestAge()).setValue(IS_TOP, true), 2);
             }
             if (!world.isClientSide) {
-                List<ItemStack> drops = getDrops(getStateForAge(maxAge()), (ServerLevel) world, pos, null);
+                List<ItemStack> drops = getDrops(getStateForAge(maxAge()), (ServerWorld) world, pos, null);
 
                 for (ItemStack stack : drops) {
                     popResource(world, pos, stack);
@@ -164,7 +164,7 @@ public abstract class DoubleCropBlock extends CropBlock {
     }
 
     @Override
-    public void growCrops(Level level, BlockPos pos, BlockState state) {
+    public void growCrops(World level, BlockPos pos, BlockState state) {
         int age = this.getAge(state) + getBonemealAgeIncrease(level);
         int maxAge = this.getMaxAge();
 
@@ -179,16 +179,16 @@ public abstract class DoubleCropBlock extends CropBlock {
     }
 
     @Override
-    protected int getBonemealAgeIncrease(Level level) {
+    protected int getBonemealAgeIncrease(World level) {
         return Mth.nextInt(level.random, 2, 3);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, WorldReader level, BlockPos pos) {
         return level.getRawBrightness(pos, 0) >= 8 && validPosition(level, state, pos);
     }
 
-    private boolean validPosition(LevelReader level, BlockState state, BlockPos pos) {
+    private boolean validPosition(WorldReader level, BlockState state, BlockPos pos) {
         BlockPos belowPos = pos.below();
 
         if (state.getBlock() == this) { //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
@@ -213,7 +213,7 @@ public abstract class DoubleCropBlock extends CropBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState state, World level, BlockPos pos, Entity entity) {
         if (entity instanceof Ravager && ForgeEventFactory.getMobGriefingEvent(level, entity)) {
             level.destroyBlock(pos, true, entity);
         }

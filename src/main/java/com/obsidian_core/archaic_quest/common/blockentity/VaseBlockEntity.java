@@ -8,7 +8,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
@@ -44,7 +44,7 @@ public class VaseBlockEntity extends BlockEntity {
         if (lootTableId != null && level.getServer() != null) {
             LootTable lootTable = level.getServer().getLootTables().get(lootTableId);
             lootTableId = null;
-            LootContext.Builder builder = (new LootContext.Builder((ServerLevel) level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(worldPosition)).withOptionalRandomSeed(lootTableSeed);
+            LootContext.Builder builder = (new LootContext.Builder((ServerWorld) level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(worldPosition)).withOptionalRandomSeed(lootTableSeed);
             if (player != null) {
                 builder.withLuck(player.getLuck()).withParameter(LootContextParams.THIS_ENTITY, player);
             }

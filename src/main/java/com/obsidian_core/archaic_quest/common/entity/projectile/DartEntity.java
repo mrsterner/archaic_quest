@@ -3,47 +3,28 @@ package com.obsidian_core.archaic_quest.common.entity.projectile;
 import com.google.common.collect.Lists;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.*;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class DartEntity extends Projectile {
+public class DartEntity extends ProjectileEntity {
 
     private static final double ARROW_BASE_DAMAGE = 2.0D;
-    private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(DartEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(DartEntity.class, EntityDataSerializers.BYTE);
+    private static final TrackedData<Byte> ID_FLAGS = DataTracker.registerData(DartEntity.class, TrackedDataHandlerRegistry.BYTE);
+    private static final TrackedData<Byte> PIERCE_LEVEL = DataTracker.registerData(DartEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final int FLAG_CRIT = 1;
     private static final int FLAG_NOPHYSICS = 2;
     private static final int FLAG_CROSSBOW = 4;
@@ -51,7 +32,7 @@ public class DartEntity extends Projectile {
     private BlockState lastState;
     protected boolean inGround;
     protected int inGroundTime;
-    public AbstractArrow.Pickup pickup = AbstractArrow.Pickup.DISALLOWED;
+    public PersistentProjectileEntity.PickupPermission pickup = PersistentProjectileEntity.PickupPermission.DISALLOWED;
     public int shakeTime;
     private int life;
     private double baseDamage = 2.0D;
@@ -63,20 +44,20 @@ public class DartEntity extends Projectile {
     private List<Entity> piercedAndKilledEntities;
 
 
-    public DartEntity(EntityType<? extends Projectile> entityType, Level level) {
+    public DartEntity(EntityType<? extends ProjectileEntity> entityType, World level) {
         super(entityType, level);
     }
 
-    public DartEntity(EntityType<? extends Projectile> entityType, double x, double y, double z, Level level) {
+    public DartEntity(EntityType<? extends ProjectileEntity> entityType, double x, double y, double z, World level) {
         this(entityType, level);
         setPos(x, y, z);
     }
 
-    protected DartEntity(EntityType<? extends AbstractArrow> p_36717_, LivingEntity p_36718_, Level p_36719_) {
+    protected DartEntity(EntityType<? extends PersistentProjectileEntity> p_36717_, LivingEntity p_36718_, World p_36719_) {
         this(p_36717_, p_36718_.getX(), p_36718_.getEyeY() - (double)0.1F, p_36718_.getZ(), p_36719_);
         this.setOwner(p_36718_);
-        if (p_36718_ instanceof Player) {
-            this.pickup = AbstractArrow.Pickup.ALLOWED;
+        if (p_36718_ instanceof PlayerEntity) {
+            this.pickup = PersistentProjectileEntity.PickupPermission.ALLOWED;
         }
 
     }
@@ -95,9 +76,10 @@ public class DartEntity extends Projectile {
         return p_36726_ < d0 * d0;
     }
 
-    protected void defineSynchedData() {
-        this.entityData.define(ID_FLAGS, (byte)0);
-        this.entityData.define(PIERCE_LEVEL, (byte)0);
+    @Override
+    protected void initDataTrackers() {
+        this.dataTracker.define(ID_FLAGS, (byte)0);
+        this.dataTracker.define(PIERCE_LEVEL, (byte)0);
     }
 
     public void shoot(double p_36775_, double p_36776_, double p_36777_, float p_36778_, float p_36779_) {
@@ -188,7 +170,7 @@ public class DartEntity extends Projectile {
                     this.hasImpulse = true;
                 }
 
-                if (entityhitresult == null || this.getPierceLevel() <= 0) {
+                if (entityhitresult == null || this.getPierceWorld() <= 0) {
                     break;
                 }
 
@@ -283,7 +265,7 @@ public class DartEntity extends Projectile {
         Entity entity = p_36757_.getEntity();
         float f = (float)this.getDeltaMovement().length();
         int i = Mth.ceil(Mth.clamp((double)f * this.baseDamage, 0.0D, 2.147483647E9D));
-        if (this.getPierceLevel() > 0) {
+        if (this.getPierceWorld() > 0) {
             if (this.piercingIgnoreEntityIds == null) {
                 this.piercingIgnoreEntityIds = new IntOpenHashSet(5);
             }
@@ -292,7 +274,7 @@ public class DartEntity extends Projectile {
                 this.piercedAndKilledEntities = Lists.newArrayListWithCapacity(5);
             }
 
-            if (this.piercingIgnoreEntityIds.size() >= this.getPierceLevel() + 1) {
+            if (this.piercingIgnoreEntityIds.size() >= this.getPierceWorld() + 1) {
                 this.discard();
                 return;
             }
@@ -330,7 +312,7 @@ public class DartEntity extends Projectile {
 
             if (entity instanceof LivingEntity) {
                 LivingEntity livingentity = (LivingEntity)entity;
-                if (!this.level.isClientSide && this.getPierceLevel() <= 0) {
+                if (!this.level.isClientSide && this.getPierceWorld() <= 0) {
                     livingentity.setArrowCount(livingentity.getArrowCount() + 1);
                 }
 
@@ -367,7 +349,7 @@ public class DartEntity extends Projectile {
             }
 
             this.playSound(this.soundEvent, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-            if (this.getPierceLevel() <= 0) {
+            if (this.getPierceWorld() <= 0) {
                 this.discard();
             }
         } else {
@@ -376,7 +358,7 @@ public class DartEntity extends Projectile {
             this.setYRot(this.getYRot() + 180.0F);
             this.yRotO += 180.0F;
             if (!this.level.isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
-                if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
+                if (this.pickup == PersistentProjectileEntity.Pickup.ALLOWED) {
                     this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }
 
@@ -397,7 +379,7 @@ public class DartEntity extends Projectile {
         this.inGround = true;
         this.shakeTime = 7;
         this.setCritArrow(false);
-        this.setPierceLevel((byte)0);
+        this.setPierceWorld((byte)0);
         this.setSoundEvent(SoundEvents.ARROW_HIT);
         this.setShotFromCrossbow(false);
         this.resetPiercedEntities();
@@ -435,7 +417,7 @@ public class DartEntity extends Projectile {
         p_36772_.putByte("pickup", (byte)this.pickup.ordinal());
         p_36772_.putDouble("damage", this.baseDamage);
         p_36772_.putBoolean("crit", this.isCritArrow());
-        p_36772_.putByte("PierceLevel", this.getPierceLevel());
+        p_36772_.putByte("PierceWorld", this.getPierceWorld());
         p_36772_.putString("SoundEvent", Registry.SOUND_EVENT.getKey(this.soundEvent).toString());
         p_36772_.putBoolean("ShotFromCrossbow", this.shotFromCrossbow());
     }
@@ -453,9 +435,9 @@ public class DartEntity extends Projectile {
             this.baseDamage = p_36761_.getDouble("damage");
         }
 
-        this.pickup = AbstractArrow.Pickup.byOrdinal(p_36761_.getByte("pickup"));
+        this.pickup = PersistentProjectileEntity.Pickup.byOrdinal(p_36761_.getByte("pickup"));
         this.setCritArrow(p_36761_.getBoolean("crit"));
-        this.setPierceLevel(p_36761_.getByte("PierceLevel"));
+        this.setPierceWorld(p_36761_.getByte("PierceWorld"));
         if (p_36761_.contains("SoundEvent", 8)) {
             this.soundEvent = Registry.SOUND_EVENT.getOptional(new ResourceLocation(p_36761_.getString("SoundEvent"))).orElse(this.getDefaultHitGroundSoundEvent());
         }
@@ -466,7 +448,7 @@ public class DartEntity extends Projectile {
     public void setOwner(@Nullable Entity p_36770_) {
         super.setOwner(p_36770_);
         if (p_36770_ instanceof Player) {
-            this.pickup = ((Player)p_36770_).getAbilities().instabuild ? AbstractArrow.Pickup.CREATIVE_ONLY : AbstractArrow.Pickup.ALLOWED;
+            this.pickup = ((Player)p_36770_).getAbilities().instabuild ? PersistentProjectileEntity.Pickup.CREATIVE_ONLY : PersistentProjectileEntity.Pickup.ALLOWED;
         }
 
     }
@@ -528,7 +510,7 @@ public class DartEntity extends Projectile {
         this.setFlag(1, p_36763_);
     }
 
-    public void setPierceLevel(byte p_36768_) {
+    public void setPierceWorld(byte p_36768_) {
         this.entityData.set(PIERCE_LEVEL, p_36768_);
     }
 
@@ -552,13 +534,13 @@ public class DartEntity extends Projectile {
         return (b0 & 4) != 0;
     }
 
-    public byte getPierceLevel() {
+    public byte getPierceWorld() {
         return this.entityData.get(PIERCE_LEVEL);
     }
 
     public void setEnchantmentEffectsFromEntity(LivingEntity p_36746_, float p_36747_) {
-        int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER_ARROWS, p_36746_);
-        int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH_ARROWS, p_36746_);
+        int i = EnchantmentHelper.getEnchantmentWorld(Enchantments.POWER_ARROWS, p_36746_);
+        int j = EnchantmentHelper.getEnchantmentWorld(Enchantments.PUNCH_ARROWS, p_36746_);
         this.setBaseDamage((double)(p_36747_ * 2.0F) + this.random.triangle((double)this.level.getDifficulty().getId() * 0.11D, 0.57425D));
         if (i > 0) {
             this.setBaseDamage(this.getBaseDamage() + (double)i * 0.5D + 0.5D);
@@ -568,7 +550,7 @@ public class DartEntity extends Projectile {
             this.setKnockback(j);
         }
 
-        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAMING_ARROWS, p_36746_) > 0) {
+        if (EnchantmentHelper.getEnchantmentWorld(Enchantments.FLAMING_ARROWS, p_36746_) > 0) {
             this.setSecondsOnFire(100);
         }
 

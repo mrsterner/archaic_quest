@@ -11,9 +11,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.World;
+import net.minecraft.world.level.WorldAccessor;
+import net.minecraft.world.level.WorldReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -111,7 +111,7 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState newState, Direction neighborDir, BlockState state, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(BlockState newState, Direction neighborDir, BlockState state, WorldAccessor level, BlockPos pos, BlockPos neighborPos) {
         boolean waterlogged = level.getBlockState(pos).getFluidState().is(FluidTags.WATER);
         Direction.Axis axis = newState.getValue(AXIS);
 
@@ -127,7 +127,7 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos clickedPos = context.getClickedPos();
-        Level level = context.getLevel();
+        World level = context.getWorld();
         Direction.Axis axis = context.getClickedFace().getAxis();
         boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
         BlockState placeState = defaultBlockState().setValue(AXIS, axis);
@@ -145,14 +145,14 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
         return placeState.setValue(WATERLOGGED, waterlogged);
     }
 
-    private boolean areZNeighborsConnectable(LevelAccessor level, BlockPos origin) {
+    private boolean areZNeighborsConnectable(WorldAccessor level, BlockPos origin) {
         BlockState northState = level.getBlockState(origin.north());
         BlockState southState = level.getBlockState(origin.south());
 
         return (northState.is(this) && northState.getValue(AXIS) != Direction.Axis.Y) || (southState.is(this) && southState.getValue(AXIS) != Direction.Axis.Y);
     }
 
-    private boolean areXNeighborsConnectable(LevelAccessor level, BlockPos origin) {
+    private boolean areXNeighborsConnectable(WorldAccessor level, BlockPos origin) {
         BlockState eastState = level.getBlockState(origin.east());
         BlockState westState = level.getBlockState(origin.west());
 

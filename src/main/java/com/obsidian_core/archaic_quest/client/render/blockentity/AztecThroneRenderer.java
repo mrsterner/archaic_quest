@@ -49,7 +49,7 @@ public class AztecThroneRenderer implements BlockEntityRenderer<AztecThroneBlock
 
     @Override
     public void render(AztecThroneBlockEntity throne, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int textureOverlay) {
-        BlockState state = throne.getLevel() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState() : throne.getBlockState();
+        BlockState state = throne.getWorld() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState() : throne.getBlockState();
         Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         float rotation = direction.toYRot();
 

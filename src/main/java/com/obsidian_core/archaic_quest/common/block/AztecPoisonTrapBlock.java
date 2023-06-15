@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,7 +40,7 @@ public class AztecPoisonTrapBlock extends Block implements EntityBlock {
 
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+    public void animateTick(BlockState state, World level, BlockPos pos, RandomSource random) {
         if (state.getValue(ACTIVE)) {
             Vec3 center = new Vec3(pos.getX() + 0.5D, pos.getY() + 1.1D, pos.getZ() + 0.5D);
 
@@ -63,7 +63,7 @@ public class AztecPoisonTrapBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState state, BlockEntityType<T> type) {
         return (lvl, pos, blockState, blockEntity) -> AztecPoisonTrapBlockEntity.tick(level, pos, state, (AztecPoisonTrapBlockEntity) blockEntity);
     }
 

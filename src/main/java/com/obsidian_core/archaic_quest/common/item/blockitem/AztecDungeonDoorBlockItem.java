@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -25,7 +25,7 @@ public class AztecDungeonDoorBlockItem extends BlockItem {
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState blockState) {
         Direction direction = context.getHorizontalDirection().getOpposite();
-        Level level = context.getLevel();
+        World level = context.getWorld();
         BlockPos pos = context.getClickedPos();
 
         switch (direction) {

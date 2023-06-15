@@ -1,9 +1,8 @@
 package com.obsidian_core.archaic_quest.common.block.data;
 
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.resources.ResourceLocation;
-
-import javax.annotation.Nonnull;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 public enum ThroneType {
 
@@ -11,14 +10,14 @@ public enum ThroneType {
     MOSSY_THRONE("mossy_throne");
 
 
-    ThroneType(@Nonnull String name) {
+    ThroneType(@NotNull String name) {
         this.name = name;
-        this.texture = ArchaicQuest.resourceLoc("textures/tile/throne/" + name + ".png");
+        this.texture = ArchaicQuest.id("textures/tile/throne/" + name + ".png");
     }
     private final String name;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return texture;
     }
 

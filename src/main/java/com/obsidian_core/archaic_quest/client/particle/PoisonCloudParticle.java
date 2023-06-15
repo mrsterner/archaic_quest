@@ -1,6 +1,6 @@
 package com.obsidian_core.archaic_quest.client.particle;
 
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientWorld;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -8,7 +8,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 /** Modified copy-paste of {@link CampfireSmokeParticle} */
 public class PoisonCloudParticle extends TextureSheetParticle {
 
-    PoisonCloudParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+    PoisonCloudParticle(ClientWorld level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z);
         scale(3.0F);
         setSize(0.25F, 0.25F);
@@ -60,7 +60,7 @@ public class PoisonCloudParticle extends TextureSheetParticle {
             sprites = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType type, ClientWorld level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             PoisonCloudParticle particle = new PoisonCloudParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
             particle.setAlpha(0.9F);
             particle.pickSprite(sprites);

@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.*;
@@ -34,15 +34,15 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
 
     private final ChestLidController chestLidController = new ChestLidController();
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
-        protected void onOpen(Level level, BlockPos pos, BlockState state) {
+        protected void onOpen(World level, BlockPos pos, BlockState state) {
             level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
         }
 
-        protected void onClose(Level level, BlockPos pos, BlockState state) {
+        protected void onClose(World level, BlockPos pos, BlockState state) {
             level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
         }
 
-        protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int openCount, int prevOpenCount) {
+        protected void openerCountChanged(World level, BlockPos pos, BlockState state, int openCount, int prevOpenCount) {
             AztecDungeonChestBlockEntity.this.signalOpenCount(level, pos, state, openCount, prevOpenCount);
         }
 
@@ -90,7 +90,7 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
         }
     }
 
-    public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, AztecDungeonChestBlockEntity chest) {
+    public static void lidAnimateTick(World level, BlockPos pos, BlockState state, AztecDungeonChestBlockEntity chest) {
         chest.chestLidController.tickLid();
     }
 
@@ -199,7 +199,7 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
         }
     }
 
-    protected void signalOpenCount(Level level, BlockPos pos, BlockState state, int id, int data) {
+    protected void signalOpenCount(World level, BlockPos pos, BlockState state, int id, int data) {
         Block block = state.getBlock();
         level.blockEvent(pos, block, 1, data);
     }

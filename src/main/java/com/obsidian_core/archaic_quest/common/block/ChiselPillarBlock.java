@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -58,7 +58,7 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
         Type type = Type.BOTTOM;
         Direction clickedFace = context.getClickedFace();
         BlockPos clickedPos = context.getClickedPos();
-        Level level = context.getLevel();
+        World level = context.getWorld();
         boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
         if (context.getPlayer() != null) {
@@ -76,7 +76,7 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         if (!state.is(this))
             super.setPlacedBy(level, pos, state, livingEntity, itemStack);
 

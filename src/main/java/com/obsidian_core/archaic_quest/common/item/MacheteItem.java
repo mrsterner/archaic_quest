@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.state.BlockState;
 
 
@@ -24,7 +24,7 @@ public class MacheteItem extends AQSimpleWeaponItem {
         if (player == null)
             return InteractionResult.PASS;
 
-        Level level = context.getLevel();
+        World level = context.getWorld();
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
         ItemStack stack = context.getItemInHand();

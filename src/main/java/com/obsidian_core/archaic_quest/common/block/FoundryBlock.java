@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -32,7 +32,7 @@ public class FoundryBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState state, BlockEntityType<T> blockEntityType) {
         return null;
         //return (lvl, blockState, pos, blockEntity) -> FoundryBlockEntity.tick(lvl, blockState, pos, (FoundryBlockEntity) blockEntity);
     }

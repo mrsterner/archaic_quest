@@ -3,7 +3,7 @@ package com.obsidian_core.archaic_quest.common.block;
 import com.obsidian_core.archaic_quest.common.blockentity.SpikeTrapBlockEntity;
 import com.obsidian_core.archaic_quest.common.network.NetworkHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -53,7 +53,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    public void neighborChanged(BlockState state, World level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
         if (!level.isClientSide) {
             BlockEntity be = level.getExistingBlockEntity(pos);
             Mode mode = state.getValue(MODE);
@@ -71,26 +71,26 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
         }
     }
 
-    private void neighborChangeNormal(boolean active, SpikeTrapBlockEntity spikeTrap, Level level, BlockPos pos) {
+    private void neighborChangeNormal(boolean active, SpikeTrapBlockEntity spikeTrap, World level, BlockPos pos) {
         if (level.hasNeighborSignal(pos)) {
             if (!active) {
                 spikeTrap.setActive(true);
-                NetworkHelper.updateSpikeTrap((ServerLevel) level, pos, spikeTrap.isActive());
+                NetworkHelper.updateSpikeTrap((ServerWorld) level, pos, spikeTrap.isActive());
             }
         }
         else {
             if (active) {
                 spikeTrap.setActive(false);
-                NetworkHelper.updateSpikeTrap((ServerLevel) level, pos, spikeTrap.isActive());
+                NetworkHelper.updateSpikeTrap((ServerWorld) level, pos, spikeTrap.isActive());
             }
         }
     }
 
-    private void neighborChangeMaster(boolean active, SpikeTrapBlockEntity spikeTrap, Level level, BlockPos pos) {
+    private void neighborChangeMaster(boolean active, SpikeTrapBlockEntity spikeTrap, World level, BlockPos pos) {
         if (level.hasNeighborSignal(pos)) {
             if (!active) {
                 spikeTrap.setActive(true);
-                NetworkHelper.updateSpikeTrap((ServerLevel) level, pos, spikeTrap.isActive());
+                NetworkHelper.updateSpikeTrap((ServerWorld) level, pos, spikeTrap.isActive());
 
                 for (BlockPos blockPos : BlockPos.betweenClosed(pos.west().north(), pos.south().east())) {
                     BlockState neighborState = level.getBlockState(blockPos);
@@ -98,7 +98,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
                     if (neighborState.is(this) && level.getExistingBlockEntity(blockPos) instanceof SpikeTrapBlockEntity neighborTrap) {
                         if (!neighborTrap.isActive()) {
                             neighborTrap.setActive(true);
-                            NetworkHelper.updateSpikeTrap((ServerLevel) level, blockPos, true);
+                            NetworkHelper.updateSpikeTrap((ServerWorld) level, blockPos, true);
                         }
                     }
                 }
@@ -107,7 +107,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
         else {
             if (active) {
                 spikeTrap.setActive(false);
-                NetworkHelper.updateSpikeTrap((ServerLevel) level, pos, spikeTrap.isActive());
+                NetworkHelper.updateSpikeTrap((ServerWorld) level, pos, spikeTrap.isActive());
 
                 for (BlockPos blockPos : BlockPos.betweenClosed(pos.west().north(), pos.south().east())) {
                     BlockState neighborState = level.getBlockState(blockPos);
@@ -115,7 +115,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
                     if (neighborState.is(this) && level.getExistingBlockEntity(blockPos) instanceof SpikeTrapBlockEntity neighborTrap) {
                         if (neighborTrap.isActive()) {
                             neighborTrap.setActive(false);
-                            NetworkHelper.updateSpikeTrap((ServerLevel) level, blockPos, false);
+                            NetworkHelper.updateSpikeTrap((ServerWorld) level, blockPos, false);
                         }
                     }
                 }
@@ -123,11 +123,11 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
         }
     }
 
-    private void neighborChangeInvert(boolean active, SpikeTrapBlockEntity spikeTrap, BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    private void neighborChangeInvert(boolean active, SpikeTrapBlockEntity spikeTrap, BlockState state, World level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
         if (level.hasNeighborSignal(pos)) {
             if (active) {
                 spikeTrap.setActive(false);
-                NetworkHelper.updateSpikeTrap((ServerLevel) level, pos, spikeTrap.isActive());
+                NetworkHelper.updateSpikeTrap((ServerWorld) level, pos, spikeTrap.isActive());
 
                 for (BlockPos blockPos : BlockPos.betweenClosed(pos.west().north(), pos.south().east())) {
                     BlockState neighborState = level.getBlockState(blockPos);
@@ -135,7 +135,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
                     if (neighborState.is(this) && level.getExistingBlockEntity(blockPos) instanceof SpikeTrapBlockEntity neighborTrap) {
                         if (neighborTrap.isActive()) {
                             neighborTrap.setActive(false);
-                            NetworkHelper.updateSpikeTrap((ServerLevel) level, blockPos, false);
+                            NetworkHelper.updateSpikeTrap((ServerWorld) level, blockPos, false);
                         }
                     }
                 }
@@ -144,7 +144,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
         else {
             if (!active) {
                 spikeTrap.setActive(true);
-                NetworkHelper.updateSpikeTrap((ServerLevel) level, pos, spikeTrap.isActive());
+                NetworkHelper.updateSpikeTrap((ServerWorld) level, pos, spikeTrap.isActive());
 
                 for (BlockPos blockPos : BlockPos.betweenClosed(pos.west().north(), pos.south().east())) {
                     BlockState neighborState = level.getBlockState(blockPos);
@@ -152,7 +152,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
                     if (neighborState.is(this) && level.getExistingBlockEntity(blockPos) instanceof SpikeTrapBlockEntity neighborTrap) {
                         if (!neighborTrap.isActive()) {
                             neighborTrap.setActive(true);
-                            NetworkHelper.updateSpikeTrap((ServerLevel) level, blockPos, true);
+                            NetworkHelper.updateSpikeTrap((ServerWorld) level, blockPos, true);
                         }
                     }
                 }
@@ -163,7 +163,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult use(BlockState state, World level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (player.getItemInHand(hand).getItem() == Items.REDSTONE_TORCH && state.is(this)) {
             Mode mode = Mode.cycle(state.getValue(MODE));
 
@@ -171,7 +171,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
                 spikeTrap.setMode(mode);
 
                 if (!level.isClientSide) {
-                    NetworkHelper.updateSpikeTrap((ServerLevel) level, pos, mode);
+                    NetworkHelper.updateSpikeTrap((ServerWorld) level, pos, mode);
                 }
             }
             level.setBlockAndUpdate(pos, state.setValue(MODE, mode));
@@ -189,7 +189,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState state, BlockEntityType<T> type) {
         return (lvl, pos, blockState, blockEntity) -> SpikeTrapBlockEntity.tick(lvl, pos, blockState, (SpikeTrapBlockEntity) blockEntity);
     }
 

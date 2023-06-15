@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecCraftingStationBlockEntity;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.BlockEntityWithoutWorldRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class AztecCraftingStationBEWLR extends BlockEntityWithoutLevelRenderer {
+public class AztecCraftingStationBEWLR extends BlockEntityWithoutWorldRenderer {
 
     private final AztecCraftingStationBlockEntity blockEntity = new AztecCraftingStationBlockEntity(BlockPos.ZERO, AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState());
 

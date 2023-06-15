@@ -10,7 +10,7 @@ public class AQItemModelProps {
 
     public static void register() {
         // Adventurer's Torch
-        ItemProperties.register(AQItems.ADVENTURERS_TORCH.get(), ArchaicQuest.resourceLoc("lit"), (itemStack, clientLevel, livingEntity, seed) -> {
+        ItemProperties.register(AQItems.ADVENTURERS_TORCH.get(), ArchaicQuest.resourceLoc("lit"), (itemStack, clientWorld, livingEntity, seed) -> {
             Entity entity = livingEntity != null ? livingEntity : itemStack.getEntityRepresentation();
 
             if (entity != null) {

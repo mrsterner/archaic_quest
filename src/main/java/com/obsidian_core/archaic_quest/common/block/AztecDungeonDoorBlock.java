@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -214,7 +214,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean flag) {
+    public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean flag) {
         if (state.is(this) && !newState.is(this)) {
             BlockPos masterPos = calculateMasterPos(state, pos);
 
@@ -253,7 +253,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    public void neighborChanged(BlockState state, World level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
         if (doorType.isFrame()) {
             super.neighborChanged(state, level, pos, block, neighborPos, flag);
             return;
@@ -355,7 +355,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Level level = context.getLevel();
+        World level = context.getWorld();
         BlockPos pos = context.getClickedPos();
         Direction direction = context.getHorizontalDirection().getOpposite();
 
@@ -403,7 +403,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return (lvl, pos, state, blockEntity) -> AztecDungeonDoorBlockEntity.tick(lvl, pos, state, (AztecDungeonDoorBlockEntity) blockEntity);
     }
 

@@ -5,7 +5,7 @@ import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonChestBlock
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.item.blockitem.AztecThroneBlockItem;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.BlockEntityWithoutWorldRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class AztecDungeonChestBEWLR extends BlockEntityWithoutLevelRenderer {
+public class AztecDungeonChestBEWLR extends BlockEntityWithoutWorldRenderer {
 
     private final AztecDungeonChestBlockEntity blockEntity = new AztecDungeonChestBlockEntity(BlockPos.ZERO, AQBlocks.AZTEC_DUNGEON_CHEST.get().defaultBlockState());
 

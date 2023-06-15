@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
@@ -63,7 +63,7 @@ public class CeramicVaseBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+    public boolean onDestroyedByPlayer(BlockState state, World level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         if (level.getExistingBlockEntity(pos) instanceof VaseBlockEntity vaseBlockEntity) {
             vaseBlockEntity.dropLootTable(player);
         }

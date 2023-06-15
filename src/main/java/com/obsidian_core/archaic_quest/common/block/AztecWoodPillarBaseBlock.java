@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,7 +48,7 @@ public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterlogged
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos clickedPos = context.getClickedPos();
-        Level level = context.getLevel();
+        World level = context.getWorld();
         boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
         return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);

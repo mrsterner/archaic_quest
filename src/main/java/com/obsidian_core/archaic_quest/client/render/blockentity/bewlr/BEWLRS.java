@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.client.render.blockentity.bewlr;
 
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.BlockEntityWithoutWorldRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 
 import javax.annotation.Nullable;
@@ -21,10 +21,10 @@ public class BEWLRS {
 
     public static class Holder {
 
-        private final BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> factory;
-        private BlockEntityWithoutLevelRenderer instance;
+        private final BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutWorldRenderer> factory;
+        private BlockEntityWithoutWorldRenderer instance;
 
-        public Holder(BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> factory) {
+        public Holder(BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutWorldRenderer> factory) {
             this.factory = factory;
             BEWLR_LIST.add(this);
         }
@@ -34,9 +34,9 @@ public class BEWLRS {
         }
 
         @Nullable
-        public BlockEntityWithoutLevelRenderer getInstance() {
+        public BlockEntityWithoutWorldRenderer getInstance() {
             if (instance == null) {
-                throw new IllegalStateException("Attempted to access a BlockEntityWithoutLevelRenderer instance that had not been created.");
+                throw new IllegalStateException("Attempted to access a BlockEntityWithoutWorldRenderer instance that had not been created.");
             }
             return instance;
         }

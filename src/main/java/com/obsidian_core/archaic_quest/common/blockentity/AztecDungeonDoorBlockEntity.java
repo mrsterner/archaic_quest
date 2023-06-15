@@ -11,9 +11,9 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,7 +52,7 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
         }
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, AztecDungeonDoorBlockEntity dungeonDoor) {
+    public static void tick(World level, BlockPos pos, BlockState state, AztecDungeonDoorBlockEntity dungeonDoor) {
         DungeonDoorType doorType = dungeonDoor.doorType;
         DoorState doorState = dungeonDoor.doorState;
 
@@ -132,7 +132,7 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
 
     public void sendDoorStateUpdate() {
         if (level != null && !level.isClientSide) {
-            NetworkHelper.updateDoorState((ServerLevel) level, getBlockPos(), doorState);
+            NetworkHelper.updateDoorState((ServerWorld) level, getBlockPos(), doorState);
         }
     }
 

@@ -8,7 +8,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.WorldAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -64,13 +64,13 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos blockpos = context.getClickedPos();
-        BlockState state = context.getLevel().getBlockState(blockpos);
+        BlockState state = context.getWorld().getBlockState(blockpos);
 
         if(state.getBlock() == this) {
             return state.setValue(SLAB_STATE, SlabState.DOUBLE).setValue(WATERLOGGED, false);
         }
 
-        FluidState fluid = context.getLevel().getFluidState(blockpos);
+        FluidState fluid = context.getWorld().getFluidState(blockpos);
         BlockState newState = defaultBlockState().setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
         Direction direction = getDirectionForPlacement(context);
 
@@ -102,7 +102,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, WorldAccessor level, BlockPos currentPos, BlockPos facingPos) {
         if(state.getValue(WATERLOGGED)) {
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
@@ -116,7 +116,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluidState) {
+    public boolean placeLiquid(WorldAccessor level, BlockPos pos, BlockState state, FluidState fluidState) {
         return state.getValue(SLAB_STATE) != SlabState.DOUBLE && SimpleWaterloggedBlock.super.placeLiquid(level, pos, state, fluidState);
     }
 

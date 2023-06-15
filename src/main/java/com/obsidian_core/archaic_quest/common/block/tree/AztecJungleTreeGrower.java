@@ -1,26 +1,24 @@
 package com.obsidian_core.archaic_quest.common.block.tree;
 
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
-import net.minecraft.core.Holder;
-import net.minecraft.data.worldgen.features.TreeFeatures;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.grower.AbstractMegaTreeGrower;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.block.sapling.LargeTreeSaplingGenerator;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.TreeConfiguredFeatures;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-
-public class AztecJungleTreeGrower extends AbstractMegaTreeGrower {
-
+public class AztecJungleTreeGrower extends LargeTreeSaplingGenerator {
 
     @Nullable
     @Override
-    protected Holder<? extends ConfiguredFeature<?, ?>> getConfiguredFeature(RandomSource randomSource, boolean b) {
-        return TreeFeatures.JUNGLE_TREE_NO_VINE;
+    protected RegistryEntry<? extends ConfiguredFeature<?, ?>> getLargeTreeFeature(Random random) {
+        return AQConfiguredFeatures.AZTEC_JUNGLE_TREE.getHolder().orElse(null);;
     }
 
     @Nullable
     @Override
-    protected Holder<? extends ConfiguredFeature<?, ?>> getConfiguredMegaFeature(RandomSource randomSource) {
-        return AQConfiguredFeatures.AZTEC_JUNGLE_TREE.getHolder().orElse(null);
+    protected RegistryEntry<? extends ConfiguredFeature<?, ?>> getTreeFeature(Random random, boolean bees) {
+        return TreeConfiguredFeatures.JUNGLE_TREE_NO_VINE;
     }
 }

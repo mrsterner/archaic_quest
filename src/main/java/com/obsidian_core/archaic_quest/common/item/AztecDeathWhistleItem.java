@@ -7,7 +7,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 
 public class AztecDeathWhistleItem extends Item {
 
@@ -16,7 +16,7 @@ public class AztecDeathWhistleItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(World level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
 
         if (player.getCooldowns().isOnCooldown(this)) {

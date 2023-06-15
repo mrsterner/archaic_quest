@@ -1,72 +1,72 @@
 package com.obsidian_core.archaic_quest.common.entity.living;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.world.entity.animal.Ocelot;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
-public class Tlatlaomi extends Monster {
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.CatEntity;
+import net.minecraft.entity.passive.OcelotEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-    public Tlatlaomi(EntityType<? extends Monster> type, Level level) {
+public class Tlatlaomi extends HostileEntity {
+
+    public Tlatlaomi(EntityType<? extends HostileEntity> type, World level) {
         super(type, level);
     }
 
-    public static AttributeSupplier.Builder createTlatlaomiAttributes() {
-        return Monster.createMonsterAttributes()
-                .add(Attributes.MOVEMENT_SPEED, 0.28D)
-                .add(Attributes.ATTACK_DAMAGE, 2.0D)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.5F)
-                .add(Attributes.MAX_HEALTH, 25.0D);
+    public static DefaultAttributeContainer.Builder createTlatlaomiAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.28D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5F)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 25.0D);
     }
 
     @Override
-    protected void registerGoals() {
-        goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
-        goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 0.80D));
-        goalSelector.addGoal(3, new LookAtPlayerGoal(this, Cat.class, 9.0F));
-        goalSelector.addGoal(3, new LookAtPlayerGoal(this, Ocelot.class, 9.0F));
-        goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Player.class, true));
+    protected void initGoals() {
+        goalSelector.add(0, new SwimGoal(this));
+        goalSelector.add(1, new MeleeAttackGoal(this, 1.0D, false));
+        goalSelector.add(2, new WanderAroundFarGoal(this, 0.80D));
+        goalSelector.add(3, new LookAtEntityGoal(this, CatEntity.class, 9.0F));
+        goalSelector.add(3, new LookAtEntityGoal(this, OcelotEntity.class, 9.0F));
+        goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        goalSelector.add(5, new LookAroundGoal(this));
+        targetSelector.add(0, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
+    public EntityGroup getGroup() {
+        return EntityGroup.UNDEAD;
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.SKELETON_AMBIENT;
+        return SoundEvents.ENTITY_SKELETON_AMBIENT;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return SoundEvents.SKELETON_HURT;
+        return SoundEvents.ENTITY_SKELETON_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.SKELETON_DEATH;
+        return SoundEvents.ENTITY_SKELETON_DEATH;
     }
 
     protected SoundEvent getStepSound() {
-        return SoundEvents.SKELETON_STEP;
+        return SoundEvents.ENTITY_SKELETON_STEP;
     }
 
     @Override
@@ -75,12 +75,12 @@ public class Tlatlaomi extends Monster {
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
         return dimensions.height * 0.90F;
     }
 
     @Override
-    public float getVoicePitch() {
-        return super.getVoicePitch() * 0.75F;
+    public float getSoundPitch() {
+        return super.getSoundPitch() * 0.75F;
     }
 }

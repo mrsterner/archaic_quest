@@ -1,143 +1,64 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
-    }
-}
 plugins {
-    id 'eclipse'
+    id 'fabric-loom' version '1.2-SNAPSHOT'
     id 'maven-publish'
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
 
-version = "${mod_version}-${mc_version}"
-group = 'com.obsidian_core.archaic_quest'
-archivesBaseName = 'archaic_quest'
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-minecraft {
-    mappings channel: 'official', version: "${mc_version}"
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'archaic_quest'
-
-            mods {
-                archaic_quest {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'archaic_quest'
-
-            mods {
-                archaic_quest {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'archaic_quest'
-
-            mods {
-                dampsoil {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'archaic_quest', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                archaic_quest {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
+version = project.mod_version
+group = project.maven_group
 
 repositories {
-    maven {
-        name 'CurseMaven'
-        url 'https://www.cursemaven.com'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
+    maven { url = "https://mvn.devos.one/snapshots/" }
+    maven { url = "https://jitpack.io" }
 }
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    implementation fg.deobf("curse.maven:jei-238222:${jei_version}")
-    implementation fg.deobf("curse.maven:terrablender-563928:${terra_version}")
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    runtimeOnly fg.deobf("curse.maven:worldedit-225608:${we_version}")
-    runtimeOnly fg.deobf("curse.maven:mekanism-268560:${mekanism_version}")
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:Porting-Lib:${project.porting_lib}"))
+
+    include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.6")))
 }
 
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "Archaic Quest",
-            "Specification-Vendor": "Archaic Quest Team",
-            "Specification-Version": "1",
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" : "Archaic Quest Team",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+base {
+    archivesName = project.archives_base_name
 }
 
-jar.finalizedBy('reobfJar')
+processResources {
+    inputs.property "version", project.version
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    it.options.release = 17
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName.get()}"}
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+    }
 }

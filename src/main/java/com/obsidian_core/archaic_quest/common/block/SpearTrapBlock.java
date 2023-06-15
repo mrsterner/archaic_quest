@@ -11,9 +11,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.World;
+import net.minecraft.world.level.WorldAccessor;
+import net.minecraft.world.level.WorldReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -48,7 +48,7 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallHeight) {
+    public void fallOn(World level, BlockState state, BlockPos pos, Entity entity, float fallHeight) {
         entity.causeFallDamage(fallHeight + damageMult, 2.0F, AQDamageSources.SPEAR_TRAP);
     }
 
@@ -64,13 +64,13 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, WorldReader level, BlockPos pos) {
         return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP) || level.getBlockState(pos.below()).is(this);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, LevelAccessor level, BlockPos pos, BlockPos pos1) {
+    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor level, BlockPos pos, BlockPos pos1) {
         if (!newState.canSurvive(level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
@@ -87,14 +87,14 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos clickedPos = context.getClickedPos();
-        Level level = context.getLevel();
+        World level = context.getWorld();
         boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
         return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         if (!state.is(this))
             super.setPlacedBy(level, pos, state, livingEntity, itemStack);
 

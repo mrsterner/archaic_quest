@@ -1,22 +1,22 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
-public class AztecChest extends Block implements EntityBlock {
+public class AztecChest extends Block implements BlockEntityProvider {
 
-    public AztecChest(Properties properties) {
+    public AztecChest(Settings properties) {
         super(properties);
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return null;
     }
 }

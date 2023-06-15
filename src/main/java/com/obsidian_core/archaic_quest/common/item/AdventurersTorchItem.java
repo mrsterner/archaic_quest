@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -21,7 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -90,7 +90,7 @@ public class AdventurersTorchItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(World level, Player player, InteractionHand hand) {
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.WATER);
 
         if (level.getBlockState(hitResult.getBlockPos()).getFluidState().is(FluidTags.WATER)) {
@@ -117,11 +117,11 @@ public class AdventurersTorchItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         ItemStack torch = context.getItemInHand();
-        BlockState clickedState = context.getLevel().getBlockState(context.getClickedPos());
+        BlockState clickedState = context.getWorld().getBlockState(context.getClickedPos());
 
         if (getLitState(torch) > 0) {
             if (clickedState.getFluidState().isEmpty() && TORCH_INTERACTABLES.containsKey(clickedState.getBlock())) {
-                return TORCH_INTERACTABLES.get(clickedState.getBlock()).interact(context.getLevel(), clickedState, context.getClickedPos(), getLitState(torch) == SOULFIRE)
+                return TORCH_INTERACTABLES.get(clickedState.getBlock()).interact(context.getWorld(), clickedState, context.getClickedPos(), getLitState(torch) == SOULFIRE)
                         ? InteractionResult.SUCCESS
                         : InteractionResult.FAIL;
             }

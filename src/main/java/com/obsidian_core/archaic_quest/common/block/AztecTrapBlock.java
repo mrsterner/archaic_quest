@@ -1,9 +1,9 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,7 +20,7 @@ public class AztecTrapBlock extends DispenserBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean wtfIsThis) {
+    public void neighborChanged(BlockState state, World level, BlockPos pos, Block block, BlockPos neighborPos, boolean wtfIsThis) {
         boolean powered = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
         boolean triggered = state.getValue(TRIGGERED);
 
@@ -34,9 +34,9 @@ public class AztecTrapBlock extends DispenserBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel serverLevel, BlockPos pos, RandomSource random) {
-        super.tick(state, serverLevel, pos, random);
-        serverLevel.setBlock(pos, state.setValue(ACTIVE, false), 3);
+    public void tick(BlockState state, ServerWorld serverWorld, BlockPos pos, RandomSource random) {
+        super.tick(state, serverWorld, pos, random);
+        serverWorld.setBlock(pos, state.setValue(ACTIVE, false), 3);
     }
 
     @Override

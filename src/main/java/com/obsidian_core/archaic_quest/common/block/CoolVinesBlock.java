@@ -3,13 +3,13 @@ package com.obsidian_core.archaic_quest.common.block;
 import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.World;
+import net.minecraft.world.level.WorldAccessor;
+import net.minecraft.world.level.WorldReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -68,7 +68,7 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void randomTick(BlockState state, ServerWorld level, BlockPos pos, RandomSource random) {
         if (!level.isAreaLoaded(pos, 1)) return;
 
         if (random.nextInt(10) == 0) {
@@ -86,7 +86,7 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
         Direction face = context.getClickedFace();
         BlockPos pos = context.getClickedPos();
         BlockPos behindPos = pos.relative(face.getOpposite());
-        Level level = context.getLevel();
+        World level = context.getWorld();
 
         if (face == Direction.DOWN || face == Direction.UP) {
             face = context.getHorizontalDirection().getOpposite();
@@ -106,7 +106,7 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Deprecated
     @SuppressWarnings("deprecation")
-    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, WorldReader level, BlockPos pos) {
         Direction face = state.getValue(FACING);
         BlockPos behindPos = pos.relative(face.getOpposite());
         BlockState behindState = level.getBlockState(behindPos);
@@ -123,7 +123,7 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
     @Deprecated
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, LevelAccessor level, BlockPos pos, BlockPos pos1) {
+    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor level, BlockPos pos, BlockPos pos1) {
         return !newState.canSurvive(level, pos)
                 ? Blocks.AIR.defaultBlockState()
                 : super.updateShape(newState, direction, state, level, pos, pos1);

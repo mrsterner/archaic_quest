@@ -1,9 +1,8 @@
 package com.obsidian_core.archaic_quest.common.block.data;
 
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.resources.ResourceLocation;
-
-import javax.annotation.Nonnull;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 public enum DungeonDoorType {
 
@@ -14,19 +13,19 @@ public enum DungeonDoorType {
 
 
 
-    DungeonDoorType(boolean isFrame, @Nonnull String textureName) {
+    DungeonDoorType(boolean isFrame, @NotNull String textureName) {
         this.isFrame = isFrame;
-        this.texture = ArchaicQuest.resourceLoc("textures/tile/dungeon_door/" + textureName + ".png");
+        this.texture = ArchaicQuest.id("textures/tile/dungeon_door/" + textureName + ".png");
     }
 
     private final boolean isFrame;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     public boolean isFrame() {
         return isFrame;
     }
 
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return texture;
     }
 }

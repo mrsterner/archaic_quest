@@ -13,7 +13,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -40,7 +40,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
         super(AQBlockEntities.SPIKE_TRAP.get(), pos, state);
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, SpikeTrapBlockEntity trap) {
+    public static void tick(World level, BlockPos pos, BlockState state, SpikeTrapBlockEntity trap) {
         // Tick damage
         if (trap.active) {
             // Rise the spikes

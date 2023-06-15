@@ -7,7 +7,7 @@ import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockE
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateSpikeTrap;
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateSpikeTrapMode;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -18,7 +18,7 @@ public class ClientWork {
     public static void handleUpdateDoorState(S2CUpdateDoorState message) {
         BlockPos pos = message.doorPos;
         DoorState doorState = DoorState.byId(message.doorState);
-        ClientLevel level = Minecraft.getInstance().level;
+        ClientWorld level = Minecraft.getInstance().level;
 
         if (level == null) return;
 
@@ -33,7 +33,7 @@ public class ClientWork {
     public static void handleUpdateSpikeTrap(S2CUpdateSpikeTrap message) {
         BlockPos pos = message.doorPos;
         boolean active = message.active;
-        ClientLevel level = Minecraft.getInstance().level;
+        ClientWorld level = Minecraft.getInstance().level;
 
         if (level == null) return;
 
@@ -47,7 +47,7 @@ public class ClientWork {
     public static void handleUpdateSpikeTrap(S2CUpdateSpikeTrapMode message) {
         BlockPos pos = message.doorPos;
         int mode = message.mode;
-        ClientLevel level = Minecraft.getInstance().level;
+        ClientWorld level = Minecraft.getInstance().level;
 
         if (level == null) return;
 

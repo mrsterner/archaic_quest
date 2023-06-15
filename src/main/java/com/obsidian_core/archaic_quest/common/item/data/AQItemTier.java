@@ -46,7 +46,7 @@ public record AQItemTier(int durability, float speed, float damage, int level, i
     }
 
     @Override
-    public int getLevel() {
+    public int getWorld() {
         return level;
     }
 

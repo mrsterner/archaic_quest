@@ -2,31 +2,30 @@ package com.obsidian_core.archaic_quest.common.blockentity;
 
 import com.obsidian_core.archaic_quest.common.misc.TranslationReferences;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-
-public class AztecCraftingStationBlockEntity extends BlockEntity implements MenuProvider {
+public class AztecCraftingStationBlockEntity extends BlockEntity implements NamedScreenHandlerFactory {
 
     public AztecCraftingStationBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.AZTEC_CRAFTING_STATION.get(), pos, state);
+        super(AQBlockEntities.AZTEC_CRAFTING_STATION, pos, state);
     }
 
     @Override
-    public Component getDisplayName() {
+    public Text getDisplayName() {
         return TranslationReferences.AZTEC_CRAFTING_STATION_CONTAINER_NAME;
     }
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
         return null;
     }
 }

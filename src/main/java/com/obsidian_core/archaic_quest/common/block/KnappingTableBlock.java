@@ -10,7 +10,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
@@ -40,7 +40,7 @@ public class KnappingTableBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHit) {
+    public InteractionResult use(BlockState state, World level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHit) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
@@ -53,7 +53,7 @@ public class KnappingTableBlock extends Block {
     @Nullable
     @Override
     @SuppressWarnings("deprecation")
-    public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+    public MenuProvider getMenuProvider(BlockState state, World level, BlockPos pos) {
         return new SimpleMenuProvider((id, inventory, player)
                 -> new KnappingTableContainer(id, inventory, pos), TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME);
     }

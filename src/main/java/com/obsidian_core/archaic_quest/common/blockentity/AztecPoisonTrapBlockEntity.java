@@ -4,14 +4,14 @@ import com.obsidian_core.archaic_quest.common.block.AztecPoisonTrapBlock;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerWorld;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,7 +38,7 @@ public class AztecPoisonTrapBlockEntity extends BlockEntity {
         effectBox = new AABB(getBlockPos().above()).inflate(3.0D, 1.0D, 3.0D);
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, AztecPoisonTrapBlockEntity trap) {
+    public static void tick(World level, BlockPos pos, BlockState state, AztecPoisonTrapBlockEntity trap) {
         // Update collision box
         if (--trap.timeNextCollisionTick <= 0) {
             trap.timeNextCollisionTick = trap.maxTimeNextCollisionTick;

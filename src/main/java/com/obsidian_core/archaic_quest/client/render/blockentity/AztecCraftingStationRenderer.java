@@ -75,7 +75,7 @@ public class AztecCraftingStationRenderer implements BlockEntityRenderer<AztecCr
 
     @Override
     public void render(AztecCraftingStationBlockEntity craftingStation, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int textureOverlay) {
-        BlockState state = craftingStation.getLevel() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState() : craftingStation.getBlockState();
+        BlockState state = craftingStation.getWorld() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState() : craftingStation.getBlockState();
         Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         float rotation = direction.toYRot();
 
