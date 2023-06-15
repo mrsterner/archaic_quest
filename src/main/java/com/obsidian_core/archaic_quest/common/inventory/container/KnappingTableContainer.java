@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.world.block.Block;
 
 import javax.annotation.Nullable;
 
@@ -28,10 +28,10 @@ public class KnappingTableContainer extends AbstractContainerMenu {
         this.openedPos = openedPos;
         container = new SimpleContainer(11) {
             @Override
-            public void stopOpen(Player player) {
+            public void stopOpen(PlayerEntity player) {
                 for (int slot = 0; slot < container.getContainerSize(); slot++) {
                     if (!container.getItem(slot).isEmpty())
-                        Block.popResource(player.level, player.blockPosition(), container.getItem(slot));
+                        Block.popResource(player.world, player.blockPosition(), container.getItem(slot));
                 }
             }
         };
@@ -51,7 +51,7 @@ public class KnappingTableContainer extends AbstractContainerMenu {
         // Result slot
         this.addSlot(new ResultSlot(container, 10, 143, 35));
 
-        // Player inventory
+        // PlayerEntity inventory
         for(int l = 0; l < 3; ++l) {
             for(int k = 0; k < 9; ++k) {
                 this.addSlot(new Slot(inventory, k + l * 9 + 9, 8 + k * 18, l * 18 + 84));
@@ -65,7 +65,7 @@ public class KnappingTableContainer extends AbstractContainerMenu {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public ItemStack quickMoveStack(Player player, int slotId) {
+    public ItemStack quickMoveStack(PlayerEntity player, int slotId) {
         ItemStack returnedItem = ItemStack.EMPTY;
         Slot slot = slots.get(slotId);
 
@@ -93,7 +93,7 @@ public class KnappingTableContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(PlayerEntity player) {
         return openedPos == null || player.distanceToSqr(openedPos.getX() + 0.5D, openedPos.getY() + 0.5D, openedPos.getZ() + 0.5D) < 64.0D;
     }
 

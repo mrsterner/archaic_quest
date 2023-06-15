@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -20,12 +20,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.world.ClipContext;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.Blocks;
+import net.minecraft.world.world.block.CampfireBlock;
+import net.minecraft.world.world.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -50,26 +50,26 @@ public class AdventurersTorchItem extends Item {
         registerTorchLightable(Blocks.CAMPFIRE, (state) -> state.getValue(CampfireBlock.LIT), false);
         registerTorchLightable(Blocks.SOUL_CAMPFIRE, (state) -> state.getValue(CampfireBlock.LIT), true);
 
-        registerTorchInteraction(Blocks.CAMPFIRE, (level, state, pos, soulfire) -> {
+        registerTorchInteraction(Blocks.CAMPFIRE, (world, state, pos, soulfire) -> {
             if (!state.getValue(CampfireBlock.LIT)) {
                 if (soulfire) {
-                    level.setBlockAndUpdate(pos, Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+                    world.setBlockAndUpdate(pos, Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
                 }
                 else {
-                    level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                    world.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
                 }
                 return true;
             }
             return false;
         });
 
-        registerTorchInteraction(Blocks.SOUL_CAMPFIRE, (level, state, pos, soulfire) -> {
+        registerTorchInteraction(Blocks.SOUL_CAMPFIRE, (world, state, pos, soulfire) -> {
             if (!state.getValue(CampfireBlock.LIT)) {
                 if (soulfire) {
-                    level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                    world.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
                 }
                 else {
-                    level.setBlockAndUpdate(pos, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+                    world.setBlockAndUpdate(pos, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
                 }
                 return true;
             }
@@ -90,28 +90,28 @@ public class AdventurersTorchItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(World level, Player player, InteractionHand hand) {
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.WATER);
+    public InteractionResultHolder<ItemStack> use(World world, PlayerEntity player, InteractionHand hand) {
+        BlockHitResult hitResult = getPlayerPOVHitResult(world, player, ClipContext.Fluid.WATER);
 
-        if (level.getBlockState(hitResult.getBlockPos()).getFluidState().is(FluidTags.WATER)) {
+        if (world.getBlockState(hitResult.getBlockPos()).getFluidState().is(FluidTags.WATER)) {
             ItemStack itemStack = player.getItemInHand(hand);
 
             if (getLitState(itemStack) > 0) {
 
                 setLit(itemStack, UNLIT);
-                level.playSound(null, hitResult.getBlockPos(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1.0F);
+                world.playSound(null, hitResult.getBlockPos(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1.0F);
 
                 double x = hitResult.getBlockPos().getX();
                 double y = hitResult.getBlockPos().getY();
                 double z = hitResult.getBlockPos().getZ();
 
                 for (int l = 0; l < 8; ++l) {
-                    level.addParticle(ParticleTypes.LARGE_SMOKE, x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
+                    world.addParticle(ParticleTypes.LARGE_SMOKE, x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
                 }
-                return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
+                return InteractionResultHolder.sidedSuccess(itemStack, world.isClient());
             }
         }
-        return super.use(level, player, hand);
+        return super.use(world, player, hand);
     }
 
     @Override

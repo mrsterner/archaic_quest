@@ -3,17 +3,38 @@ package com.obsidian_core.archaic_quest.common.entity.projectile;
 import com.google.common.collect.Lists;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,12 +65,12 @@ public class DartEntity extends ProjectileEntity {
     private List<Entity> piercedAndKilledEntities;
 
 
-    public DartEntity(EntityType<? extends ProjectileEntity> entityType, World level) {
-        super(entityType, level);
+    public DartEntity(EntityType<? extends ProjectileEntity> entityType, World world) {
+        super(entityType, world);
     }
 
-    public DartEntity(EntityType<? extends ProjectileEntity> entityType, double x, double y, double z, World level) {
-        this(entityType, level);
+    public DartEntity(EntityType<? extends ProjectileEntity> entityType, double x, double y, double z, World world) {
+        this(entityType, world);
         setPos(x, y, z);
     }
 
@@ -67,57 +88,61 @@ public class DartEntity extends ProjectileEntity {
     }
 
     public boolean shouldRenderAtSqrDistance(double p_36726_) {
-        double d0 = this.getBoundingBox().getSize() * 10.0D;
+        double d0 = this.getBoundingBox().getAverageSideLength() * 10.0D;
         if (Double.isNaN(d0)) {
             d0 = 1.0D;
         }
 
-        d0 *= 64.0D * getViewScale();
+        d0 *= 64.0D * getRenderDistanceMultiplier();
         return p_36726_ < d0 * d0;
     }
 
     @Override
-    protected void initDataTrackers() {
-        this.dataTracker.define(ID_FLAGS, (byte)0);
-        this.dataTracker.define(PIERCE_LEVEL, (byte)0);
+    protected void initDataTracker() {
+        this.dataTracker.startTracking(ID_FLAGS, (byte)0);
+        this.dataTracker.startTracking(PIERCE_LEVEL, (byte)0);
     }
 
-    public void shoot(double p_36775_, double p_36776_, double p_36777_, float p_36778_, float p_36779_) {
-        super.shoot(p_36775_, p_36776_, p_36777_, p_36778_, p_36779_);
+    @Override
+    public void setVelocity(double x, double y, double z, float speed, float divergence) {
+        super.setVelocity(x, y, z, speed, divergence);
         this.life = 0;
     }
 
-    public void lerpTo(double p_36728_, double p_36729_, double p_36730_, float p_36731_, float p_36732_, int p_36733_, boolean p_36734_) {
-        this.setPos(p_36728_, p_36729_, p_36730_);
-        this.setRot(p_36731_, p_36732_);
+    @Override
+    public void updatePositionAndAngles(double x, double y, double z, float yaw, float pitch) {
+        this.setPos(x, y, z);
+        this.setRotation(yaw, pitch);
     }
 
-    public void lerpMotion(double p_36786_, double p_36787_, double p_36788_) {
-        super.lerpMotion(p_36786_, p_36787_, p_36788_);
+    @Override
+    public void setVelocityClient(double x, double y, double z) {
+        super.setVelocityClient(x, y, z);
         this.life = 0;
     }
 
+    @Override
     public void tick() {
         super.tick();
         boolean flag = this.isNoPhysics();
-        Vec3 vec3 = this.getDeltaMovement();
-        if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-            double d0 = vec3.horizontalDistance();
-            this.setYRot((float)(Mth.atan2(vec3.x, vec3.z) * (double)(180F / (float)Math.PI)));
-            this.setXRot((float)(Mth.atan2(vec3.y, d0) * (double)(180F / (float)Math.PI)));
-            this.yRotO = this.getYRot();
-            this.xRotO = this.getXRot();
+        Vec3d vec3 = this.getVelocity();
+        if (this.prevPitch == 0.0F && this.prevYaw == 0.0F) {
+            double d0 = vec3.horizontalLength();
+            this.setYaw((float)(MathHelper.atan2(vec3.x, vec3.z) * (double)(180F / (float)Math.PI)));
+            this.setPitch((float)(MathHelper.atan2(vec3.y, d0) * (double)(180F / (float)Math.PI)));
+            this.prevYaw = this.getYaw();
+            this.prevPitch = this.getPitch();
         }
 
-        BlockPos blockpos = this.blockPosition();
-        BlockState blockstate = this.level.getBlockState(blockpos);
+        BlockPos blockpos = this.getBlockPos();
+        BlockState blockstate = this.world.getBlockState(blockpos);
         if (!blockstate.isAir() && !flag) {
-            VoxelShape voxelshape = blockstate.getCollisionShape(this.level, blockpos);
+            VoxelShape voxelshape = blockstate.getCollisionShape(this.world, blockpos);
             if (!voxelshape.isEmpty()) {
-                Vec3 vec31 = this.position();
+                Vec3d vec31 = this.getPos();
 
-                for(AABB aabb : voxelshape.toAabbs()) {
-                    if (aabb.move(blockpos).contains(vec31)) {
+                for(Box box : voxelshape.getBoundingBoxes()) {
+                    if (box.offset(blockpos).contains(vec31)) {
                         this.inGround = true;
                         break;
                     }
@@ -129,25 +154,25 @@ public class DartEntity extends ProjectileEntity {
             --this.shakeTime;
         }
 
-        if (this.isInWaterOrRain() || blockstate.is(Blocks.POWDER_SNOW) || this.isInFluidType((fluidType, height) -> this.canFluidExtinguish(fluidType))) {
-            this.clearFire();
+        if (this.isTouchingWaterOrRain() || blockstate.isOf(Blocks.POWDER_SNOW) || this.isInFluidType((fluidType, height) -> this.canFluidExtinguish(fluidType))) {
+            this.extinguish();
         }
 
         if (this.inGround && !flag) {
             if (this.lastState != blockstate && this.shouldFall()) {
                 this.startFalling();
-            } else if (!this.level.isClientSide) {
+            } else if (!this.world.isClient()) {
                 this.tickDespawn();
             }
 
             ++this.inGroundTime;
         } else {
             this.inGroundTime = 0;
-            Vec3 vec32 = this.position();
-            Vec3 vec33 = vec32.add(vec3);
-            HitResult hitresult = this.level.clip(new ClipContext(vec32, vec33, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            Vec3d vec32 = this.getPos();
+            Vec3d vec33 = vec32.add(vec3);
+            HitResult hitresult = this.world.raycast(new RaycastContext(vec32, vec33, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this));
             if (hitresult.getType() != HitResult.Type.MISS) {
-                vec33 = hitresult.getLocation();
+                vec33 = hitresult.getPos();
             }
 
             while(!this.isRemoved()) {
@@ -159,15 +184,15 @@ public class DartEntity extends ProjectileEntity {
                 if (hitresult != null && hitresult.getType() == HitResult.Type.ENTITY) {
                     Entity entity = ((EntityHitResult)hitresult).getEntity();
                     Entity entity1 = this.getOwner();
-                    if (entity instanceof Player && entity1 instanceof Player && !((Player)entity1).canHarmPlayer((Player)entity)) {
+                    if (entity instanceof PlayerEntity && entity1 instanceof PlayerEntity && !((PlayerEntity)entity1).shouldDamagePlayer((PlayerEntity)entity)) {
                         hitresult = null;
                         entityhitresult = null;
                     }
                 }
 
                 if (hitresult != null && hitresult.getType() != HitResult.Type.MISS && !flag && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
-                    this.onHit(hitresult);
-                    this.hasImpulse = true;
+                    this.onCollision(hitresult);
+                    this.velocityDirty = true;
                 }
 
                 if (entityhitresult == null || this.getPierceWorld() <= 0) {
@@ -177,68 +202,68 @@ public class DartEntity extends ProjectileEntity {
                 hitresult = null;
             }
 
-            vec3 = this.getDeltaMovement();
+            vec3 = this.getVelocity();
             double d5 = vec3.x;
             double d6 = vec3.y;
             double d1 = vec3.z;
             if (this.isCritArrow()) {
                 for(int i = 0; i < 4; ++i) {
-                    this.level.addParticle(ParticleTypes.CRIT, this.getX() + d5 * (double)i / 4.0D, this.getY() + d6 * (double)i / 4.0D, this.getZ() + d1 * (double)i / 4.0D, -d5, -d6 + 0.2D, -d1);
+                    this.world.addParticle(ParticleTypes.CRIT, this.getX() + d5 * (double)i / 4.0D, this.getY() + d6 * (double)i / 4.0D, this.getZ() + d1 * (double)i / 4.0D, -d5, -d6 + 0.2D, -d1);
                 }
             }
 
             double d7 = this.getX() + d5;
             double d2 = this.getY() + d6;
             double d3 = this.getZ() + d1;
-            double d4 = vec3.horizontalDistance();
+            double d4 = vec3.horizontalLength();
             if (flag) {
-                this.setYRot((float)(Mth.atan2(-d5, -d1) * (double)(180F / (float)Math.PI)));
+                this.setYaw((float)(MathHelper.atan2(-d5, -d1) * (double)(180F / (float)Math.PI)));
             } else {
-                this.setYRot((float)(Mth.atan2(d5, d1) * (double)(180F / (float)Math.PI)));
+                this.setYaw((float)(MathHelper.atan2(d5, d1) * (double)(180F / (float)Math.PI)));
             }
 
-            this.setXRot((float)(Mth.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
-            this.setXRot(lerpRotation(this.xRotO, this.getXRot()));
-            this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
+            this.setPitch((float)(MathHelper.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
+            this.setPitch(updateRotation(this.prevPitch, this.getPitch()));
+            this.setYaw(updateRotation(this.prevYaw, this.getYaw()));
             float f = 0.99F;
             float f1 = 0.05F;
-            if (this.isInWater()) {
+            if (this.submergedInWater) {
                 for(int j = 0; j < 4; ++j) {
                     float f2 = 0.25F;
-                    this.level.addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
+                    this.world.addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
                 }
 
                 f = this.getWaterInertia();
             }
 
-            this.setDeltaMovement(vec3.scale(f));
-            if (!this.isNoGravity() && !flag) {
-                Vec3 vec34 = this.getDeltaMovement();
-                this.setDeltaMovement(vec34.x, vec34.y - (double)0.05F, vec34.z);
+            this.setVelocity(vec3.multiply(f));
+            if (!this.hasNoGravity() && !flag) {
+                Vec3d vec34 = this.getVelocity();
+                this.setVelocity(vec34.x, vec34.y - (double)0.05F, vec34.z);
             }
 
             this.setPos(d7, d2, d3);
-            this.checkInsideBlocks();
+            this.checkBlockCollision();
         }
     }
 
     private boolean shouldFall() {
-        return this.inGround && this.level.noCollision((new AABB(this.position(), this.position())).inflate(0.06D));
+        return this.inGround && this.world.isSpaceEmpty((new Box(this.getPos(), this.getPos())).expand(0.06D));
     }
 
     private void startFalling() {
         this.inGround = false;
-        Vec3 vec3 = this.getDeltaMovement();
-        this.setDeltaMovement(vec3.multiply(this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F));
+        Vec3d vec3 = this.getVelocity();
+        this.setVelocity(vec3.multiply(this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F));
         this.life = 0;
     }
 
-    public void move(MoverType p_36749_, Vec3 p_36750_) {
-        super.move(p_36749_, p_36750_);
-        if (p_36749_ != MoverType.SELF && this.shouldFall()) {
+    @Override
+    public void move(MovementType movementType, Vec3d movement) {
+        super.move(movementType, movement);
+        if (movementType != MovementType.SELF && this.shouldFall()) {
             this.startFalling();
         }
-
     }
 
     protected void tickDespawn() {
@@ -260,11 +285,12 @@ public class DartEntity extends ProjectileEntity {
 
     }
 
-    protected void onHitEntity(EntityHitResult p_36757_) {
-        super.onHitEntity(p_36757_);
-        Entity entity = p_36757_.getEntity();
-        float f = (float)this.getDeltaMovement().length();
-        int i = Mth.ceil(Mth.clamp((double)f * this.baseDamage, 0.0D, 2.147483647E9D));
+    @Override
+    protected void onEntityHit(EntityHitResult entityHitResult) {
+        super.onEntityHit(entityHitResult);
+        Entity entity = entityHitResult.getEntity();
+        float f = (float)this.getVelocity().length();
+        int i = MathHelper.ceil(MathHelper.clamp((double)f * this.baseDamage, 0.0D, 2.147483647E9D));
         if (this.getPierceWorld() > 0) {
             if (this.piercingIgnoreEntityIds == null) {
                 this.piercingIgnoreEntityIds = new IntOpenHashSet(5);
@@ -295,55 +321,55 @@ public class DartEntity extends ProjectileEntity {
         else {
             damagesource = AQDamageSources.dart(this, entity1);
             if (entity1 instanceof LivingEntity) {
-                ((LivingEntity)entity1).setLastHurtMob(entity);
+                ((LivingEntity)entity1).onAttacking(entity);
             }
         }
 
         boolean flag = entity.getType() == EntityType.ENDERMAN;
-        int k = entity.getRemainingFireTicks();
+        int k = entity.getFireTicks();
         if (this.isOnFire() && !flag) {
-            entity.setSecondsOnFire(5);
+            entity.setOnFireFor(5);
         }
 
-        if (entity.hurt(damagesource, (float)i)) {
+        if (entity.damage(damagesource, (float)i)) {
             if (flag) {
                 return;
             }
 
             if (entity instanceof LivingEntity) {
                 LivingEntity livingentity = (LivingEntity)entity;
-                if (!this.level.isClientSide && this.getPierceWorld() <= 0) {
-                    livingentity.setArrowCount(livingentity.getArrowCount() + 1);
+                if (!this.world.isClient() && this.getPierceWorld() <= 0) {
+                    livingentity.setStuckArrowCount(livingentity.getStuckArrowCount() + 1);
                 }
 
                 if (this.knockback > 0) {
-                    double d0 = Math.max(0.0D, 1.0D - livingentity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-                    Vec3 vec3 = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double)this.knockback * 0.6D * d0);
-                    if (vec3.lengthSqr() > 0.0D) {
-                        livingentity.push(vec3.x, 0.1D, vec3.z);
+                    double d0 = Math.max(0.0D, 1.0D - livingentity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
+                    Vec3d vec3 = this.getVelocity().multiply(1.0D, 0.0D, 1.0D).normalize().multiply((double)this.knockback * 0.6D * d0);
+                    if (vec3.lengthSquared() > 0.0D) {
+                        livingentity.pushAway(vec3.x, 0.1D, vec3.z);
                     }
                 }
 
-                if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
-                    EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity);
+                if (!this.world.isClient && entity1 instanceof LivingEntity) {
+                    EnchantmentHelper.onUserDamaged(livingentity, entity1);
+                    EnchantmentHelper.onTargetDamaged((LivingEntity)entity1, livingentity);
                 }
 
                 this.doPostHurtEffects(livingentity);
-                if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !this.isSilent()) {
-                    ((ServerPlayer)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+                if (entity1 != null && livingentity != entity1 && livingentity instanceof PlayerEntity && entity1 instanceof ServerPlayerEntity && !this.isSilent()) {
+                    ((ServerPlayerEntity)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
 
                 if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
                     this.piercedAndKilledEntities.add(livingentity);
                 }
 
-                if (!this.level.isClientSide && entity1 instanceof ServerPlayer) {
-                    ServerPlayer serverplayer = (ServerPlayer)entity1;
+                if (!this.world.isClient() && entity1 instanceof ServerPlayerEntity) {
+                    ServerPlayerEntity serverplayer = (ServerPlayerEntity)entity1;
                     if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
-                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, this.piercedAndKilledEntities);
+                        Criteria.KILLED_BY_CROSSBOW.trigger(serverplayer, this.piercedAndKilledEntities);
                     } else if (!entity.isAlive() && this.shotFromCrossbow()) {
-                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, Arrays.asList(entity));
+                        Criteria.KILLED_BY_CROSSBOW.trigger(serverplayer, Arrays.asList(entity));
                     }
                 }
             }
@@ -353,133 +379,137 @@ public class DartEntity extends ProjectileEntity {
                 this.discard();
             }
         } else {
-            entity.setRemainingFireTicks(k);
-            this.setDeltaMovement(this.getDeltaMovement().scale(-0.1D));
-            this.setYRot(this.getYRot() + 180.0F);
-            this.yRotO += 180.0F;
-            if (!this.level.isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
-                if (this.pickup == PersistentProjectileEntity.Pickup.ALLOWED) {
-                    this.spawnAtLocation(this.getPickupItem(), 0.1F);
+            entity.setFireTicks(k);
+            this.setVelocity(this.getVelocity().multiply(-0.1D));
+            this.setYaw(this.getYaw() + 180.0F);
+            this.prevYaw += 180.0F;
+            if (!this.world.isClient() && this.getVelocity().lengthSquared() < 1.0E-7D) {
+                if (this.pickup == PersistentProjectileEntity.PickupPermission.ALLOWED) {
+                    this.dropStack(this.getPickupItem(), 0.1F);
                 }
 
                 this.discard();
             }
         }
-
     }
 
-    protected void onHitBlock(BlockHitResult p_36755_) {
-        this.lastState = this.level.getBlockState(p_36755_.getBlockPos());
-        super.onHitBlock(p_36755_);
-        Vec3 vec3 = p_36755_.getLocation().subtract(this.getX(), this.getY(), this.getZ());
-        this.setDeltaMovement(vec3);
-        Vec3 vec31 = vec3.normalize().scale((double)0.05F);
-        this.setPosRaw(this.getX() - vec31.x, this.getY() - vec31.y, this.getZ() - vec31.z);
+    @Override
+    protected void onBlockHit(BlockHitResult blockHitResult) {
+        this.lastState = this.world.getBlockState(blockHitResult.getBlockPos());
+        super.onBlockHit(blockHitResult);
+        Vec3d vec3 = blockHitResult.getPos().subtract(this.getX(), this.getY(), this.getZ());
+        this.setVelocity(vec3);
+        Vec3d vec31 = vec3.normalize().multiply((double)0.05F);
+        this.setPos(this.getX() - vec31.x, this.getY() - vec31.y, this.getZ() - vec31.z);
         this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         this.inGround = true;
         this.shakeTime = 7;
         this.setCritArrow(false);
         this.setPierceWorld((byte)0);
-        this.setSoundEvent(SoundEvents.ARROW_HIT);
+        this.setSoundEvent(SoundEvents.ENTITY_ARROW_HIT);
         this.setShotFromCrossbow(false);
         this.resetPiercedEntities();
     }
 
     protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.ARROW_HIT;
+        return SoundEvents.ENTITY_ARROW_HIT;
     }
 
     protected final SoundEvent getHitGroundSoundEvent() {
         return this.soundEvent;
     }
 
-    protected void doPostHurtEffects(LivingEntity p_36744_) {
+    protected void doPostHurtEffects(LivingEntity livingEntity) {
     }
+
 
     @Nullable
-    protected EntityHitResult findHitEntity(Vec3 p_36758_, Vec3 p_36759_) {
-        return ProjectileUtil.getEntityHitResult(this.level, this, p_36758_, p_36759_, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), this::canHitEntity);
+    protected EntityHitResult findHitEntity(Vec3d p_36758_, Vec3d p_36759_) {
+        return ProjectileUtil.getEntityCollision(this.world, this, p_36758_, p_36759_, this.getBoundingBox().stretch(this.getVelocity()).expand(1.0D), this::canHit);
     }
 
-    protected boolean canHitEntity(Entity p_36743_) {
-        return super.canHitEntity(p_36743_) && (this.piercingIgnoreEntityIds == null || !this.piercingIgnoreEntityIds.contains(p_36743_.getId()));
+    @Override
+    protected boolean canHit(Entity entity) {
+        return super.canHit(entity) && (this.piercingIgnoreEntityIds == null || !this.piercingIgnoreEntityIds.contains(entity.getId()));
     }
 
-    public void addAdditionalSaveData(CompoundTag p_36772_) {
-        super.addAdditionalSaveData(p_36772_);
-        p_36772_.putShort("life", (short)this.life);
+    @Override
+    protected void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putShort("life", (short)this.life);
         if (this.lastState != null) {
-            p_36772_.put("inBlockState", NbtUtils.writeBlockState(this.lastState));
+            nbt.put("inBlockState", NbtHelper.fromBlockState(this.lastState));
         }
 
-        p_36772_.putByte("shake", (byte)this.shakeTime);
-        p_36772_.putBoolean("inGround", this.inGround);
-        p_36772_.putByte("pickup", (byte)this.pickup.ordinal());
-        p_36772_.putDouble("damage", this.baseDamage);
-        p_36772_.putBoolean("crit", this.isCritArrow());
-        p_36772_.putByte("PierceWorld", this.getPierceWorld());
-        p_36772_.putString("SoundEvent", Registry.SOUND_EVENT.getKey(this.soundEvent).toString());
-        p_36772_.putBoolean("ShotFromCrossbow", this.shotFromCrossbow());
+        nbt.putByte("shake", (byte)this.shakeTime);
+        nbt.putBoolean("inGround", this.inGround);
+        nbt.putByte("pickup", (byte)this.pickup.ordinal());
+        nbt.putDouble("damage", this.baseDamage);
+        nbt.putBoolean("crit", this.isCritArrow());
+        nbt.putByte("PierceWorld", this.getPierceWorld());
+        nbt.putString("SoundEvent", Registry.SOUND_EVENT.getKey(this.soundEvent).toString());
+        nbt.putBoolean("ShotFromCrossbow", this.shotFromCrossbow());
     }
 
-    public void readAdditionalSaveData(CompoundTag p_36761_) {
-        super.readAdditionalSaveData(p_36761_);
-        this.life = p_36761_.getShort("life");
-        if (p_36761_.contains("inBlockState", 10)) {
-            this.lastState = NbtUtils.readBlockState(p_36761_.getCompound("inBlockState"));
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.life = nbt.getShort("life");
+        if (nbt.contains("inBlockState", 10)) {
+            this.lastState = NbtHelper.toBlockState(nbt.getCompound("inBlockState"));
         }
 
-        this.shakeTime = p_36761_.getByte("shake") & 255;
-        this.inGround = p_36761_.getBoolean("inGround");
-        if (p_36761_.contains("damage", 99)) {
-            this.baseDamage = p_36761_.getDouble("damage");
+        this.shakeTime = nbt.getByte("shake") & 255;
+        this.inGround = nbt.getBoolean("inGround");
+        if (nbt.contains("damage", 99)) {
+            this.baseDamage = nbt.getDouble("damage");
         }
 
-        this.pickup = PersistentProjectileEntity.Pickup.byOrdinal(p_36761_.getByte("pickup"));
-        this.setCritArrow(p_36761_.getBoolean("crit"));
-        this.setPierceWorld(p_36761_.getByte("PierceWorld"));
-        if (p_36761_.contains("SoundEvent", 8)) {
-            this.soundEvent = Registry.SOUND_EVENT.getOptional(new ResourceLocation(p_36761_.getString("SoundEvent"))).orElse(this.getDefaultHitGroundSoundEvent());
+        this.pickup = PersistentProjectileEntity.PickupPermission.fromOrdinal(nbt.getByte("pickup"));
+        this.setCritArrow(nbt.getBoolean("crit"));
+        this.setPierceWorld(nbt.getByte("PierceWorld"));
+        if (nbt.contains("SoundEvent", 8)) {
+            this.soundEvent = Registry.SOUND_EVENT.getOrEmpty(new Identifier(nbt.getString("SoundEvent"))).orElse(this.getDefaultHitGroundSoundEvent());
         }
 
-        this.setShotFromCrossbow(p_36761_.getBoolean("ShotFromCrossbow"));
+        this.setShotFromCrossbow(nbt.getBoolean("ShotFromCrossbow"));
     }
 
-    public void setOwner(@Nullable Entity p_36770_) {
-        super.setOwner(p_36770_);
-        if (p_36770_ instanceof Player) {
-            this.pickup = ((Player)p_36770_).getAbilities().instabuild ? PersistentProjectileEntity.Pickup.CREATIVE_ONLY : PersistentProjectileEntity.Pickup.ALLOWED;
+    @Override
+    public void setOwner(@Nullable Entity entity) {
+        super.setOwner(entity);
+        if (entity instanceof PlayerEntity) {
+            this.pickup = ((PlayerEntity)entity).getAbilities().creativeMode ? PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY : PersistentProjectileEntity.PickupPermission.ALLOWED;
         }
 
     }
 
-    public void playerTouch(Player p_36766_) {
-        if (!this.level.isClientSide && (this.inGround || this.isNoPhysics()) && this.shakeTime <= 0) {
-            if (this.tryPickup(p_36766_)) {
-                p_36766_.take(this, 1);
+    @Override
+    public void onPlayerCollision(PlayerEntity playerEntity) {
+        if (!this.world.isClient() && (this.inGround || this.isNoPhysics()) && this.shakeTime <= 0) {
+            if (this.tryPickup(playerEntity)) {
+                playerEntity.sendPickup(this, 1);
                 this.discard();
             }
 
         }
     }
 
-    protected boolean tryPickup(Player p_150121_) {
-        switch (this.pickup) {
-            case ALLOWED:
-                return p_150121_.getInventory().add(this.getPickupItem());
-            case CREATIVE_ONLY:
-                return p_150121_.getAbilities().instabuild;
-            default:
-                return false;
-        }
+    protected boolean tryPickup(PlayerEntity playerEntity) {
+        return switch (this.pickup) {
+            case ALLOWED -> playerEntity.getInventory().insertStack(this.getPickupItem());
+            case CREATIVE_ONLY -> playerEntity.getAbilities().creativeMode;
+            default -> false;
+        };
     }
 
     protected ItemStack getPickupItem() {
         return ItemStack.EMPTY;
     }
 
-    protected Entity.MovementEmission getMovementEmission() {
-        return Entity.MovementEmission.NONE;
+    @Override
+    protected Entity.MoveEffect getMoveEffect() {
+        return Entity.MoveEffect.NONE;
     }
 
     public void setBaseDamage(double p_36782_) {
@@ -502,7 +532,8 @@ public class DartEntity extends ProjectileEntity {
         return false;
     }
 
-    protected float getEyeHeight(Pose p_36752_, EntityDimensions p_36753_) {
+    @Override
+    protected float getEyeHeight(EntityPose pose, EntityDimensions dimensions) {
         return 0.13F;
     }
 
@@ -511,37 +542,38 @@ public class DartEntity extends ProjectileEntity {
     }
 
     public void setPierceWorld(byte p_36768_) {
-        this.entityData.set(PIERCE_LEVEL, p_36768_);
+        this.dataTracker.set(PIERCE_LEVEL, p_36768_);
     }
 
-    private void setFlag(int p_36738_, boolean p_36739_) {
-        byte b0 = this.entityData.get(ID_FLAGS);
+    public void setFlag(int p_36738_, boolean p_36739_) {
+        byte b0 = this.dataTracker.get(ID_FLAGS);
         if (p_36739_) {
-            this.entityData.set(ID_FLAGS, (byte)(b0 | p_36738_));
+            this.dataTracker.set(ID_FLAGS, (byte)(b0 | p_36738_));
         } else {
-            this.entityData.set(ID_FLAGS, (byte)(b0 & ~p_36738_));
+            this.dataTracker.set(ID_FLAGS, (byte)(b0 & ~p_36738_));
         }
 
     }
 
     public boolean isCritArrow() {
-        byte b0 = this.entityData.get(ID_FLAGS);
+        byte b0 = this.dataTracker.get(ID_FLAGS);
         return (b0 & 1) != 0;
     }
 
     public boolean shotFromCrossbow() {
-        byte b0 = this.entityData.get(ID_FLAGS);
+        byte b0 = this.dataTracker.get(ID_FLAGS);
         return (b0 & 4) != 0;
     }
 
     public byte getPierceWorld() {
-        return this.entityData.get(PIERCE_LEVEL);
+        return this.dataTracker.get(PIERCE_LEVEL);
     }
 
-    public void setEnchantmentEffectsFromEntity(LivingEntity p_36746_, float p_36747_) {
+    //TODO forge
+    public void applyEnchantmentEffects(LivingEntity p_36746_, float p_36747_) {
         int i = EnchantmentHelper.getEnchantmentWorld(Enchantments.POWER_ARROWS, p_36746_);
         int j = EnchantmentHelper.getEnchantmentWorld(Enchantments.PUNCH_ARROWS, p_36746_);
-        this.setBaseDamage((double)(p_36747_ * 2.0F) + this.random.triangle((double)this.level.getDifficulty().getId() * 0.11D, 0.57425D));
+        this.setBaseDamage((double)(p_36747_ * 2.0F) + this.random.triangle((double)this.world.getDifficulty().getId() * 0.11D, 0.57425D));
         if (i > 0) {
             this.setBaseDamage(this.getBaseDamage() + (double)i * 0.5D + 0.5D);
         }
@@ -551,7 +583,7 @@ public class DartEntity extends ProjectileEntity {
         }
 
         if (EnchantmentHelper.getEnchantmentWorld(Enchantments.FLAMING_ARROWS, p_36746_) > 0) {
-            this.setSecondsOnFire(100);
+            this.setOnFireFor(100);
         }
 
     }
@@ -560,16 +592,17 @@ public class DartEntity extends ProjectileEntity {
         return 0.6F;
     }
 
-    public void setNoPhysics(boolean p_36791_) {
-        this.noPhysics = p_36791_;
-        this.setFlag(2, p_36791_);
+    //TODO forge
+    public void setNoClip(boolean noClip) {
+        this.noClip = noClip;
+        this.setFlag(2, noClip);
     }
 
     public boolean isNoPhysics() {
-        if (!this.level.isClientSide) {
-            return this.noPhysics;
+        if (!this.world.isClient()) {
+            return this.noClip;
         } else {
-            return (this.entityData.get(ID_FLAGS) & 2) != 0;
+            return (this.dataTracker.get(ID_FLAGS) & 2) != 0;
         }
     }
 

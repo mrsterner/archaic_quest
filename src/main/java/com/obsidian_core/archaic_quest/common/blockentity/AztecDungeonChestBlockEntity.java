@@ -16,12 +16,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.entity.*;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.ChestBlock;
+import net.minecraft.world.world.block.entity.*;
+import net.minecraft.world.world.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -34,19 +34,19 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
 
     private final ChestLidController chestLidController = new ChestLidController();
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
-        protected void onOpen(World level, BlockPos pos, BlockState state) {
-            level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+        protected void onOpen(World world, BlockPos pos, BlockState state) {
+            world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
         }
 
-        protected void onClose(World level, BlockPos pos, BlockState state) {
-            level.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+        protected void onClose(World world, BlockPos pos, BlockState state) {
+            world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
         }
 
-        protected void openerCountChanged(World level, BlockPos pos, BlockState state, int openCount, int prevOpenCount) {
-            AztecDungeonChestBlockEntity.this.signalOpenCount(level, pos, state, openCount, prevOpenCount);
+        protected void openerCountChanged(World world, BlockPos pos, BlockState state, int openCount, int prevOpenCount) {
+            AztecDungeonChestBlockEntity.this.signalOpenCount(world, pos, state, openCount, prevOpenCount);
         }
 
-        protected boolean isOwnContainer(Player player) {
+        protected boolean isOwnContainer(PlayerEntity player) {
             if (!(player.containerMenu instanceof ChestMenu)) {
                 return false;
             }
@@ -90,7 +90,7 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
         }
     }
 
-    public static void lidAnimateTick(World level, BlockPos pos, BlockState state, AztecDungeonChestBlockEntity chest) {
+    public static void lidAnimateTick(World world, BlockPos pos, BlockState state, AztecDungeonChestBlockEntity chest) {
         chest.chestLidController.tickLid();
     }
 
@@ -106,16 +106,16 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
     }
 
     @Override
-    public void startOpen(Player player) {
+    public void startOpen(PlayerEntity player) {
         if (!remove && !player.isSpectator()) {
-            openersCounter.incrementOpeners(player, level, getBlockPos(), getBlockState());
+            openersCounter.incrementOpeners(player, world, getBlockPos(), getBlockState());
         }
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(PlayerEntity player) {
         if (!remove && !player.isSpectator()) {
-            openersCounter.decrementOpeners(player, level, getBlockPos(), getBlockState());
+            openersCounter.decrementOpeners(player, world, getBlockPos(), getBlockState());
         }
     }
 
@@ -134,10 +134,10 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
         return chestLidController.getOpenness(f);
     }
 
-    public static int getOpenCount(BlockGetter level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
+    public static int getOpenCount(BlockGetter world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
         if (state.hasBlockEntity()) {
-            BlockEntity blockEntity = level.getBlockEntity(pos);
+            BlockEntity blockEntity = world.getBlockEntity(pos);
 
             if (blockEntity instanceof AztecDungeonChestBlockEntity chest) {
                 return chest.openersCounter.getOpenerCount();
@@ -179,7 +179,7 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
         if (!(state.getBlock() instanceof ChestBlock)) {
             return new InvWrapper(this);
         }
-        Container inv = ChestBlock.getContainer((ChestBlock) state.getBlock(), state, level, getBlockPos(), true);
+        Container inv = ChestBlock.getContainer((ChestBlock) state.getBlock(), state, world, getBlockPos(), true);
         return new InvWrapper(inv == null ? this : inv);
     }
 
@@ -195,12 +195,12 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
 
     public void recheckOpen() {
         if (!remove) {
-            openersCounter.recheckOpeners(level, getBlockPos(), getBlockState());
+            openersCounter.recheckOpeners(world, getBlockPos(), getBlockState());
         }
     }
 
-    protected void signalOpenCount(World level, BlockPos pos, BlockState state, int id, int data) {
+    protected void signalOpenCount(World world, BlockPos pos, BlockState state, int id, int data) {
         Block block = state.getBlock();
-        level.blockEvent(pos, block, 1, data);
+        world.blockEvent(pos, block, 1, data);
     }
 }

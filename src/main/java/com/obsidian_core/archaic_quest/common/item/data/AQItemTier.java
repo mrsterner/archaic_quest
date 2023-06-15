@@ -8,7 +8,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public record AQItemTier(int durability, float speed, float damage, int level, int enchantmentValue,
+public record AQItemTier(int durability, float speed, float damage, int world, int enchantmentValue,
                          Supplier<Ingredient> repairMaterial) implements Tier {
 
 
@@ -47,7 +47,7 @@ public record AQItemTier(int durability, float speed, float damage, int level, i
 
     @Override
     public int getWorld() {
-        return level;
+        return world;
     }
 
     @Override

@@ -10,16 +10,16 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.Blocks;
+import net.minecraft.world.world.block.Mirror;
+import net.minecraft.world.world.block.Rotation;
+import net.minecraft.world.world.block.state.BlockBehaviour;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
@@ -40,12 +40,12 @@ public class KnappingTableBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, World level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHit) {
-        if (level.isClientSide) {
+    public InteractionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult blockHit) {
+        if (world.isClient()) {
             return InteractionResult.SUCCESS;
         }
         else {
-            player.openMenu(state.getMenuProvider(level, pos));
+            player.openMenu(state.getMenuProvider(world, pos));
             return InteractionResult.CONSUME;
         }
     }
@@ -53,7 +53,7 @@ public class KnappingTableBlock extends Block {
     @Nullable
     @Override
     @SuppressWarnings("deprecation")
-    public MenuProvider getMenuProvider(BlockState state, World level, BlockPos pos) {
+    public MenuProvider getMenuProvider(BlockState state, World world, BlockPos pos) {
         return new SimpleMenuProvider((id, inventory, player)
                 -> new KnappingTableContainer(id, inventory, pos), TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME);
     }

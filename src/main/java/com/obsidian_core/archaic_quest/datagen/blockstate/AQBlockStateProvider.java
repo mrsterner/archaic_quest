@@ -3,7 +3,7 @@ package com.obsidian_core.archaic_quest.datagen.blockstate;
 import com.obsidian_core.archaic_quest.common.block.*;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.world.block.Block;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;

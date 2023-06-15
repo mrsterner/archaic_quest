@@ -6,8 +6,8 @@ import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
+import net.minecraft.world.world.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.world.storage.loot.predicates.MatchTool;
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
 
 public class AQGlobalLootModifierProvider extends GlobalLootModifierProvider {

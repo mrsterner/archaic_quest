@@ -2,7 +2,7 @@ package com.obsidian_core.archaic_quest.common.worldgen.biome.modifier;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.world.worldgen.GenerationStep;
 
 public enum ModOre implements StringRepresentable {
     TIN("tin"),

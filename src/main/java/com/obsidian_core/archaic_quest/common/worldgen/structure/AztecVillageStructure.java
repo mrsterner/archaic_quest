@@ -6,13 +6,13 @@ import com.obsidian_core.archaic_quest.common.core.register.AQStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.world.ChunkPos;
+import net.minecraft.world.world.worldgen.Heightmap;
+import net.minecraft.world.world.worldgen.heightproviders.HeightProvider;
+import net.minecraft.world.world.worldgen.structure.Structure;
+import net.minecraft.world.world.worldgen.structure.StructureType;
+import net.minecraft.world.world.worldgen.structure.pools.JigsawPlacement;
+import net.minecraft.world.world.worldgen.structure.pools.StructureTemplatePool;
 
 import java.util.Optional;
 

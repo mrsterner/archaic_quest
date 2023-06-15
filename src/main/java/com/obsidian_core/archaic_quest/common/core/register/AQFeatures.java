@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.core.register;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.world.worldgen.feature.Feature;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

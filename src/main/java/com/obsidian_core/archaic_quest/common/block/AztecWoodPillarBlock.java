@@ -10,20 +10,20 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.WorldAccessor;
-import net.minecraft.world.level.WorldReader;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.SlabType;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.WorldAccessor;
+import net.minecraft.world.world.WorldReader;
+import net.minecraft.world.world.block.*;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.block.state.properties.EnumProperty;
+import net.minecraft.world.world.block.state.properties.SlabType;
+import net.minecraft.world.world.material.FluidState;
+import net.minecraft.world.world.material.Fluids;
+import net.minecraft.world.world.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -73,7 +73,7 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         boolean connectedX = state.getValue(CONNECTED_X);
         boolean connectedZ = state.getValue(CONNECTED_Z);
         Direction.Axis axis = state.getValue(AXIS);
@@ -111,13 +111,13 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState newState, Direction neighborDir, BlockState state, WorldAccessor level, BlockPos pos, BlockPos neighborPos) {
-        boolean waterlogged = level.getBlockState(pos).getFluidState().is(FluidTags.WATER);
+    public BlockState updateShape(BlockState newState, Direction neighborDir, BlockState state, WorldAccessor world, BlockPos pos, BlockPos neighborPos) {
+        boolean waterlogged = world.getBlockState(pos).getFluidState().is(FluidTags.WATER);
         Direction.Axis axis = newState.getValue(AXIS);
 
-        boolean slabTopAbove = level.getBlockState(pos.above()).getBlock() instanceof SlabBlock && level.getBlockState(pos.above()).getValue(SlabBlock.TYPE) == SlabType.TOP;
-        boolean zConnectable = areZNeighborsConnectable(level, pos) && axis == Direction.Axis.Y;
-        boolean xConnectable = areXNeighborsConnectable(level, pos) && axis == Direction.Axis.Y;
+        boolean slabTopAbove = world.getBlockState(pos.above()).getBlock() instanceof SlabBlock && world.getBlockState(pos.above()).getValue(SlabBlock.TYPE) == SlabType.TOP;
+        boolean zConnectable = areZNeighborsConnectable(world, pos) && axis == Direction.Axis.Y;
+        boolean xConnectable = areXNeighborsConnectable(world, pos) && axis == Direction.Axis.Y;
 
         newState = newState.setValue(EXTENDED, slabTopAbove).setValue(CONNECTED_Z, zConnectable).setValue(CONNECTED_X, xConnectable);
 
@@ -127,34 +127,34 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos clickedPos = context.getClickedPos();
-        World level = context.getWorld();
+        World world = context.getWorld();
         Direction.Axis axis = context.getClickedFace().getAxis();
-        boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
+        boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
         BlockState placeState = defaultBlockState().setValue(AXIS, axis);
 
-        if (level.getBlockState(clickedPos.above()).getBlock() instanceof SlabBlock) {
-            if (level.getBlockState(clickedPos.above()).getValue(SlabBlock.TYPE) == SlabType.TOP)
+        if (world.getBlockState(clickedPos.above()).getBlock() instanceof SlabBlock) {
+            if (world.getBlockState(clickedPos.above()).getValue(SlabBlock.TYPE) == SlabType.TOP)
                 placeState = placeState.setValue(EXTENDED, true);
         }
-        if (areZNeighborsConnectable(level, clickedPos) && axis == Direction.Axis.Y) {
+        if (areZNeighborsConnectable(world, clickedPos) && axis == Direction.Axis.Y) {
             placeState = placeState.setValue(CONNECTED_Z, true);
         }
-        if (areXNeighborsConnectable(level, clickedPos) && axis == Direction.Axis.Y) {
+        if (areXNeighborsConnectable(world, clickedPos) && axis == Direction.Axis.Y) {
             placeState = placeState.setValue(CONNECTED_X, true);
         }
         return placeState.setValue(WATERLOGGED, waterlogged);
     }
 
-    private boolean areZNeighborsConnectable(WorldAccessor level, BlockPos origin) {
-        BlockState northState = level.getBlockState(origin.north());
-        BlockState southState = level.getBlockState(origin.south());
+    private boolean areZNeighborsConnectable(WorldAccessor world, BlockPos origin) {
+        BlockState northState = world.getBlockState(origin.north());
+        BlockState southState = world.getBlockState(origin.south());
 
         return (northState.is(this) && northState.getValue(AXIS) != Direction.Axis.Y) || (southState.is(this) && southState.getValue(AXIS) != Direction.Axis.Y);
     }
 
-    private boolean areXNeighborsConnectable(WorldAccessor level, BlockPos origin) {
-        BlockState eastState = level.getBlockState(origin.east());
-        BlockState westState = level.getBlockState(origin.west());
+    private boolean areXNeighborsConnectable(WorldAccessor world, BlockPos origin) {
+        BlockState eastState = world.getBlockState(origin.east());
+        BlockState westState = world.getBlockState(origin.west());
 
         return (eastState.is(this) && eastState.getValue(AXIS) != Direction.Axis.Y) || (westState.is(this) && westState.getValue(AXIS) != Direction.Axis.Y);
     }
@@ -162,7 +162,7 @@ public class AztecWoodPillarBlock extends Block implements SimpleWaterloggedBloc
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType pathType) {
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType pathType) {
         return false;
     }
 

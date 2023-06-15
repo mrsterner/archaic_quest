@@ -7,8 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.state.BlockState;
 
 
 public class MacheteItem extends AQSimpleWeaponItem {
@@ -19,25 +19,25 @@ public class MacheteItem extends AQSimpleWeaponItem {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Player player = context.getPlayer();
+        PlayerEntity player = context.getPlayer();
 
         if (player == null)
             return InteractionResult.PASS;
 
-        World level = context.getWorld();
+        World world = context.getWorld();
         BlockPos pos = context.getClickedPos();
-        BlockState state = level.getBlockState(pos);
+        BlockState state = world.getBlockState(pos);
         ItemStack stack = context.getItemInHand();
 
         if (state.getBlock() instanceof CoolVinesBlock && !state.getValue(CoolVinesBlock.CUT)) {
             if (player.isShiftKeyDown()) {
-                level.setBlock(pos, state.setValue(CoolVinesBlock.CAN_GROW, false), 2);
+                world.setBlock(pos, state.setValue(CoolVinesBlock.CAN_GROW, false), 2);
             }
             else {
-                level.setBlock(pos, state.setValue(CoolVinesBlock.CUT, true).setValue(CoolVinesBlock.CAN_GROW, false), 2);
+                world.setBlock(pos, state.setValue(CoolVinesBlock.CUT, true).setValue(CoolVinesBlock.CAN_GROW, false), 2);
             }
             stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(world.isClient());
         }
         return InteractionResult.PASS;
     }

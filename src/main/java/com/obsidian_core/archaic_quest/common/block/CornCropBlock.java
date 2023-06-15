@@ -2,8 +2,8 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import com.mojang.datafixers.util.Pair;
 import com.obsidian_core.archaic_quest.common.core.register.AQItems;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;

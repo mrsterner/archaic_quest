@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.world.block.SlabBlock;
 
 public class SpikeTrapRenderer implements BlockEntityRenderer<SpikeTrapBlockEntity> {
 

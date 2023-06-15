@@ -8,8 +8,8 @@ import net.minecraft.core.particles.SimpleParticleType;
 /** Modified copy-paste of {@link CampfireSmokeParticle} */
 public class PoisonCloudParticle extends TextureSheetParticle {
 
-    PoisonCloudParticle(ClientWorld level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        super(level, x, y, z);
+    PoisonCloudParticle(ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        super(world, x, y, z);
         scale(3.0F);
         setSize(0.25F, 0.25F);
         lifetime = random.nextInt(50) + 80;
@@ -30,7 +30,7 @@ public class PoisonCloudParticle extends TextureSheetParticle {
             xd += (random.nextFloat() / 5000.0F * (float)(random.nextBoolean() ? 1 : -1));
             zd += (random.nextFloat() / 5000.0F * (float)(random.nextBoolean() ? 1 : -1));
 
-            if (level.getBlockState(new BlockPos(x, (y + 0.35) - 1, z)).isAir()) {
+            if (world.getBlockState(new BlockPos(x, (y + 0.35) - 1, z)).isAir()) {
                 yd -= gravity;
             }
             else {
@@ -60,8 +60,8 @@ public class PoisonCloudParticle extends TextureSheetParticle {
             sprites = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType type, ClientWorld level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            PoisonCloudParticle particle = new PoisonCloudParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
+        public Particle createParticle(SimpleParticleType type, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            PoisonCloudParticle particle = new PoisonCloudParticle(world, x, y, z, xSpeed, ySpeed, zSpeed);
             particle.setAlpha(0.9F);
             particle.pickSprite(sprites);
             return particle;

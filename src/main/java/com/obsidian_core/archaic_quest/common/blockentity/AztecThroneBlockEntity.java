@@ -6,9 +6,9 @@ import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.world.block.entity.BlockEntity;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.phys.Box;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,8 +24,8 @@ public class AztecThroneBlockEntity extends BlockEntity {
 
     @Override
     public void onLoad() {
-        if (level != null) {
-            BlockState state = level.getBlockState(getBlockPos());
+        if (world != null) {
+            BlockState state = world.getBlockState(getBlockPos());
 
             if (state.getBlock() instanceof AztecThroneBlock throneBlock) {
                 setThroneType(throneBlock.getThroneType());
@@ -44,11 +44,11 @@ public class AztecThroneBlockEntity extends BlockEntity {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AABB getRenderBoundingBox() {
+    public Box getRenderBoundingBox() {
         BlockPos pos = getBlockPos();
         return getBlockState().getBlock() instanceof AztecThroneBlock
-                ? new AABB(pos.offset(-2, 0, -2), pos.offset(2, 3, 2))
-                : INFINITE_EXTENT_AABB;
+                ? new Box(pos.offset(-2, 0, -2), pos.offset(2, 3, 2))
+                : INFINITE_EXTENT_Box;
     }
 
     @Override

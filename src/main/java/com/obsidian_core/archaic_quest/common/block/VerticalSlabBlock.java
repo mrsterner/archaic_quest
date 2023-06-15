@@ -7,18 +7,18 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.WorldAccessor;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.WorldAccessor;
+import net.minecraft.world.world.block.*;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.block.state.properties.EnumProperty;
+import net.minecraft.world.world.material.Fluid;
+import net.minecraft.world.world.material.FluidState;
+import net.minecraft.world.world.material.Fluids;
+import net.minecraft.world.world.pathfinder.PathComputationType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -44,7 +44,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(SLAB_STATE)) {
             case NORTH -> NORTH;
             case SOUTH -> SOUTH;
@@ -84,7 +84,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
             return direction;
 
         BlockPos pos = context.getClickedPos();
-        Vec3 vec = context.getClickLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ())).subtract(0.5, 0, 0.5);
+        Vec3d vec = context.getClickLocation().subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ())).subtract(0.5, 0, 0.5);
         double angle = Math.atan2(vec.x, vec.z) * -180.0 / Math.PI;
         return Direction.fromYRot(angle).getOpposite();
     }
@@ -102,11 +102,11 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, WorldAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, WorldAccessor world, BlockPos currentPos, BlockPos facingPos) {
         if(state.getValue(WATERLOGGED)) {
-            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
-        return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
+        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Override
@@ -116,19 +116,19 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public boolean placeLiquid(WorldAccessor level, BlockPos pos, BlockState state, FluidState fluidState) {
-        return state.getValue(SLAB_STATE) != SlabState.DOUBLE && SimpleWaterloggedBlock.super.placeLiquid(level, pos, state, fluidState);
+    public boolean placeLiquid(WorldAccessor world, BlockPos pos, BlockState state, FluidState fluidState) {
+        return state.getValue(SLAB_STATE) != SlabState.DOUBLE && SimpleWaterloggedBlock.super.placeLiquid(world, pos, state, fluidState);
     }
 
     @Override
-    public boolean canPlaceLiquid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-        return state.getValue(SLAB_STATE) != SlabState.DOUBLE && SimpleWaterloggedBlock.super.canPlaceLiquid(level, pos, state, fluid);
+    public boolean canPlaceLiquid(BlockGetter world, BlockPos pos, BlockState state, Fluid fluid) {
+        return state.getValue(SLAB_STATE) != SlabState.DOUBLE && SimpleWaterloggedBlock.super.canPlaceLiquid(world, pos, state, fluid);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
-        return type == PathComputationType.WATER && level.getFluidState(pos).is(FluidTags.WATER);
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+        return type == PathComputationType.WATER && world.getFluidState(pos).is(FluidTags.WATER);
     }
 
     @Override

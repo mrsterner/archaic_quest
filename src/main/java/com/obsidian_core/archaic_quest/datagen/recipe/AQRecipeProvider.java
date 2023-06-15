@@ -8,7 +8,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.world.block.Blocks;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;

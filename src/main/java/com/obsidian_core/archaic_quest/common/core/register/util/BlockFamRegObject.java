@@ -2,7 +2,7 @@ package com.obsidian_core.archaic_quest.common.core.register.util;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.BlockFamily;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.world.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;

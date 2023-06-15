@@ -1,8 +1,8 @@
 package com.obsidian_core.archaic_quest.common.worldgen.feature.decorators;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
-import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
+import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecorator;
+import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecoratorType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;

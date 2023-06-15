@@ -9,7 +9,7 @@ import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.world.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;

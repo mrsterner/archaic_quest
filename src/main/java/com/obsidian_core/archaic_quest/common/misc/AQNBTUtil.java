@@ -2,8 +2,8 @@ package com.obsidian_core.archaic_quest.common.misc;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.properties.Property;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;

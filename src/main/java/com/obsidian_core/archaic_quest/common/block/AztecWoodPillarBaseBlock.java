@@ -7,16 +7,16 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.SimpleWaterloggedBlock;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.material.FluidState;
+import net.minecraft.world.world.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -41,15 +41,15 @@ public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterlogged
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos clickedPos = context.getClickedPos();
-        World level = context.getWorld();
-        boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
+        World world = context.getWorld();
+        boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
         return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);
     }

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
 
 public class AztecDungeonDoorRenderer implements BlockEntityRenderer<AztecDungeonDoorBlockEntity> {
 

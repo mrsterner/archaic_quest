@@ -1,14 +1,14 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.DispenserBlock;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
 
 public class AztecTrapBlock extends DispenserBlock {
 
@@ -20,16 +20,16 @@ public class AztecTrapBlock extends DispenserBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World level, BlockPos pos, Block block, BlockPos neighborPos, boolean wtfIsThis) {
-        boolean powered = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean wtfIsThis) {
+        boolean powered = world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above());
         boolean triggered = state.getValue(TRIGGERED);
 
         if (powered && !triggered) {
-            level.scheduleTick(pos, this, 4);
-            level.setBlock(pos, state.setValue(TRIGGERED, true).setValue(ACTIVE, true), 3);
+            world.scheduleTick(pos, this, 4);
+            world.setBlock(pos, state.setValue(TRIGGERED, true).setValue(ACTIVE, true), 3);
         }
         else if (!powered && triggered) {
-            level.setBlock(pos, state.setValue(TRIGGERED, false), 3);
+            world.setBlock(pos, state.setValue(TRIGGERED, false), 3);
         }
     }
 

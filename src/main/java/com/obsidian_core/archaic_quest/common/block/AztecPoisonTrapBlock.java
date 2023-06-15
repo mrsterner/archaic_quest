@@ -6,17 +6,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.EntityBlock;
+import net.minecraft.world.world.block.entity.BlockEntity;
+import net.minecraft.world.world.block.entity.BlockEntityTicker;
+import net.minecraft.world.world.block.entity.BlockEntityType;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -40,16 +40,16 @@ public class AztecPoisonTrapBlock extends Block implements EntityBlock {
 
 
     @Override
-    public void animateTick(BlockState state, World level, BlockPos pos, RandomSource random) {
+    public void animateTick(BlockState state, World world, BlockPos pos, RandomSource random) {
         if (state.getValue(ACTIVE)) {
-            Vec3 center = new Vec3(pos.getX() + 0.5D, pos.getY() + 1.1D, pos.getZ() + 0.5D);
+            Vec3d center = new Vec3(pos.getX() + 0.5D, pos.getY() + 1.1D, pos.getZ() + 0.5D);
 
             for (int i = 0; i < 12; i++) {
                 final double x = center.x() + (random.nextGaussian() * 1.5D);
                 final double z = center.z() + (random.nextGaussian() * 1.5D);
 
-                if (level.getBlockState(pos.above().offset((int) x, 0, (int) z)).isAir()) {
-                    level.addParticle(AQParticles.POISON_CLOUD.get(), x, center.y(), z, 0.0D, -0.01D, 0.0D);
+                if (world.getBlockState(pos.above().offset((int) x, 0, (int) z)).isAir()) {
+                    world.addParticle(AQParticles.POISON_CLOUD.get(), x, center.y(), z, 0.0D, -0.01D, 0.0D);
                 }
             }
         }
@@ -63,8 +63,8 @@ public class AztecPoisonTrapBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState state, BlockEntityType<T> type) {
-        return (lvl, pos, blockState, blockEntity) -> AztecPoisonTrapBlockEntity.tick(level, pos, state, (AztecPoisonTrapBlockEntity) blockEntity);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return (lvl, pos, blockState, blockEntity) -> AztecPoisonTrapBlockEntity.tick(world, pos, state, (AztecPoisonTrapBlockEntity) blockEntity);
     }
 
     @Override

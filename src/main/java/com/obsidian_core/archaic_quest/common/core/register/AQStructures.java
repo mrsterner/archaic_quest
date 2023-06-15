@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.worldgen.structure.AztecVillageStructure;
 import net.minecraft.core.Registry;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.world.worldgen.GenerationStep;
+import net.minecraft.world.world.worldgen.structure.Structure;
+import net.minecraft.world.world.worldgen.structure.StructureType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 

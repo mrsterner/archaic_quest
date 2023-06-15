@@ -1,16 +1,16 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.EntityBlock;
+import net.minecraft.world.world.block.SoundType;
+import net.minecraft.world.world.block.entity.BlockEntity;
+import net.minecraft.world.world.block.entity.BlockEntityTicker;
+import net.minecraft.world.world.block.entity.BlockEntityType;
+import net.minecraft.world.world.block.state.BlockBehaviour;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.material.Material;
 
 import javax.annotation.Nullable;
 
@@ -32,7 +32,7 @@ public class FoundryBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> blockEntityType) {
         return null;
         //return (lvl, blockState, pos, blockEntity) -> FoundryBlockEntity.tick(lvl, blockState, pos, (FoundryBlockEntity) blockEntity);
     }

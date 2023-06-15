@@ -24,7 +24,7 @@ public class AQOreBlock extends OreBlock implements CustomExpBlock {
     }
 
     @Override
-    public int getExpDrop(BlockState state, WorldView level, Random randomSource, BlockPos pos, int fortuneWorld, int silkTouchWorld) {
+    public int getExpDrop(BlockState state, WorldView world, Random randomSource, BlockPos pos, int fortuneWorld, int silkTouchWorld) {
         if (minXp < 0) {
             return 0;
         }

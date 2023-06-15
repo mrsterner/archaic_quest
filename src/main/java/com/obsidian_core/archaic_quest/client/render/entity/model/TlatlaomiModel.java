@@ -12,7 +12,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+import net.minecraft.util.MathHelper;
 
 public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
 
@@ -169,12 +169,12 @@ public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
             f = 1.0F;
         }
 
-        rightArm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F / f;
-        leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f;
+        rightArm.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F / f;
+        leftArm.xRot = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f;
         rightArm.zRot = 0.0F;
         leftArm.zRot = 0.0F;
-        rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / f;
-        leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / f;
+        rightLeg.xRot = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / f;
+        leftLeg.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / f;
         rightLeg.yRot = 0.0F;
         leftLeg.yRot = 0.0F;
         rightLeg.zRot = 0.0F;
@@ -194,7 +194,7 @@ public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
         leftArm.yRot = 0.0F;
 
         AnimationUtils.bobArms(rightArm, leftArm, ageInTicks);
-        jaw.xRot = (Mth.sin(ageInTicks / 18.0F)) / 8.0F + 0.25F;
+        jaw.xRot = (MathHelper.sin(ageInTicks / 18.0F)) / 8.0F + 0.25F;
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.obsidian_core.archaic_quest.common.item.AQCreativeTabs;
 import net.minecraft.client.renderer.BlockEntityWithoutWorldRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.world.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.function.Consumer;

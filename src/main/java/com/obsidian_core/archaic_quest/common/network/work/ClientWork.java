@@ -9,7 +9,7 @@ import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateSpikeTrap
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientWorld;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.world.block.entity.BlockEntity;
 
 import static com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity.DoorState;
 
@@ -18,11 +18,11 @@ public class ClientWork {
     public static void handleUpdateDoorState(S2CUpdateDoorState message) {
         BlockPos pos = message.doorPos;
         DoorState doorState = DoorState.byId(message.doorState);
-        ClientWorld level = Minecraft.getInstance().level;
+        ClientWorld world = Minecraft.getInstance().world;
 
-        if (level == null) return;
+        if (world == null) return;
 
-        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
+        BlockEntity blockEntity = world.getExistingBlockEntity(pos);
 
         if (blockEntity instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
             if (doorState == null) return;
@@ -33,11 +33,11 @@ public class ClientWork {
     public static void handleUpdateSpikeTrap(S2CUpdateSpikeTrap message) {
         BlockPos pos = message.doorPos;
         boolean active = message.active;
-        ClientWorld level = Minecraft.getInstance().level;
+        ClientWorld world = Minecraft.getInstance().world;
 
-        if (level == null) return;
+        if (world == null) return;
 
-        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
+        BlockEntity blockEntity = world.getExistingBlockEntity(pos);
 
         if (blockEntity instanceof SpikeTrapBlockEntity spikeTrap) {
             spikeTrap.setActive(active);
@@ -47,11 +47,11 @@ public class ClientWork {
     public static void handleUpdateSpikeTrap(S2CUpdateSpikeTrapMode message) {
         BlockPos pos = message.doorPos;
         int mode = message.mode;
-        ClientWorld level = Minecraft.getInstance().level;
+        ClientWorld world = Minecraft.getInstance().world;
 
-        if (level == null) return;
+        if (world == null) return;
 
-        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
+        BlockEntity blockEntity = world.getExistingBlockEntity(pos);
 
         if (blockEntity instanceof SpikeTrapBlockEntity spikeTrap) {
             spikeTrap.setMode(SpikeTrapBlock.Mode.values()[mode]);

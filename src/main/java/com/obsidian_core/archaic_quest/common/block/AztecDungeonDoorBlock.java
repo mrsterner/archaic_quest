@@ -9,20 +9,20 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.*;
+import net.minecraft.world.world.block.entity.BlockEntity;
+import net.minecraft.world.world.block.entity.BlockEntityTicker;
+import net.minecraft.world.world.block.entity.BlockEntityType;
+import net.minecraft.world.world.block.state.BlockBehaviour;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.block.state.properties.DirectionProperty;
+import net.minecraft.world.world.block.state.properties.EnumProperty;
+import net.minecraft.world.world.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -214,29 +214,29 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean flag) {
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean flag) {
         if (state.is(this) && !newState.is(this)) {
             BlockPos masterPos = calculateMasterPos(state, pos);
 
             if (masterPos != null) {
-                BlockState masterState = isMaster(state) ? state : level.getBlockState(masterPos);
+                BlockState masterState = isMaster(state) ? state : world.getBlockState(masterPos);
 
                 if (masterState.is(this)) {
                     Direction dir = masterState.getValue(FACING);
 
                     if (dir == Direction.NORTH || dir == Direction.SOUTH) {
                         for (BlockPos p : BlockPos.betweenClosed(masterPos.west(), masterPos.east().above(2))) {
-                            level.destroyBlock(p, false);
+                            world.destroyBlock(p, false);
                         }
                     } else {
                         for (BlockPos p : BlockPos.betweenClosed(masterPos.south(), masterPos.north().above(2))) {
-                            level.destroyBlock(p, false);
+                            world.destroyBlock(p, false);
                         }
                     }
                 }
             }
         }
-        super.onRemove(state, level, pos, newState, flag);
+        super.onRemove(state, world, pos, newState, flag);
     }
 
     @Override
@@ -253,9 +253,9 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
         if (doorType.isFrame()) {
-            super.neighborChanged(state, level, pos, block, neighborPos, flag);
+            super.neighborChanged(state, world, pos, block, neighborPos, flag);
             return;
         }
         BlockPos masterPos;
@@ -270,23 +270,23 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
         if (masterPos == null)
             return;
 
-        if (isMaster(level.getBlockState(masterPos)) && !level.isClientSide) {
+        if (isMaster(world.getBlockState(masterPos)) && !world.isClient()) {
             for (Direction direction : Direction.values()) {
                 BlockPos offsetPos = pos.relative(direction);
 
-                if (level.hasNeighborSignal(offsetPos)) {
-                    BlockEntity be = level.getExistingBlockEntity(masterPos);
+                if (world.hasNeighborSignal(offsetPos)) {
+                    BlockEntity be = world.getExistingBlockEntity(masterPos);
 
                     if (be instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
                         if (dungeonDoor.isOpen()) {
                             dungeonDoor.setDoorState(DoorState.CLOSING);
                             dungeonDoor.sendDoorStateUpdate();
-                            level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_CLOSING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            world.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_CLOSING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                         }
                         else if (dungeonDoor.isClosed()) {
                             dungeonDoor.setDoorState(DoorState.OPENING);
                             dungeonDoor.sendDoorStateUpdate();
-                            level.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_OPENING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            world.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_OPENING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                         }
                     }
                     break;
@@ -355,7 +355,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        World level = context.getWorld();
+        World world = context.getWorld();
         BlockPos pos = context.getClickedPos();
         Direction direction = context.getHorizontalDirection().getOpposite();
 
@@ -363,7 +363,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
         if (direction == Direction.NORTH || direction == Direction.SOUTH) {
             for (BlockPos blockPos : BlockPos.betweenClosed(pos.east(), pos.west().above(2))) {
-                if (!level.getBlockState(blockPos).canBeReplaced(context)) {
+                if (!world.getBlockState(blockPos).canBeReplaced(context)) {
                     foundSpace = false;
                     break;
                 }
@@ -371,7 +371,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
         }
         else if (direction == Direction.WEST || direction == Direction.EAST) {
             for (BlockPos blockPos : BlockPos.betweenClosed(pos.south(), pos.north().above(2))) {
-                if (!level.getBlockState(blockPos).canBeReplaced(context)) {
+                if (!world.getBlockState(blockPos).canBeReplaced(context)) {
                     foundSpace = false;
                     break;
                 }
@@ -403,7 +403,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return (lvl, pos, state, blockEntity) -> AztecDungeonDoorBlockEntity.tick(lvl, pos, state, (AztecDungeonDoorBlockEntity) blockEntity);
     }
 

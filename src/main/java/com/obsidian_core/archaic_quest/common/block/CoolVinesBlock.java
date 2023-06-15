@@ -3,20 +3,20 @@ package com.obsidian_core.archaic_quest.common.block;
 import com.obsidian_core.archaic_quest.common.tag.AQBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.WorldAccessor;
-import net.minecraft.world.level.WorldReader;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.WorldAccessor;
+import net.minecraft.world.world.WorldReader;
+import net.minecraft.world.world.block.*;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.block.state.properties.DirectionProperty;
+import net.minecraft.world.world.block.state.properties.SlabType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.IForgeShearable;
@@ -68,14 +68,14 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void randomTick(BlockState state, ServerWorld level, BlockPos pos, RandomSource random) {
-        if (!level.isAreaLoaded(pos, 1)) return;
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, RandomSource random) {
+        if (!world.isAreaLoaded(pos, 1)) return;
 
         if (random.nextInt(10) == 0) {
             BlockPos belowPos = pos.below();
 
-            if (belowPos.getY() > 0 && level.getBlockState(belowPos).isAir()) {
-                level.setBlock(belowPos, state, 2);
+            if (belowPos.getY() > 0 && world.getBlockState(belowPos).isAir()) {
+                world.setBlock(belowPos, state, 2);
             }
         }
     }
@@ -86,19 +86,19 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
         Direction face = context.getClickedFace();
         BlockPos pos = context.getClickedPos();
         BlockPos behindPos = pos.relative(face.getOpposite());
-        World level = context.getWorld();
+        World world = context.getWorld();
 
         if (face == Direction.DOWN || face == Direction.UP) {
             face = context.getHorizontalDirection().getOpposite();
         }
-        BlockState behindState = level.getBlockState(behindPos);
-        BlockState aboveState = level.getBlockState(pos.above());
+        BlockState behindState = world.getBlockState(behindPos);
+        BlockState aboveState = world.getBlockState(pos.above());
 
-        if (Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
-                || behindState.isFaceSturdy(level, behindPos, face)
+        if (Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
+                || behindState.isFaceSturdy(world, behindPos, face)
                 || (behindState.getBlock() instanceof SlabBlock && behindState.getValue(SlabBlock.TYPE) == SlabType.TOP)
                 || (aboveState.getBlock() instanceof VerticalSlabBlock && aboveState.getValue(VerticalSlabBlock.SLAB_STATE).getDirection() == face )
-                || aboveState.isFaceSturdy(level, pos.above(), Direction.DOWN)) {
+                || aboveState.isFaceSturdy(world, pos.above(), Direction.DOWN)) {
             return defaultBlockState().setValue(FACING, face);
         }
         return null;
@@ -106,27 +106,27 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Deprecated
     @SuppressWarnings("deprecation")
-    public boolean canSurvive(BlockState state, WorldReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, WorldReader world, BlockPos pos) {
         Direction face = state.getValue(FACING);
         BlockPos behindPos = pos.relative(face.getOpposite());
-        BlockState behindState = level.getBlockState(behindPos);
-        BlockState aboveState = level.getBlockState(pos.above());
+        BlockState behindState = world.getBlockState(behindPos);
+        BlockState aboveState = world.getBlockState(pos.above());
 
-        return Block.isFaceFull(level.getBlockState(behindPos).getCollisionShape(level, behindPos), face)
-                || behindState.isFaceSturdy(level, behindPos, face)
+        return Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
+                || behindState.isFaceSturdy(world, behindPos, face)
                 || (behindState.getBlock() instanceof SlabBlock && behindState.getValue(SlabBlock.TYPE) == SlabType.TOP)
                 || (aboveState.getBlock() instanceof VerticalSlabBlock && aboveState.getValue(VerticalSlabBlock.SLAB_STATE).getDirection() == face )
-                || aboveState.isFaceSturdy(level, pos.above(), Direction.DOWN)
+                || aboveState.isFaceSturdy(world, pos.above(), Direction.DOWN)
                 || (aboveState.is(this) && aboveState.getValue(FACING) == face && !aboveState.getValue(CUT));
     }
 
     @Deprecated
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor level, BlockPos pos, BlockPos pos1) {
-        return !newState.canSurvive(level, pos)
+    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor world, BlockPos pos, BlockPos pos1) {
+        return !newState.canSurvive(world, pos)
                 ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(newState, direction, state, level, pos, pos1);
+                : super.updateShape(newState, direction, state, world, pos, pos1);
     }
 
     @Override

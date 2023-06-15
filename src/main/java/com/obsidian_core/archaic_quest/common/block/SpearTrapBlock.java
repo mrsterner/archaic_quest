@@ -10,18 +10,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.WorldAccessor;
-import net.minecraft.world.level.WorldReader;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DripstoneThickness;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.WorldAccessor;
+import net.minecraft.world.world.WorldReader;
+import net.minecraft.world.world.block.*;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.block.state.properties.DripstoneThickness;
+import net.minecraft.world.world.material.FluidState;
+import net.minecraft.world.world.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -48,13 +48,13 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void fallOn(World level, BlockState state, BlockPos pos, Entity entity, float fallHeight) {
+    public void fallOn(World world, BlockState state, BlockPos pos, Entity entity, float fallHeight) {
         entity.causeFallDamage(fallHeight + damageMult, 2.0F, AQDamageSources.SPEAR_TRAP);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return isExtended(state) ? shapes[0] : shapes[1];
     }
 
@@ -64,46 +64,46 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canSurvive(BlockState state, WorldReader level, BlockPos pos) {
-        return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP) || level.getBlockState(pos.below()).is(this);
+    public boolean canSurvive(BlockState state, WorldReader world, BlockPos pos) {
+        return world.getBlockState(pos.below()).isFaceSturdy(world, pos.below(), Direction.UP) || world.getBlockState(pos.below()).is(this);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor level, BlockPos pos, BlockPos pos1) {
-        if (!newState.canSurvive(level, pos)) {
+    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor world, BlockPos pos, BlockPos pos1) {
+        if (!newState.canSurvive(world, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
         else {
-            BlockState aboveState = level.getBlockState(pos.above());
+            BlockState aboveState = world.getBlockState(pos.above());
 
             if (newState.is(this) && newState.getValue(EXTENDED) && !aboveState.is(this)) {
-                level.setBlock(pos, newState.setValue(EXTENDED, false), 3);
+                world.setBlock(pos, newState.setValue(EXTENDED, false), 3);
             }
-            return super.updateShape(newState, direction, state, level, pos, pos1);
+            return super.updateShape(newState, direction, state, world, pos, pos1);
         }
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos clickedPos = context.getClickedPos();
-        World level = context.getWorld();
-        boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
+        World world = context.getWorld();
+        boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
         return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);
     }
 
     @Override
-    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         if (!state.is(this))
-            super.setPlacedBy(level, pos, state, livingEntity, itemStack);
+            super.setPlacedBy(world, pos, state, livingEntity, itemStack);
 
         BlockPos belowPos = pos.below();
-        boolean spearsBelow = level.getBlockState(belowPos).is(this);
+        boolean spearsBelow = world.getBlockState(belowPos).is(this);
 
         if (spearsBelow) {
-            BlockState belowState = level.getBlockState(belowPos);
-            level.setBlock(belowPos, belowState.setValue(EXTENDED, true), 3);
+            BlockState belowState = world.getBlockState(belowPos);
+            world.setBlock(belowPos, belowState.setValue(EXTENDED, true), 3);
         }
     }
 

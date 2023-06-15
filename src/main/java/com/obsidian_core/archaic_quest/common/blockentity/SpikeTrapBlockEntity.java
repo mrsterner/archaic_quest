@@ -11,12 +11,12 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.Mth;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.entity.BlockEntity;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.phys.Box;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ import java.util.List;
 public class SpikeTrapBlockEntity extends BlockEntity {
 
     /** The collision box above the trap to check for players to damage, when trap is active. */
-    private AABB effectBox = null;
+    private Box effectBox = null;
     private boolean active;
 
     private final int maxSpikeRise = 3;
@@ -40,7 +40,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
         super(AQBlockEntities.SPIKE_TRAP.get(), pos, state);
     }
 
-    public static void tick(World level, BlockPos pos, BlockState state, SpikeTrapBlockEntity trap) {
+    public static void tick(World world, BlockPos pos, BlockState state, SpikeTrapBlockEntity trap) {
         // Tick damage
         if (trap.active) {
             // Rise the spikes
@@ -49,9 +49,9 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
             // Create collision box if needed
             if (trap.effectBox == null) {
-                trap.effectBox = new AABB(pos.above()).inflate(0.0D, 0.75D, 0.0D);
+                trap.effectBox = new Box(pos.above()).inflate(0.0D, 0.75D, 0.0D);
             }
-            List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, trap.effectBox);
+            List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, trap.effectBox);
 
             // Affect/damage entities inside the spikes
             for (LivingEntity entity : entities) {
@@ -99,7 +99,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
         }
 
         if (compoundTag.contains("SpikeRise", Tag.TAG_ANY_NUMERIC)) {
-            spikeRise = Mth.clamp(compoundTag.getInt("SpikeRise"), 0, maxSpikeRise);
+            spikeRise = MathHelper.clamp(compoundTag.getInt("SpikeRise"), 0, maxSpikeRise);
         }
 
         if (compoundTag.contains("Mode", Tag.TAG_STRING)) {
@@ -144,7 +144,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
             active = tag.getBoolean("Active");
         }
         if (tag.contains("SpikeRise", Tag.TAG_ANY_NUMERIC)) {
-            spikeRise = Mth.clamp(tag.getInt("SpikeRise"), 0, maxSpikeRise);
+            spikeRise = MathHelper.clamp(tag.getInt("SpikeRise"), 0, maxSpikeRise);
         }
         if (tag.contains("Mode", Tag.TAG_STRING)) {
             Mode mode = Mode.getFromName(tag.getString("Mode"));
@@ -154,7 +154,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        if(level.isClientSide) {
+        if(world.isClient()) {
             if (pkt.getTag() != null)
                 handleUpdateTag(pkt.getTag());
         }
@@ -167,10 +167,10 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AABB getRenderBoundingBox() {
+    public Box getRenderBoundingBox() {
         BlockPos pos = getBlockPos();
         return getBlockState().getBlock() instanceof AztecDungeonDoorBlock
-                ? new AABB(pos.offset(0, -1, 0), pos.offset(0, 2, 0))
-                : INFINITE_EXTENT_AABB;
+                ? new Box(pos.offset(0, -1, 0), pos.offset(0, 2, 0))
+                : INFINITE_EXTENT_Box;
     }
 }

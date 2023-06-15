@@ -5,17 +5,17 @@ import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.EntityBlock;
+import net.minecraft.world.world.block.entity.BeaconBlockEntity;
+import net.minecraft.world.world.block.entity.BlockEntity;
+import net.minecraft.world.world.block.state.BlockBehaviour;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -40,14 +40,14 @@ public class CeramicVaseBlock extends Block implements EntityBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Vec3 vec3 = state.getOffset(level, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        Vec3d vec3 = state.getOffset(world, pos);
         return shape.move(vec3.x, vec3.y, vec3.z);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Player player = context.getPlayer();
+        PlayerEntity player = context.getPlayer();
         boolean center = false;
 
         if (player != null)
@@ -63,11 +63,11 @@ public class CeramicVaseBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, World level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-        if (level.getExistingBlockEntity(pos) instanceof VaseBlockEntity vaseBlockEntity) {
+    public boolean onDestroyedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
+        if (world.getExistingBlockEntity(pos) instanceof VaseBlockEntity vaseBlockEntity) {
             vaseBlockEntity.dropLootTable(player);
         }
-        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        return super.onDestroyedByPlayer(state, world, pos, player, willHarvest, fluid);
     }
 
 

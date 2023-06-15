@@ -1,9 +1,9 @@
 package com.obsidian_core.archaic_quest.common.compat.terrablender;
 
 import net.minecraft.data.worldgen.SurfaceRuleData;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.SurfaceRules;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.Blocks;
+import net.minecraft.world.world.worldgen.SurfaceRules;
 
 public class AQSurfaceRuleData {
 

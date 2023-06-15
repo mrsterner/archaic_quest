@@ -21,8 +21,8 @@ import net.minecraft.world.World;
 
 public class Tlatlaomi extends HostileEntity {
 
-    public Tlatlaomi(EntityType<? extends HostileEntity> type, World level) {
-        super(type, level);
+    public Tlatlaomi(EntityType<? extends HostileEntity> type, World world) {
+        super(type, world);
     }
 
     public static DefaultAttributeContainer.Builder createTlatlaomiAttributes() {

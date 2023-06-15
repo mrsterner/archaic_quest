@@ -11,13 +11,13 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerWorld;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.entity.BlockEntity;
+import net.minecraft.world.world.block.entity.BlockEntityType;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.phys.Box;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,14 +45,14 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
     public void onLoad() {
         super.onLoad();
 
-        if (level != null) {
+        if (world != null) {
             if (getBlockState().getBlock() instanceof AztecDungeonDoorBlock) {
                 doorType = ((AztecDungeonDoorBlock) getBlockState().getBlock()).getDoorType();
             }
         }
     }
 
-    public static void tick(World level, BlockPos pos, BlockState state, AztecDungeonDoorBlockEntity dungeonDoor) {
+    public static void tick(World world, BlockPos pos, BlockState state, AztecDungeonDoorBlockEntity dungeonDoor) {
         DungeonDoorType doorType = dungeonDoor.doorType;
         DoorState doorState = dungeonDoor.doorState;
 
@@ -90,16 +90,16 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
      */
     @SuppressWarnings("ConstantConditions")
     private void toggleDoorBlocks(boolean isOpen) {
-        if (!level.isClientSide) {
+        if (!world.isClient()) {
             switch (getBlockState().getValue(AztecDungeonDoorBlock.FACING)) {
                 case NORTH, SOUTH -> {
                     for (BlockPos pos : BlockPos.betweenClosed(getBlockPos().west(), getBlockPos().east().above(2))) {
-                        level.setBlock(pos, level.getBlockState(pos).setValue(AztecDungeonDoorBlock.IS_OPEN, isOpen), 2);
+                        world.setBlock(pos, world.getBlockState(pos).setValue(AztecDungeonDoorBlock.IS_OPEN, isOpen), 2);
                     }
                 }
                 case EAST, WEST -> {
                     for (BlockPos pos : BlockPos.betweenClosed(getBlockPos().north(), getBlockPos().south().above(2))) {
-                        level.setBlock(pos, level.getBlockState(pos).setValue(AztecDungeonDoorBlock.IS_OPEN, isOpen), 2);
+                        world.setBlock(pos, world.getBlockState(pos).setValue(AztecDungeonDoorBlock.IS_OPEN, isOpen), 2);
                     }
                 }
             }
@@ -131,8 +131,8 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
     }
 
     public void sendDoorStateUpdate() {
-        if (level != null && !level.isClientSide) {
-            NetworkHelper.updateDoorState((ServerWorld) level, getBlockPos(), doorState);
+        if (world != null && !world.isClient()) {
+            NetworkHelper.updateDoorState((ServerWorld) world, getBlockPos(), doorState);
         }
     }
 
@@ -141,7 +141,7 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
         super.load(compoundTag);
 
         if (compoundTag.contains("DoorPosition", Tag.TAG_ANY_NUMERIC)) {
-            doorPosition = Mth.clamp(compoundTag.getInt("DoorPosition"), minDoorPos, maxDoorPos);
+            doorPosition = MathHelper.clamp(compoundTag.getInt("DoorPosition"), minDoorPos, maxDoorPos);
         }
 
         if (compoundTag.contains("DoorState", Tag.TAG_ANY_NUMERIC)) {
@@ -184,7 +184,7 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        if(level.isClientSide) {
+        if(world.isClient()) {
             super.handleUpdateTag(pkt.getTag());
 
             CompoundTag compoundTag = pkt.getTag();
@@ -193,7 +193,7 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
                 return;
 
             if (compoundTag.contains("DoorPosition", Tag.TAG_ANY_NUMERIC)) {
-                doorPosition = Mth.clamp(compoundTag.getInt("DoorPosition"), minDoorPos, maxDoorPos);
+                doorPosition = MathHelper.clamp(compoundTag.getInt("DoorPosition"), minDoorPos, maxDoorPos);
             }
             if (compoundTag.contains("DoorState", Tag.TAG_ANY_NUMERIC)) {
                 int stateId = compoundTag.getInt("DoorState");
@@ -210,11 +210,11 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AABB getRenderBoundingBox() {
+    public Box getRenderBoundingBox() {
         BlockPos pos = getBlockPos();
         return getBlockState().getBlock() instanceof AztecDungeonDoorBlock
-                ? new AABB(pos.offset(-2, 0, -2), pos.offset(2, 3, 2))
-                : INFINITE_EXTENT_AABB;
+                ? new Box(pos.offset(-2, 0, -2), pos.offset(2, 3, 2))
+                : INFINITE_EXTENT_Box;
     }
 
 

@@ -7,7 +7,7 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.world.biome.Biome;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.registries.RegistryObject;
 

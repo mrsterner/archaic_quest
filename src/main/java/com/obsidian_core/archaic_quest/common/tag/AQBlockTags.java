@@ -4,7 +4,7 @@ import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.world.block.Block;
 import net.minecraftforge.common.Tags;
 
 public class AQBlockTags {

@@ -6,9 +6,9 @@ import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.biome.OverworldBiomes;
 import net.minecraft.sounds.Musics;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.world.biome.*;
+import net.minecraft.world.world.worldgen.GenerationStep;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -96,7 +96,7 @@ public class AQBiomes {
 
     protected static int calculateSkyColor(float f) {
         float $$1 = f / 3.0F;
-        $$1 = Mth.clamp($$1, -1.0F, 1.0F);
-        return Mth.hsvToRgb(0.62222224F - $$1 * 0.05F, 0.5F + $$1 * 0.1F, 1.0F);
+        $$1 = MathHelper.clamp($$1, -1.0F, 1.0F);
+        return MathHelper.hsvToRgb(0.62222224F - $$1 * 0.05F, 0.5F + $$1 * 0.1F, 1.0F);
     }
 }

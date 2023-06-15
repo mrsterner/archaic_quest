@@ -8,18 +8,18 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.world.BlockGetter;
+import net.minecraft.world.world.World;
+import net.minecraft.world.world.block.Block;
+import net.minecraft.world.world.block.SimpleWaterloggedBlock;
+import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.BooleanProperty;
+import net.minecraft.world.world.block.state.properties.DirectionProperty;
+import net.minecraft.world.world.block.state.properties.EnumProperty;
+import net.minecraft.world.world.material.FluidState;
+import net.minecraft.world.world.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -45,7 +45,7 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
             case NORTH, SOUTH -> SHAPES[0];
             case EAST, WEST -> SHAPES[1];
@@ -58,11 +58,11 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
         Type type = Type.BOTTOM;
         Direction clickedFace = context.getClickedFace();
         BlockPos clickedPos = context.getClickedPos();
-        World level = context.getWorld();
-        boolean waterlogged = level.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
+        World world = context.getWorld();
+        boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
         if (context.getPlayer() != null) {
-            BlockState clickedState = level.getBlockState(clickedPos.relative(clickedFace.getOpposite()));
+            BlockState clickedState = world.getBlockState(clickedPos.relative(clickedFace.getOpposite()));
 
             if (clickedState.is(this)) {
                 Direction clickedStateFace = clickedState.getValue(FACING);
@@ -76,17 +76,17 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         if (!state.is(this))
-            super.setPlacedBy(level, pos, state, livingEntity, itemStack);
+            super.setPlacedBy(world, pos, state, livingEntity, itemStack);
 
         Direction facing = state.getValue(FACING);
         BlockPos behindPos = pos.relative(facing.getOpposite());
-        BlockState behindState = level.getBlockState(behindPos);
+        BlockState behindState = world.getBlockState(behindPos);
 
         if (behindState.is(this)) {
             if (behindState.getValue(PILLAR_TYPE) == Type.TOP && behindState.getValue(FACING) == facing) {
-                level.setBlock(behindPos, behindState.setValue(PILLAR_TYPE, Type.SMOOTH), 3);
+                world.setBlock(behindPos, behindState.setValue(PILLAR_TYPE, Type.SMOOTH), 3);
             }
         }
     }

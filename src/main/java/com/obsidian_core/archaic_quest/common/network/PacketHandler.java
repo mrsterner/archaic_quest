@@ -5,7 +5,7 @@ import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateDoorState
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateSpikeTrap;
 import com.obsidian_core.archaic_quest.common.network.message.S2CUpdateSpikeTrapMode;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.world.ServerPlayerEntity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -53,7 +53,7 @@ public class PacketHandler {
      * @param player The player client that should receive this message.
      * @param <MSG> Packet type.
      */
-    public static <MSG> void sendToClient(MSG message, ServerPlayer player) {
+    public static <MSG> void sendToClient(MSG message, ServerPlayerEntity player) {
         CHANNEL.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 }

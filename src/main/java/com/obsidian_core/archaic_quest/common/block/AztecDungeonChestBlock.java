@@ -15,7 +15,7 @@ public class AztecDungeonChestBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(ROTATION, Mth.floor((double) (context.getRotation() * 16.0F / 360.0F) + 0.5D) & 15);
+        return this.defaultBlockState().setValue(ROTATION, MathHelper.floor((double) (context.getRotation() * 16.0F / 360.0F) + 0.5D) & 15);
     }
 
     @Override
@@ -39,12 +39,12 @@ public class AztecDungeonChestBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, World level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (level.isClientSide) {
+    public InteractionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult hitResult) {
+        if (world.isClient()) {
             return InteractionResult.SUCCESS;
         }
         else {
-            MenuProvider menuProvider = getMenuProvider(state, level, pos);
+            MenuProvider menuProvider = getMenuProvider(state, world, pos);
 
             if (menuProvider != null) {
                 player.openMenu(menuProvider);
@@ -55,27 +55,27 @@ public class AztecDungeonChestBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean b) {
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean b) {
         if (!state.is(newState.getBlock())) {
-            BlockEntity blockEntity = level.getBlockEntity(pos);
+            BlockEntity blockEntity = world.getBlockEntity(pos);
 
             if (blockEntity instanceof Container container) {
-                Containers.dropContents(level, pos, container);
-                level.updateNeighbourForOutputSignal(pos, this);
+                Containers.dropContents(world, pos, container);
+                world.updateNeighbourForOutputSignal(pos, this);
             }
-            super.onRemove(state, level, pos, newState, b);
+            super.onRemove(state, world, pos, newState, b);
         }
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType computationType) {
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType computationType) {
         return false;
     }
 
     @Nullable
     @Override
-    public MenuProvider getMenuProvider(BlockState state, World level, BlockPos pos) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+    public MenuProvider getMenuProvider(BlockState state, World world, BlockPos pos) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         return blockEntity instanceof MenuProvider ? (MenuProvider) blockEntity : null;
     }
 
@@ -87,23 +87,23 @@ public class AztecDungeonChestBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld level, BlockPos pos, RandomSource random) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, RandomSource random) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof AztecDungeonChestBlockEntity chest) {
             chest.recheckOpen();
         }
     }
 
     @Override
-    public boolean triggerEvent(BlockState state, World level, BlockPos pos, int id, int data) {
-        super.triggerEvent(state, level, pos, id, data);
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+    public boolean triggerEvent(BlockState state, World world, BlockPos pos, int id, int data) {
+        super.triggerEvent(state, world, pos, id, data);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         return blockEntity != null && blockEntity.triggerEvent(id, data);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World level, BlockState blockState, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState blockState, BlockEntityType<T> type) {
         return (lvl, pos, state, blockEntity) -> AztecDungeonChestBlockEntity.lidAnimateTick(lvl, pos, state, (AztecDungeonChestBlockEntity) blockEntity);
     }
 }

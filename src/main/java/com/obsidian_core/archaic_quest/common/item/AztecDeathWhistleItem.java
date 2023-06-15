@@ -7,7 +7,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.World;
+import net.minecraft.world.world.World;
 
 public class AztecDeathWhistleItem extends Item {
 
@@ -16,16 +16,16 @@ public class AztecDeathWhistleItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(World level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(World world, PlayerEntity player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
 
         if (player.getCooldowns().isOnCooldown(this)) {
             return InteractionResultHolder.pass(itemStack);
         }
-        if (!level.isClientSide) {
-            level.playSound(null, player.blockPosition(), AQSoundEvents.DEATH_WHISTLE_SHRIEK.get(), SoundSource.PLAYERS, 2.0F, 0.8F + level.random.nextFloat() / 5);
+        if (!world.isClient()) {
+            world.playSound(null, player.blockPosition(), AQSoundEvents.DEATH_WHISTLE_SHRIEK.get(), SoundSource.PLAYERS, 2.0F, 0.8F + world.random.nextFloat() / 5);
         }
         player.getCooldowns().addCooldown(this, 50);
-        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
+        return InteractionResultHolder.sidedSuccess(itemStack, world.isClient());
     }
 }

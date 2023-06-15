@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
-import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
+import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecorator;
+import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecoratorType;
 
 public class LeafVineVarDecorator extends TreeDecorator {
 

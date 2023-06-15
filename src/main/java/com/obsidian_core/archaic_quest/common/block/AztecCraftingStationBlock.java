@@ -68,8 +68,8 @@ public class AztecCraftingStationBlock extends Block implements BlockEntityProvi
         }
     }
 
-    protected void openContainer(World level, BlockPos pos, PlayerEntity player) {
-        if (level.getBlockEntity(pos) instanceof AztecCraftingStationBlockEntity aztecCraftingStationBlockEntity) {
+    protected void openContainer(World world, BlockPos pos, PlayerEntity player) {
+        if (world.getBlockEntity(pos) instanceof AztecCraftingStationBlockEntity aztecCraftingStationBlockEntity) {
             player.openHandledScreen((NamedScreenHandlerFactory) aztecCraftingStationBlockEntity);
         }
     }

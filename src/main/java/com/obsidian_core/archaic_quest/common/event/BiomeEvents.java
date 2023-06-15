@@ -2,7 +2,7 @@ package com.obsidian_core.archaic_quest.common.event;
 
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.world.biome.Biome;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
