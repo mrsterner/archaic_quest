@@ -5,7 +5,7 @@ import com.obsidian_core.archaic_quest.common.loot_modifier.LootModifierAdd;
 import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.world.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.world.storage.loot.predicates.MatchTool;
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
@@ -23,6 +23,6 @@ public class AQGlobalLootModifierProvider extends GlobalLootModifierProvider {
                 AQItems.PEBBLE.get(),
                 9,
                 5,
-                new ResourceLocation("blocks/cobblestone")));
+                new Identifier("blocks/cobblestone")));
     }
 }

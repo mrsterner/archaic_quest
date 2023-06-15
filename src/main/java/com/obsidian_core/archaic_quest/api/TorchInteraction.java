@@ -1,8 +1,8 @@
 package com.obsidian_core.archaic_quest.api;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 @FunctionalInterface
 public interface TorchInteraction {

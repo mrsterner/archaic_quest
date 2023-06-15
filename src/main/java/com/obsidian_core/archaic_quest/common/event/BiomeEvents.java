@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.event;
 
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.world.biome.Biome;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -14,7 +14,7 @@ public class BiomeEvents {
     /*
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onBiomeLoad(BiomeLoad event) {
-        ResourceLocation biomeName = event.getName();
+        Identifier biomeName = event.getName();
 
         if (biomeName == null)
             return;
@@ -29,7 +29,7 @@ public class BiomeEvents {
         }
     }
 
-    private static RegistryKey<Biome> getRegistryKey(ResourceLocation biomeName) {
+    private static RegistryKey<Biome> getRegistryKey(Identifier biomeName) {
         return RegistryKey.create(ForgeRegistries.Keys.BIOMES, biomeName);
     }
 

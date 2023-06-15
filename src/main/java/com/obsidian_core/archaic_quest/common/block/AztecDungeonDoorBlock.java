@@ -4,44 +4,44 @@ import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
 import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.world.BlockGetter;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.*;
-import net.minecraft.world.world.block.entity.BlockEntity;
-import net.minecraft.world.world.block.entity.BlockEntityTicker;
-import net.minecraft.world.world.block.entity.BlockEntityType;
-import net.minecraft.world.world.block.state.BlockBehaviour;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.StateDefinition;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
-import net.minecraft.world.world.block.state.properties.BooleanProperty;
-import net.minecraft.world.world.block.state.properties.DirectionProperty;
-import net.minecraft.world.world.block.state.properties.EnumProperty;
-import net.minecraft.world.world.material.PushReaction;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.util.shape.VoxelVoxelShapes;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity.DoorState;
 
-public class AztecDungeonDoorBlock extends Block implements EntityBlock {
+public class AztecDungeonDoorBlock extends Block implements BlockEntityProvider {
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final EnumProperty<BlockType> BLOCK_TYPE = EnumProperty.create("block_type", BlockType.class);
-    public static final BooleanProperty IS_OPEN = BooleanProperty.create("open");
+    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+    public static final EnumProperty<BlockType> BLOCK_TPOSITIVE_YE = EnumProperty.of("block_type", BlockType.class);
+    public static final BooleanProperty IS_OPEN = BooleanProperty.of("open");
 
     private static final Map<BlockType, VoxelShape[]> shapes = new HashMap<>();
 
-    // Hitbox hell incoming
+    // HitcreateCuboidShape hell incoming
     //
     // Order:
     // 0 = North & West (closed door)
@@ -50,135 +50,135 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
     // 3 = West & East (open door)
     static {
         shapes.put(BlockType.MASTER, new VoxelShape[] {
-                Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D),
-                Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
-                Shapes.empty(),
-                Shapes.empty()
+                Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D),
+                Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
+                VoxelShapes.empty(),
+                VoxelShapes.empty()
         });
         shapes.put(BlockType.LOWER_RIGHT, new VoxelShape[] {
-                Shapes.or(
-                        Block.box(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D),
-                        Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D),
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(8.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 8.0D)
                 ),
         });
         shapes.put(BlockType.LOWER_LEFT, new VoxelShape[] {
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D),
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 8.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.MIDDLE, new VoxelShape[] {
-                Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D),
-                Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
-                Shapes.empty(),
-                Shapes.empty()
+                Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D),
+                Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
+                VoxelShapes.empty(),
+                VoxelShapes.empty()
         });
         shapes.put(BlockType.RIGHT, new VoxelShape[] {
-                Shapes.or(
-                        Block.box(6.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 10.0D),
-                        Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 10.0D),
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(6.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 10.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 10.0D)
                 )
         });
         shapes.put(BlockType.LEFT, new VoxelShape[] {
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.TOP, new VoxelShape[] {
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 10.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 10.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(6.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.LEFT_TOP, new VoxelShape[] {
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 16.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 10.0D, 8.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 16.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 8.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
         shapes.put(BlockType.RIGHT_TOP, new VoxelShape[] {
-                Shapes.or(
-                        Block.box(6.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 10.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                        Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 10.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(6.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(6.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 ),
-                Shapes.or(
-                        Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 10.0D),
-                        Block.box(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
+                VoxelShapes.union(
+                        Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 10.0D),
+                        Block.createCuboidShape(0.0D, 7.0D, 0.0D, 16.0D, 16.0D, 16.0D)
                 )
         });
     }
@@ -187,17 +187,16 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
 
     public AztecDungeonDoorBlock(DungeonDoorType doorType) {
-        super(BlockBehaviour.Properties.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get()));
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(BLOCK_TYPE, BlockType.MASTER).setValue(IS_OPEN, false));
+        super(Settings.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0));
+        setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(BLOCK_TPOSITIVE_YE, BlockType.MASTER).with(IS_OPEN, false));
         this.doorType = doorType;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        BlockType type = state.getValue(BLOCK_TYPE);
-        Direction facing = state.getValue(FACING);
-        boolean isOpen = state.getValue(IS_OPEN);
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        BlockType type = state.get(BLOCK_TPOSITIVE_YE);
+        Direction facing = state.get(FACING);
+        boolean isOpen = state.get(IS_OPEN);
 
         if (doorType.isFrame()) {
             return switch (facing) {
@@ -214,48 +213,48 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean flag) {
-        if (state.is(this) && !newState.is(this)) {
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean flag) {
+        if (state.isOf(this) && !newState.isOf(this)) {
             BlockPos masterPos = calculateMasterPos(state, pos);
 
             if (masterPos != null) {
                 BlockState masterState = isMaster(state) ? state : world.getBlockState(masterPos);
 
-                if (masterState.is(this)) {
-                    Direction dir = masterState.getValue(FACING);
+                if (masterState.isOf(this)) {
+                    Direction dir = masterState.get(FACING);
 
                     if (dir == Direction.NORTH || dir == Direction.SOUTH) {
-                        for (BlockPos p : BlockPos.betweenClosed(masterPos.west(), masterPos.east().above(2))) {
-                            world.destroyBlock(p, false);
+                        for (BlockPos p : BlockPos.iterate(masterPos.west(), masterPos.east().up(2))) {
+                            world.breakBlock(p, false);
                         }
                     } else {
-                        for (BlockPos p : BlockPos.betweenClosed(masterPos.south(), masterPos.north().above(2))) {
-                            world.destroyBlock(p, false);
+                        for (BlockPos p : BlockPos.iterate(masterPos.south(), masterPos.north().up(2))) {
+                            world.breakBlock(p, false);
                         }
                     }
                 }
             }
         }
-        super.onRemove(state, world, pos, newState, flag);
+        super.onStateReplaced(state, world, pos, newState, flag);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean useShapeForLightOcclusion(BlockState state) {
+    public boolean hasSidedTransparency(BlockState state) {
         return true;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
+    public PistonBehavior getPistonBehavior(BlockState state) {
+        return PistonBehavior.BLOCK;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
         if (doorType.isFrame()) {
-            super.neighborChanged(state, world, pos, block, neighborPos, flag);
+            super.neighborUpdate(state, world, pos, block, neighborPos, flag);
             return;
         }
         BlockPos masterPos;
@@ -272,21 +271,21 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
         if (isMaster(world.getBlockState(masterPos)) && !world.isClient()) {
             for (Direction direction : Direction.values()) {
-                BlockPos offsetPos = pos.relative(direction);
+                BlockPos offsetPos = pos.offset(direction);
 
-                if (world.hasNeighborSignal(offsetPos)) {
-                    BlockEntity be = world.getExistingBlockEntity(masterPos);
+                if (world.isReceivingRedstonePower(offsetPos)) {
+                    BlockEntity be = world.getBlockEntity(masterPos);
 
                     if (be instanceof AztecDungeonDoorBlockEntity dungeonDoor) {
                         if (dungeonDoor.isOpen()) {
                             dungeonDoor.setDoorState(DoorState.CLOSING);
                             dungeonDoor.sendDoorStateUpdate();
-                            world.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_CLOSING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            world.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_CLOSING, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                         else if (dungeonDoor.isClosed()) {
                             dungeonDoor.setDoorState(DoorState.OPENING);
                             dungeonDoor.sendDoorStateUpdate();
-                            world.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_OPENING.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            world.playSound(null, masterPos, AQSoundEvents.AZTEC_DOOR_OPENING, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                     }
                     break;
@@ -302,30 +301,30 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
      */
     @Nullable
     private BlockPos calculateMasterPos(BlockState fromState, BlockPos fromPos) {
-        if (!fromState.is(this)) return null;
+        if (!fromState.isOf(this)) return null;
 
-        switch (fromState.getValue(FACING)) {
+        switch (fromState.get(FACING)) {
             case NORTH, SOUTH -> {
-                return switch (fromState.getValue(BLOCK_TYPE)) {
-                    case TOP -> fromPos.below(2);
-                    case LEFT_TOP -> fromPos.below(2).east();
-                    case RIGHT_TOP -> fromPos.below(2).west();
-                    case MIDDLE -> fromPos.below();
-                    case LEFT -> fromPos.below().east();
-                    case RIGHT -> fromPos.below().west();
+                return switch (fromState.get(BLOCK_TPOSITIVE_YE)) {
+                    case TOP -> fromPos.down(2);
+                    case LEFT_TOP -> fromPos.down(2).east();
+                    case RIGHT_TOP -> fromPos.down(2).west();
+                    case MIDDLE -> fromPos.down();
+                    case LEFT -> fromPos.down().east();
+                    case RIGHT -> fromPos.down().west();
                     case LOWER_LEFT -> fromPos.east();
                     case LOWER_RIGHT -> fromPos.west();
                     case MASTER -> fromPos;
                 };
             }
             case EAST, WEST -> {
-                return switch (fromState.getValue(BLOCK_TYPE)) {
-                    case TOP -> fromPos.below(2);
-                    case LEFT_TOP -> fromPos.below(2).north();
-                    case RIGHT_TOP -> fromPos.below(2).south();
-                    case MIDDLE -> fromPos.below();
-                    case LEFT -> fromPos.below().north();
-                    case RIGHT -> fromPos.below().south();
+                return switch (fromState.get(BLOCK_TPOSITIVE_YE)) {
+                    case TOP -> fromPos.down(2);
+                    case LEFT_TOP -> fromPos.down(2).north();
+                    case RIGHT_TOP -> fromPos.down(2).south();
+                    case MIDDLE -> fromPos.down();
+                    case LEFT -> fromPos.down().north();
+                    case RIGHT -> fromPos.down().south();
                     case LOWER_LEFT -> fromPos.north();
                     case LOWER_RIGHT -> fromPos.south();
                     case MASTER -> fromPos;
@@ -336,48 +335,48 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
     }
 
     private boolean isMaster(BlockState state) {
-        return state.is(this) && state.getValue(BLOCK_TYPE) == BlockType.MASTER;
+        return state.isOf(this) && state.get(BLOCK_TPOSITIVE_YE) == BlockType.MASTER;
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.is(this) && isMaster(state)
+        return state.isOf(this) && isMaster(state)
                 ? new AztecDungeonDoorBlockEntity(pos, state)
                 : null;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    public BlockState getPlacementState(ItemPlacementContext context) {
         World world = context.getWorld();
-        BlockPos pos = context.getClickedPos();
-        Direction direction = context.getHorizontalDirection().getOpposite();
+        BlockPos pos = context.getBlockPos();
+        Direction direction = context.getPlayerFacing().getOpposite();
 
         boolean foundSpace = true;
 
         if (direction == Direction.NORTH || direction == Direction.SOUTH) {
-            for (BlockPos blockPos : BlockPos.betweenClosed(pos.east(), pos.west().above(2))) {
-                if (!world.getBlockState(blockPos).canBeReplaced(context)) {
+            for (BlockPos blockPos : BlockPos.iterate(pos.east(), pos.west().up(2))) {
+                if (!world.getBlockState(blockPos).canReplace(context)) {
                     foundSpace = false;
                     break;
                 }
             }
         }
         else if (direction == Direction.WEST || direction == Direction.EAST) {
-            for (BlockPos blockPos : BlockPos.betweenClosed(pos.south(), pos.north().above(2))) {
-                if (!world.getBlockState(blockPos).canBeReplaced(context)) {
+            for (BlockPos blockPos : BlockPos.iterate(pos.south(), pos.north().up(2))) {
+                if (!world.getBlockState(blockPos).canReplace(context)) {
                     foundSpace = false;
                     break;
                 }
             }
         }
-        return foundSpace ? defaultBlockState().setValue(FACING, direction) : null;
+        return foundSpace ? getDefaultState().with(FACING, direction) : null;
     }
 
     public DungeonDoorType getDoorType() {
@@ -386,19 +385,19 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState rotate(BlockState state, Rotation rotation) {
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState mirror(BlockState state, Mirror mirror) {
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
-        stateBuilder.add(FACING, BLOCK_TYPE, IS_OPEN);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateBuilder) {
+        stateBuilder.add(FACING, BLOCK_TPOSITIVE_YE, IS_OPEN);
     }
 
     @Nullable
@@ -408,7 +407,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
     }
 
 
-    public enum BlockType implements StringRepresentable {
+    public enum BlockType implements StringIdentifiable {
         MASTER("master"),
         MIDDLE("middle"),
         TOP("top"),
@@ -426,7 +425,7 @@ public class AztecDungeonDoorBlock extends Block implements EntityBlock {
         private final String name;
 
         @Override
-        public String getSerializedName() {
+        public String asString() {
             return name;
         }
     }

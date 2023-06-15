@@ -3,31 +3,11 @@ package com.obsidian_core.archaic_quest.common.item;
 import com.mojang.datafixers.util.Pair;
 import com.obsidian_core.archaic_quest.api.TorchInteraction;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.world.ClipContext;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.Blocks;
-import net.minecraft.world.world.block.CampfireBlock;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CampfireBlock;
+import net.minecraft.item.Item;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,16 +27,16 @@ public class AdventurersTorchItem extends Item {
     public static void registerDefaults() {
         registerTorchLightable(Blocks.FIRE, (state) -> true, false);
         registerTorchLightable(Blocks.SOUL_FIRE, (state) -> true, true);
-        registerTorchLightable(Blocks.CAMPFIRE, (state) -> state.getValue(CampfireBlock.LIT), false);
-        registerTorchLightable(Blocks.SOUL_CAMPFIRE, (state) -> state.getValue(CampfireBlock.LIT), true);
+        registerTorchLightable(Blocks.CAMPFIRE, (state) -> state.get(CampfireBlock.LIT), false);
+        registerTorchLightable(Blocks.SOUL_CAMPFIRE, (state) -> state.get(CampfireBlock.LIT), true);
 
         registerTorchInteraction(Blocks.CAMPFIRE, (world, state, pos, soulfire) -> {
-            if (!state.getValue(CampfireBlock.LIT)) {
+            if (!state.get(CampfireBlock.LIT)) {
                 if (soulfire) {
-                    world.setBlockAndUpdate(pos, Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+                    world.setBlockStateAndUpdate(pos, Blocks.SOUL_CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, true));
                 }
                 else {
-                    world.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                    world.setBlockStateAndUpdate(pos, state.with(CampfireBlock.LIT, true));
                 }
                 return true;
             }
@@ -64,12 +44,12 @@ public class AdventurersTorchItem extends Item {
         });
 
         registerTorchInteraction(Blocks.SOUL_CAMPFIRE, (world, state, pos, soulfire) -> {
-            if (!state.getValue(CampfireBlock.LIT)) {
+            if (!state.get(CampfireBlock.LIT)) {
                 if (soulfire) {
-                    world.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, true));
+                    world.setBlockStateAndUpdate(pos, state.with(CampfireBlock.LIT, true));
                 }
                 else {
-                    world.setBlockAndUpdate(pos, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+                    world.setBlockStateAndUpdate(pos, Blocks.CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, true));
                 }
                 return true;
             }
@@ -82,7 +62,7 @@ public class AdventurersTorchItem extends Item {
 
 
     public AdventurersTorchItem() {
-        super(new Item.Properties()
+        super(new Item.Settings()
                 .tab(AQCreativeTabs.ITEMS)
                 .stacksTo(1)
                 .rarity(Rarity.UNCOMMON)
@@ -90,16 +70,16 @@ public class AdventurersTorchItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(World world, PlayerEntity player, InteractionHand hand) {
+    public ActionResultHolder<ItemStack> use(World world, PlayerEntity player, InteractionHand hand) {
         BlockHitResult hitResult = getPlayerPOVHitResult(world, player, ClipContext.Fluid.WATER);
 
         if (world.getBlockState(hitResult.getBlockPos()).getFluidState().is(FluidTags.WATER)) {
-            ItemStack itemStack = player.getItemInHand(hand);
+            ItemStack itemStack = player.getStackInHand(hand);
 
             if (getLitState(itemStack) > 0) {
 
                 setLit(itemStack, UNLIT);
-                world.playSound(null, hitResult.getBlockPos(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1.0F);
+                world.playSound(null, hitResult.getBlockPos(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1.0F);
 
                 double x = hitResult.getBlockPos().getX();
                 double y = hitResult.getBlockPos().getY();
@@ -108,29 +88,29 @@ public class AdventurersTorchItem extends Item {
                 for (int l = 0; l < 8; ++l) {
                     world.addParticle(ParticleTypes.LARGE_SMOKE, x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
                 }
-                return InteractionResultHolder.sidedSuccess(itemStack, world.isClient());
+                return ActionResultHolder.sidedSuccess(itemStack, world.isClient());
             }
         }
         return super.use(world, player, hand);
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
-        ItemStack torch = context.getItemInHand();
-        BlockState clickedState = context.getWorld().getBlockState(context.getClickedPos());
+    public ActionResult useOn(UseOnContext context) {
+        ItemStack torch = context.getStackInHand();
+        BlockState clickedState = context.getWorld().getBlockState(context.getBlockPos());
 
         if (getLitState(torch) > 0) {
             if (clickedState.getFluidState().isEmpty() && TORCH_INTERACTABLES.containsKey(clickedState.getBlock())) {
-                return TORCH_INTERACTABLES.get(clickedState.getBlock()).interact(context.getWorld(), clickedState, context.getClickedPos(), getLitState(torch) == SOULFIRE)
-                        ? InteractionResult.SUCCESS
-                        : InteractionResult.FAIL;
+                return TORCH_INTERACTABLES.get(clickedState.getBlock()).interact(context.getWorld(), clickedState, context.getBlockPos(), getLitState(torch) == SOULFIRE)
+                        ? ActionResult.SUCCESS
+                        : ActionResult.FAIL;
             }
         }
         else {
             if (TORCH_LIGHTERS.containsKey(clickedState.getBlock())) {
                 if (TORCH_LIGHTERS.get(clickedState.getBlock()).getFirst().test(clickedState)) {
                     setLit(torch, TORCH_LIGHTERS.get(clickedState.getBlock()).getSecond() ? SOULFIRE : LIT);
-                    return InteractionResult.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
             }
         }
@@ -170,10 +150,10 @@ public class AdventurersTorchItem extends Item {
     public static byte getLitState(ItemStack itemStack) {
         if (!(itemStack.getItem() instanceof AdventurersTorchItem)) return 0;
 
-        CompoundTag compoundTag = itemStack.getOrCreateTag();
+        NbtCompound compoundTag = itemStack.getOrCreateTag();
 
         if (compoundTag.contains(modDataKey, Tag.TAG_COMPOUND)) {
-            CompoundTag modData = compoundTag.getCompound(modDataKey);
+            NbtCompound modData = compoundTag.getCompound(modDataKey);
 
             if (modData.contains(litKey, Tag.TAG_BYTE)) {
                 return modData.getByte(litKey);
@@ -184,14 +164,14 @@ public class AdventurersTorchItem extends Item {
 
     public static void setLit(ItemStack itemStack, byte type) {
         if (!(itemStack.getItem() instanceof AdventurersTorchItem)) return;
-        CompoundTag compoundTag = itemStack.getOrCreateTag();
+        NbtCompound compoundTag = itemStack.getOrCreateTag();
 
         if (compoundTag.contains(modDataKey, Tag.TAG_COMPOUND)) {
-            CompoundTag modData = compoundTag.getCompound(modDataKey);
+            NbtCompound modData = compoundTag.getCompound(modDataKey);
             modData.putByte(litKey, type);
         }
         else {
-            CompoundTag modData = new CompoundTag();
+            NbtCompound modData = new NbtCompound();
             modData.putByte(litKey, type);
             compoundTag.put(modDataKey, modData);
         }

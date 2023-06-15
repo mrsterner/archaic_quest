@@ -1,8 +1,8 @@
 package com.obsidian_core.archaic_quest.datagen.lang;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.Text;
+import net.minecraft.network.chat.TextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.CreativeModeTab;
@@ -38,7 +38,7 @@ public abstract class AbstractLanguageProvider extends LanguageProvider {
         this.add(combatloggedDeathString, combatloggedDath);
     }
 
-    protected void addTranslationComponent(Component component, String localized) {
+    protected void addTranslationText(Text component, String localized) {
         if (component.getContents() instanceof TranslatableContents translatableContents) {
             add(translatableContents.getKey(), localized);
         }

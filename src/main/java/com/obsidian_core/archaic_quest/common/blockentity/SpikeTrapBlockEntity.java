@@ -5,7 +5,7 @@ import com.obsidian_core.archaic_quest.common.block.SpikeTrapBlock;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class SpikeTrapBlockEntity extends BlockEntity {
 
-    /** The collision box above the trap to check for players to damage, when trap is active. */
+    /** The collision box up the trap to check for players to damage, when trap is active. */
     private Box effectBox = null;
     private boolean active;
 
@@ -49,7 +49,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
             // Create collision box if needed
             if (trap.effectBox == null) {
-                trap.effectBox = new Box(pos.above()).inflate(0.0D, 0.75D, 0.0D);
+                trap.effectBox = new Box(pos.up()).inflate(0.0D, 0.75D, 0.0D);
             }
             List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, trap.effectBox);
 
@@ -91,7 +91,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compoundTag) {
+    public void load(NbtCompound compoundTag) {
         super.load(compoundTag);
 
         if (compoundTag.contains("Active", Tag.TAG_BYTE)) {
@@ -109,7 +109,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag compoundTag) {
+    public void saveAdditional(NbtCompound compoundTag) {
         super.saveAdditional(compoundTag);
 
         compoundTag.putBoolean("Active", active);
@@ -117,7 +117,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
         compoundTag.putString("Mode", mode.getSerializedName());
     }
 
-    private void writeUpdateData(CompoundTag compoundTag) {
+    private void writeUpdateData(NbtCompound compoundTag) {
         compoundTag.putBoolean("Active", active);
         compoundTag.putInt("SpikeRise", spikeRise);
         compoundTag.putString("Mode", mode.getSerializedName());
@@ -125,8 +125,8 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
+    public NbtCompound getUpdateTag() {
+        NbtCompound compoundTag = new NbtCompound();
         writeUpdateData(compoundTag);
         return compoundTag;
     }
@@ -137,7 +137,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(NbtCompound tag) {
         super.handleUpdateTag(tag);
 
         if (tag.contains("Active", Tag.TAG_BYTE)) {

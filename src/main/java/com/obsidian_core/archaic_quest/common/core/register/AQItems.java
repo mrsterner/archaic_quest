@@ -7,7 +7,7 @@ import net.minecraft.data.BlockFamily;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.FoodSettings;
 import net.minecraft.world.item.*;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
@@ -28,9 +28,9 @@ public class AQItems {
 
 
     // FOOD
-    public static final RegistryObject<Item> CORN = registerSimpleItem("corn_cob", () -> new ItemNameBlockItem(AQBlocks.CORN_CROP.get(), new Item.Properties()
+    public static final RegistryObject<Item> CORN = registerSimpleItem("corn_cob", () -> new ItemNameBlockItem(AQBlocks.CORN_CROP.get(), new Item.Settings()
             .tab(AQCreativeTabs.FOOD)
-            .food(new FoodProperties.Builder()
+            .food(new FoodSettings.Builder()
                     .nutrition(2)
                     .saturationMod(1.0F)
                     .build())));
@@ -98,20 +98,20 @@ public class AQItems {
         return regObject;
     }
 
-    private static RegistryObject<Item> registerSimpleItem(String name, CreativeModeTab itemGroup, FoodProperties food) {
-        RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Properties().tab(itemGroup).food(food)));
+    private static RegistryObject<Item> registerSimpleItem(String name, CreativeModeTab itemGroup, FoodSettings food) {
+        RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Settings().tab(itemGroup).food(food)));
         SIMPLE_ITEMS.add(regObject);
         return regObject;
     }
 
     private static RegistryObject<Item> registerSimpleItem(String name, CreativeModeTab itemGroup) {
-        RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Properties().tab(itemGroup)));
+        RegistryObject<Item> regObject = REGISTRY.register(name, () -> new Item(new Item.Settings().tab(itemGroup)));
         SIMPLE_ITEMS.add(regObject);
         return regObject;
     }
 
     protected static <T extends Mob> RegistryObject<ForgeSpawnEggItem> registerSpawnEgg(RegistryObject<EntityType<T>> entityType, int primaryColor, int secondaryColor) {
-        RegistryObject<ForgeSpawnEggItem> regObj = REGISTRY.register(entityType.getId().getPath() + "_spawn_egg", () -> new ForgeSpawnEggItem(entityType, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+        RegistryObject<ForgeSpawnEggItem> regObj = REGISTRY.register(entityType.getId().getPath() + "_spawn_egg", () -> new ForgeSpawnEggItem(entityType, primaryColor, secondaryColor, new Item.Settings().tab(CreativeModeTab.TAB_MISC)));
         SPAWN_EGGS.add(regObj);
         return regObj;
     }

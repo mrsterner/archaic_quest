@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.util.Random;
+import net.minecraft.world.world.block.state.properties.Properties;
 import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecoratorType;
 
@@ -25,7 +25,7 @@ public class TrunkVineVarDecorator extends TreeDecorator {
 
     @Override
     public void place(TreeDecorator.Context context) {
-        RandomSource randomsource = context.random();
+        Random randomsource = context.random();
 
         context.logs().forEach((pos) -> {
             if (randomsource.nextInt(3) > 0) {
@@ -59,6 +59,6 @@ public class TrunkVineVarDecorator extends TreeDecorator {
     }
 
     private void placeVineVar(TreeDecorator.Context context, BlockPos pos, Direction facing) {
-        context.setBlock(pos, AQBlocks.VINES_1.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing));
+        context.setBlockState(pos, AQBlocks.VINES_1.get().getDefaultState().with(Properties.HORIZONTAL_FACING, facing));
     }
 }

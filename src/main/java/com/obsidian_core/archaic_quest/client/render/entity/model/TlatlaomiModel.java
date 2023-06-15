@@ -1,18 +1,12 @@
 package com.obsidian_core.archaic_quest.client.render.entity.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.obsidian_core.archaic_quest.common.entity.living.Tlatlaomi;
-import net.minecraft.client.model.AnimationUtils;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.ZombieModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.MathHelper;
+import net.minecraft.client.model.*;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.CrossbowPosing;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 
 public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
 
@@ -37,116 +31,116 @@ public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
         jaw = head.getChild("lowerJaw");
     }
 
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
+    public static TexturedModelData createBodyLayer() {
+        ModelData meshdefinition = new ModelData();
+        ModelPartData partdefinition = meshdefinition.getRoot();
 
-        PartDefinition tlatlaomi = partdefinition.addOrReplaceChild("tlatlaomi", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -2.0F, 0.0F, 10.0F, 8.0F, 5.0F, new CubeDeformation(0.0F))
-                .texOffs(28, 13).addBox(-1.0F, -2.5F, 4.0F, 2.0F, 8.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(66, 54).addBox(-5.5F, -2.25F, -0.5F, 11.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -6.0F, -3.0F));
+        ModelPartData tlatlaomi = partdefinition.addChild("tlatlaomi", ModelPartBuilder.create().uv(0, 0).cuboid(-5.0F, -2.0F, 0.0F, 10.0F, 8.0F, 5.0F, new Dilation(0.0F))
+                .uv(28, 13).cuboid(-1.0F, -2.5F, 4.0F, 2.0F, 8.0F, 2.0F, new Dilation(0.0F))
+                .uv(66, 54).cuboid(-5.5F, -2.25F, -0.5F, 11.0F, 5.0F, 6.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -6.0F, -3.0F));
 
-        PartDefinition innerTendons02_r1 = tlatlaomi.addOrReplaceChild("innerTendons02_r1", CubeListBuilder.create().texOffs(112, 24).addBox(0.25F, -2.0F, -5.0F, 0.0F, 13.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 3.0F, 0.0F, -1.0908F, 0.0F));
+        ModelPartData innerTendons02_r1 = tlatlaomi.addChild("innerTendons02_r1", ModelPartBuilder.create().uv(112, 24).cuboid(0.25F, -2.0F, -5.0F, 0.0F, 13.0F, 7.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 3.0F, 0.0F, -1.0908F, 0.0F));
 
-        PartDefinition innerTendons01_r1 = tlatlaomi.addOrReplaceChild("innerTendons01_r1", CubeListBuilder.create().texOffs(97, 24).addBox(-0.25F, -2.0F, -5.0F, 0.0F, 13.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 3.0F, 0.0F, 1.0908F, 0.0F));
+        ModelPartData innerTendons01_r1 = tlatlaomi.addChild("innerTendons01_r1", ModelPartBuilder.create().uv(97, 24).cuboid(-0.25F, -2.0F, -5.0F, 0.0F, 13.0F, 7.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 3.0F, 0.0F, 1.0908F, 0.0F));
 
-        PartDefinition cape = tlatlaomi.addOrReplaceChild("cape", CubeListBuilder.create().texOffs(104, 44).addBox(-5.0F, -1.0F, -0.75F, 10.0F, 17.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, 5.0F, 0.2182F, 0.0F, 0.0F));
+        ModelPartData cape = tlatlaomi.addChild("cape", ModelPartBuilder.create().uv(104, 44).cuboid(-5.0F, -1.0F, -0.75F, 10.0F, 17.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.0F, 5.0F, 0.2182F, 0.0F, 0.0F));
 
-        PartDefinition capeLower = cape.addOrReplaceChild("capeLower", CubeListBuilder.create().texOffs(105, 62).addBox(-5.0F, 0.0F, -0.75F, 10.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 16.0F, 0.0F));
+        ModelPartData capeLower = cape.addChild("capeLower", ModelPartBuilder.create().uv(105, 62).cuboid(-5.0F, 0.0F, -0.75F, 10.0F, 3.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 16.0F, 0.0F));
 
-        PartDefinition lowerRibs = tlatlaomi.addOrReplaceChild("lowerRibs", CubeListBuilder.create().texOffs(1, 13).addBox(-4.5F, 0.0F, -3.0F, 9.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(29, 24).addBox(-1.0F, -0.5F, 1.0F, 2.0F, 7.0F, 1.0F, new CubeDeformation(-0.01F)), PartPose.offset(0.0F, 6.0F, 4.0F));
+        ModelPartData lowerRibs = tlatlaomi.addChild("lowerRibs", ModelPartBuilder.create().uv(1, 13).cuboid(-4.5F, 0.0F, -3.0F, 9.0F, 6.0F, 4.0F, new Dilation(0.0F))
+                .uv(29, 24).cuboid(-1.0F, -0.5F, 1.0F, 2.0F, 7.0F, 1.0F, new Dilation(-0.01F)), ModelTransform.pivot(0.0F, 6.0F, 4.0F));
 
-        PartDefinition belt = lowerRibs.addOrReplaceChild("belt", CubeListBuilder.create().texOffs(0, 25).addBox(-4.5F, -2.0F, -3.5F, 9.0F, 3.0F, 5.0F, new CubeDeformation(0.02F)), PartPose.offset(0.0F, 6.0F, 0.0F));
+        ModelPartData belt = lowerRibs.addChild("belt", ModelPartBuilder.create().uv(0, 25).cuboid(-4.5F, -2.0F, -3.5F, 9.0F, 3.0F, 5.0F, new Dilation(0.02F)), ModelTransform.pivot(0.0F, 6.0F, 0.0F));
 
-        PartDefinition loinclothFront = belt.addOrReplaceChild("loinclothFront", CubeListBuilder.create(), PartPose.offset(0.0F, 1.0F, -3.0F));
+        ModelPartData loinclothFront = belt.addChild("loinclothFront", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 1.0F, -3.0F));
 
-        PartDefinition cube_r1 = loinclothFront.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(18, 35).addBox(-4.0F, -1.0F, -0.75F, 8.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.1309F, 0.0F, 0.0F));
+        ModelPartData cube_r1 = loinclothFront.addChild("cube_r1", ModelPartBuilder.create().uv(18, 35).cuboid(-4.0F, -1.0F, -0.75F, 8.0F, 7.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, -0.1309F, 0.0F, 0.0F));
 
-        PartDefinition loinclothBack = belt.addOrReplaceChild("loinclothBack", CubeListBuilder.create().texOffs(19, 44).addBox(-4.0F, 0.0F, 0.5F, 8.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0873F, 0.0F, 0.0F));
+        ModelPartData loinclothBack = belt.addChild("loinclothBack", ModelPartBuilder.create().uv(19, 44).cuboid(-4.0F, 0.0F, 0.5F, 8.0F, 7.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0873F, 0.0F, 0.0F));
 
-        PartDefinition lLeg01 = lowerRibs.addOrReplaceChild("lLeg01", CubeListBuilder.create().texOffs(0, 35).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(2.25F, 6.0F, -1.0F));
+        ModelPartData lLeg01 = lowerRibs.addChild("lLeg01", ModelPartBuilder.create().uv(0, 35).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 9.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(2.25F, 6.0F, -1.0F));
 
-        PartDefinition lLeg02 = lLeg01.addOrReplaceChild("lLeg02", CubeListBuilder.create().texOffs(0, 49).addBox(-1.5F, -0.01F, -0.25F, 3.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 9.0F, -1.75F));
+        ModelPartData lLeg02 = lLeg01.addChild("lLeg02", ModelPartBuilder.create().uv(0, 49).cuboid(-1.5F, -0.01F, -0.25F, 3.0F, 9.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 9.0F, -1.75F));
 
-        PartDefinition rLeg01 = lowerRibs.addOrReplaceChild("rLeg01", CubeListBuilder.create().texOffs(0, 35).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-2.25F, 6.0F, -1.0F));
+        ModelPartData rLeg01 = lowerRibs.addChild("rLeg01", ModelPartBuilder.create().uv(0, 35).mirrored().cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 9.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-2.25F, 6.0F, -1.0F));
 
-        PartDefinition rLeg02 = rLeg01.addOrReplaceChild("rLeg02", CubeListBuilder.create().texOffs(0, 49).mirror().addBox(-1.5F, -0.01F, -0.25F, 3.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 9.0F, -1.75F));
+        ModelPartData rLeg02 = rLeg01.addChild("rLeg02", ModelPartBuilder.create().uv(0, 49).mirrored().cuboid(-1.5F, -0.01F, -0.25F, 3.0F, 9.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(0.0F, 9.0F, -1.75F));
 
-        PartDefinition head = tlatlaomi.addOrReplaceChild("head", CubeListBuilder.create().texOffs(38, 0).addBox(-3.5F, -7.8644F, -6.4652F, 7.0F, 6.0F, 7.0F, new CubeDeformation(0.0F))
-                .texOffs(56, 15).addBox(-2.0F, -1.8644F, -6.4652F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.01F))
-                .texOffs(38, 13).addBox(-4.0F, -6.8644F, -6.7152F, 8.0F, 4.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(0.0F, -2.25F, 4.0F, -0.0436F, 0.0F, 0.0F));
+        ModelPartData head = tlatlaomi.addChild("head", ModelPartBuilder.create().uv(38, 0).cuboid(-3.5F, -7.8644F, -6.4652F, 7.0F, 6.0F, 7.0F, new Dilation(0.0F))
+                .uv(56, 15).cuboid(-2.0F, -1.8644F, -6.4652F, 4.0F, 1.0F, 1.0F, new Dilation(0.01F))
+                .uv(38, 13).cuboid(-4.0F, -6.8644F, -6.7152F, 8.0F, 4.0F, 1.0F, new Dilation(0.1F)), ModelTransform.of(0.0F, -2.25F, 4.0F, -0.0436F, 0.0F, 0.0F));
 
-        PartDefinition headpiece = head.addOrReplaceChild("headpiece", CubeListBuilder.create().texOffs(69, 0).addBox(-4.5F, -1.5F, -3.75F, 9.0F, 3.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(69, 12).addBox(-2.5F, -3.0F, -3.0F, 5.0F, 9.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(96, 0).addBox(-2.0F, -6.0F, -3.0F, 4.0F, 3.0F, 12.0F, new CubeDeformation(0.0F))
-                .texOffs(97, 16).addBox(-2.0F, -3.0F, 5.0F, 4.0F, 9.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(56, 19).addBox(-1.5F, -3.0F, -4.0F, 3.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -7.8644F, -3.2152F));
+        ModelPartData headpiece = head.addChild("headpiece", ModelPartBuilder.create().uv(69, 0).cuboid(-4.5F, -1.5F, -3.75F, 9.0F, 3.0F, 8.0F, new Dilation(0.0F))
+                .uv(69, 12).cuboid(-2.5F, -3.0F, -3.0F, 5.0F, 9.0F, 8.0F, new Dilation(0.0F))
+                .uv(96, 0).cuboid(-2.0F, -6.0F, -3.0F, 4.0F, 3.0F, 12.0F, new Dilation(0.0F))
+                .uv(97, 16).cuboid(-2.0F, -3.0F, 5.0F, 4.0F, 9.0F, 4.0F, new Dilation(0.0F))
+                .uv(56, 19).cuboid(-1.5F, -3.0F, -4.0F, 3.0F, 3.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -7.8644F, -3.2152F));
 
-        PartDefinition lFeatherBundle = headpiece.addOrReplaceChild("lFeatherBundle", CubeListBuilder.create(), PartPose.offsetAndRotation(2.5F, -2.0F, 3.0F, 0.0F, 0.0F, 0.1309F));
+        ModelPartData lFeatherBundle = headpiece.addChild("lFeatherBundle", ModelPartBuilder.create(), ModelTransform.of(2.5F, -2.0F, 3.0F, 0.0F, 0.0F, 0.1309F));
 
-        PartDefinition lFeather01 = lFeatherBundle.addOrReplaceChild("lFeather01", CubeListBuilder.create(), PartPose.offsetAndRotation(1.0F, 1.0F, 0.0F, -0.8658F, 0.1329F, 0.1124F));
+        ModelPartData lFeather01 = lFeatherBundle.addChild("lFeather01", ModelPartBuilder.create(), ModelTransform.of(1.0F, 1.0F, 0.0F, -0.8658F, 0.1329F, 0.1124F));
 
-        PartDefinition cube_r2 = lFeather01.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(56, 23).addBox(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.5672F, 0.0F));
+        ModelPartData cube_r2 = lFeather01.addChild("cube_r2", ModelPartBuilder.create().uv(56, 23).cuboid(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.5672F, 0.0F));
 
-        PartDefinition lFeather02 = lFeatherBundle.addOrReplaceChild("lFeather02", CubeListBuilder.create(), PartPose.offsetAndRotation(0.25F, 1.0F, -1.0F, -0.5178F, 0.0735F, 0.1585F));
+        ModelPartData lFeather02 = lFeatherBundle.addChild("lFeather02", ModelPartBuilder.create(), ModelTransform.of(0.25F, 1.0F, -1.0F, -0.5178F, 0.0735F, 0.1585F));
 
-        PartDefinition cube_r3 = lFeather02.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(47, 23).addBox(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.48F, 0.0F));
+        ModelPartData cube_r3 = lFeather02.addChild("cube_r3", ModelPartBuilder.create().uv(47, 23).cuboid(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.48F, 0.0F));
 
-        PartDefinition lFeather03 = lFeatherBundle.addOrReplaceChild("lFeather03", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.5F, 1.0F, -2.0F, -0.1289F, 0.0227F, 0.1731F));
+        ModelPartData lFeather03 = lFeatherBundle.addChild("lFeather03", ModelPartBuilder.create(), ModelTransform.of(-0.5F, 1.0F, -2.0F, -0.1289F, 0.0227F, 0.1731F));
 
-        PartDefinition cube_r4 = lFeather03.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(38, 23).addBox(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.5672F, 0.0F));
+        ModelPartData cube_r4 = lFeather03.addChild("cube_r4", ModelPartBuilder.create().uv(38, 23).cuboid(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.5672F, 0.0F));
 
-        PartDefinition lFeather04 = lFeatherBundle.addOrReplaceChild("lFeather04", CubeListBuilder.create(), PartPose.offsetAndRotation(0.25F, 2.0F, 2.0F, 0.3079F, 0.1248F, 0.0396F));
+        ModelPartData lFeather04 = lFeatherBundle.addChild("lFeather04", ModelPartBuilder.create(), ModelTransform.of(0.25F, 2.0F, 2.0F, 0.3079F, 0.1248F, 0.0396F));
 
-        PartDefinition cube_r5 = lFeather04.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(41, 27).addBox(1.0F, -3.0F, -2.0F, 0.0F, 5.0F, 13.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.2618F));
+        ModelPartData cube_r5 = lFeather04.addChild("cube_r5", ModelPartBuilder.create().uv(41, 27).cuboid(1.0F, -3.0F, -2.0F, 0.0F, 5.0F, 13.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.2618F));
 
-        PartDefinition rFeatherBundle = headpiece.addOrReplaceChild("rFeatherBundle", CubeListBuilder.create(), PartPose.offsetAndRotation(-2.5F, -2.0F, 3.0F, 0.0F, 0.0F, -0.1309F));
+        ModelPartData rFeatherBundle = headpiece.addChild("rFeatherBundle", ModelPartBuilder.create(), ModelTransform.of(-2.5F, -2.0F, 3.0F, 0.0F, 0.0F, -0.1309F));
 
-        PartDefinition rFeather01 = rFeatherBundle.addOrReplaceChild("rFeather01", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.0F, 1.0F, 0.0F, -0.8658F, -0.1329F, -0.1124F));
+        ModelPartData rFeather01 = rFeatherBundle.addChild("rFeather01", ModelPartBuilder.create(), ModelTransform.of(-1.0F, 1.0F, 0.0F, -0.8658F, -0.1329F, -0.1124F));
 
-        PartDefinition cube_r6 = rFeather01.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(56, 23).mirror().addBox(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.5672F, 0.0F));
+        ModelPartData cube_r6 = rFeather01.addChild("cube_r6", ModelPartBuilder.create().uv(56, 23).mirrored().cuboid(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, -0.5672F, 0.0F));
 
-        PartDefinition rFeather02 = rFeatherBundle.addOrReplaceChild("rFeather02", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.25F, 1.0F, -1.0F, -0.5178F, -0.0735F, -0.1585F));
+        ModelPartData rFeather02 = rFeatherBundle.addChild("rFeather02", ModelPartBuilder.create(), ModelTransform.of(-0.25F, 1.0F, -1.0F, -0.5178F, -0.0735F, -0.1585F));
 
-        PartDefinition cube_r7 = rFeather02.addOrReplaceChild("cube_r7", CubeListBuilder.create().texOffs(47, 23).mirror().addBox(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.48F, 0.0F));
+        ModelPartData cube_r7 = rFeather02.addChild("cube_r7", ModelPartBuilder.create().uv(47, 23).mirrored().cuboid(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, -0.48F, 0.0F));
 
-        PartDefinition rFeather03 = rFeatherBundle.addOrReplaceChild("rFeather03", CubeListBuilder.create(), PartPose.offsetAndRotation(0.5F, 1.0F, -2.0F, -0.1289F, -0.0227F, -0.1731F));
+        ModelPartData rFeather03 = rFeatherBundle.addChild("rFeather03", ModelPartBuilder.create(), ModelTransform.of(0.5F, 1.0F, -2.0F, -0.1289F, -0.0227F, -0.1731F));
 
-        PartDefinition cube_r8 = rFeather03.addOrReplaceChild("cube_r8", CubeListBuilder.create().texOffs(38, 23).mirror().addBox(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.5672F, 0.0F));
+        ModelPartData cube_r8 = rFeather03.addChild("cube_r8", ModelPartBuilder.create().uv(38, 23).mirrored().cuboid(0.0F, -13.0F, -2.0F, 0.0F, 13.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, -0.5672F, 0.0F));
 
-        PartDefinition rFeather04 = rFeatherBundle.addOrReplaceChild("rFeather04", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.25F, 2.0F, 2.0F, 0.3079F, -0.1248F, -0.0396F));
+        ModelPartData rFeather04 = rFeatherBundle.addChild("rFeather04", ModelPartBuilder.create(), ModelTransform.of(-0.25F, 2.0F, 2.0F, 0.3079F, -0.1248F, -0.0396F));
 
-        PartDefinition cube_r9 = rFeather04.addOrReplaceChild("cube_r9", CubeListBuilder.create().texOffs(41, 27).mirror().addBox(-1.0F, -3.0F, -2.0F, 0.0F, 5.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.2618F));
+        ModelPartData cube_r9 = rFeather04.addChild("cube_r9", ModelPartBuilder.create().uv(41, 27).mirrored().cuboid(-1.0F, -3.0F, -2.0F, 0.0F, 5.0F, 13.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.2618F));
 
-        PartDefinition headdresstassle = headpiece.addOrReplaceChild("headdresstassle", CubeListBuilder.create().texOffs(0, 66).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 8.0F, 13.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 7.0F, -0.9599F, 0.0F, 0.0F));
+        ModelPartData headdresstassle = headpiece.addChild("headdresstassle", ModelPartBuilder.create().uv(0, 66).cuboid(-1.0F, -3.0F, -1.0F, 2.0F, 8.0F, 13.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 7.0F, -0.9599F, 0.0F, 0.0F));
 
-        PartDefinition tassleFeather01 = headdresstassle.addOrReplaceChild("tassleFeather01", CubeListBuilder.create().texOffs(0, 75).addBox(0.0F, -1.0F, 0.0F, 0.0F, 4.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.0F, 11.0F, 0.0873F, 0.0F, 0.0F));
+        ModelPartData tassleFeather01 = headdresstassle.addChild("tassleFeather01", ModelPartBuilder.create().uv(0, 75).cuboid(0.0F, -1.0F, 0.0F, 0.0F, 4.0F, 14.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -2.0F, 11.0F, 0.0873F, 0.0F, 0.0F));
 
-        PartDefinition tassleFeather02 = headdresstassle.addOrReplaceChild("tassleFeather02", CubeListBuilder.create().texOffs(0, 80).addBox(0.25F, -1.0F, 0.0F, 0.0F, 4.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 11.0F, -0.0436F, 0.0F, 0.0F));
+        ModelPartData tassleFeather02 = headdresstassle.addChild("tassleFeather02", ModelPartBuilder.create().uv(0, 80).cuboid(0.25F, -1.0F, 0.0F, 0.0F, 4.0F, 14.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 11.0F, -0.0436F, 0.0F, 0.0F));
 
-        PartDefinition tassleFeather03 = headdresstassle.addOrReplaceChild("tassleFeather03", CubeListBuilder.create().texOffs(0, 85).addBox(0.0F, -2.0F, 0.0F, 0.0F, 4.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.5F, 11.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData tassleFeather03 = headdresstassle.addChild("tassleFeather03", ModelPartBuilder.create().uv(0, 85).cuboid(0.0F, -2.0F, 0.0F, 0.0F, 4.0F, 14.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 1.5F, 11.0F, -0.3491F, 0.0F, 0.0F));
 
-        PartDefinition tassleFeather2 = headdresstassle.addOrReplaceChild("tassleFeather2", CubeListBuilder.create().texOffs(0, 75).addBox(-0.25F, -1.0F, 0.0F, 0.0F, 4.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 3.0F, 11.0F, -0.48F, 0.0F, 0.0F));
+        ModelPartData tassleFeather2 = headdresstassle.addChild("tassleFeather2", ModelPartBuilder.create().uv(0, 75).cuboid(-0.25F, -1.0F, 0.0F, 0.0F, 4.0F, 14.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 3.0F, 11.0F, -0.48F, 0.0F, 0.0F));
 
-        PartDefinition headdress_tail = headpiece.addOrReplaceChild("headdress_tail", CubeListBuilder.create().texOffs(70, 30).addBox(-2.0F, 0.0F, -1.0F, 4.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 6.0F, 4.0F, 0.1745F, 0.0F, 0.0F));
+        ModelPartData headdress_tail = headpiece.addChild("headdress_tail", ModelPartBuilder.create().uv(70, 30).cuboid(-2.0F, 0.0F, -1.0F, 4.0F, 9.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 6.0F, 4.0F, 0.1745F, 0.0F, 0.0F));
 
-        PartDefinition lowerJaw = head.addOrReplaceChild("lowerJaw", CubeListBuilder.create().texOffs(38, 19).addBox(-3.0F, -0.1736F, -5.9848F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.8644F, -0.2152F, 0.1745F, 0.0F, 0.0F));
+        ModelPartData lowerJaw = head.addChild("lowerJaw", ModelPartBuilder.create().uv(38, 19).cuboid(-3.0F, -0.1736F, -5.9848F, 6.0F, 2.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.8644F, -0.2152F, 0.1745F, 0.0F, 0.0F));
 
-        PartDefinition lArm01 = tlatlaomi.addOrReplaceChild("lArm01", CubeListBuilder.create().texOffs(40, 45).addBox(0.0F, -2.0F, -1.0F, 3.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(5.0F, 0.0F, 2.0F, 0.0F, 0.0F, -0.0436F));
+        ModelPartData lArm01 = tlatlaomi.addChild("lArm01", ModelPartBuilder.create().uv(40, 45).cuboid(0.0F, -2.0F, -1.0F, 3.0F, 9.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(5.0F, 0.0F, 2.0F, 0.0F, 0.0F, -0.0436F));
 
-        PartDefinition lArm02 = lArm01.addOrReplaceChild("lArm02", CubeListBuilder.create().texOffs(55, 46).addBox(-1.5F, -0.01F, -1.5F, 3.0F, 9.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(38, 58).mirror().addBox(-2.0F, 5.0F, -2.0F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(1.5F, 7.0F, 1.0F));
+        ModelPartData lArm02 = lArm01.addChild("lArm02", ModelPartBuilder.create().uv(55, 46).cuboid(-1.5F, -0.01F, -1.5F, 3.0F, 9.0F, 3.0F, new Dilation(0.0F))
+                .uv(38, 58).mirrored().cuboid(-2.0F, 5.0F, -2.0F, 4.0F, 2.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(1.5F, 7.0F, 1.0F));
 
-        PartDefinition rArm01 = tlatlaomi.addOrReplaceChild("rArm01", CubeListBuilder.create().texOffs(40, 45).mirror().addBox(-3.0F, -2.0F, -1.0F, 3.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-5.0F, 0.0F, 2.0F, 0.0F, 0.0F, 0.0436F));
+        ModelPartData rArm01 = tlatlaomi.addChild("rArm01", ModelPartBuilder.create().uv(40, 45).mirrored().cuboid(-3.0F, -2.0F, -1.0F, 3.0F, 9.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-5.0F, 0.0F, 2.0F, 0.0F, 0.0F, 0.0436F));
 
-        PartDefinition rArm02 = rArm01.addOrReplaceChild("rArm02", CubeListBuilder.create().texOffs(55, 46).mirror().addBox(-1.5F, -0.01F, -1.5F, 3.0F, 9.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(15, 58).mirror().addBox(-2.0F, 5.0F, -2.0F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-1.5F, 7.0F, 1.0F));
+        ModelPartData rArm02 = rArm01.addChild("rArm02", ModelPartBuilder.create().uv(55, 46).mirrored().cuboid(-1.5F, -0.01F, -1.5F, 3.0F, 9.0F, 3.0F, new Dilation(0.0F)).mirrored(false)
+                .uv(15, 58).mirrored().cuboid(-2.0F, 5.0F, -2.0F, 4.0F, 2.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-1.5F, 7.0F, 1.0F));
 
-        return LayerDefinition.create(meshdefinition, 128, 128);
+        return TexturedModelData.of(meshdefinition, 128, 128);
     }
 
     @Override
-    public void setupAnim(Tlatlaomi tlatlaomi, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAngles(Tlatlaomi tlatlaomi, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         boolean flag = tlatlaomi.getFallFlyingTicks() > 4;
 
         head.yRot = netHeadYaw * ((float)Math.PI / 180F);
@@ -160,7 +154,7 @@ public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
 
         float f = 1.0F;
         if (flag) {
-            f = (float)tlatlaomi.getDeltaMovement().lengthSqr();
+            f = (float)tlatlaomi.getVelocity().lengthSquared();
             f /= 0.2F;
             f *= f * f;
         }
@@ -193,12 +187,12 @@ public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
         rightArm.yRot = 0.0F;
         leftArm.yRot = 0.0F;
 
-        AnimationUtils.bobArms(rightArm, leftArm, ageInTicks);
+        CrossbowPosing.swingArms(rightArm, leftArm, ageInTicks);
         jaw.xRot = (MathHelper.sin(ageInTicks / 18.0F)) / 8.0F + 0.25F;
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        tlatlaomi.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        tlatlaomi.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

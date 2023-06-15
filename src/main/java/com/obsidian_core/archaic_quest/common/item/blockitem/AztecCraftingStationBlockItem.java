@@ -1,28 +1,24 @@
 package com.obsidian_core.archaic_quest.common.item.blockitem;
 
 import com.obsidian_core.archaic_quest.client.render.blockentity.bewlr.BEWLRS;
-import net.minecraft.client.renderer.BlockEntityWithoutWorldRenderer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-
-import java.util.function.Consumer;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemPlacementContext;
 
 public class AztecCraftingStationBlockItem extends BlockItem {
 
-    public AztecCraftingStationBlockItem(Block block, Properties properties) {
+    public AztecCraftingStationBlockItem(Block block, Settings properties) {
         super(block, properties);
     }
 
     @Override
-    protected boolean canPlace(BlockPlaceContext useContext, BlockState state) {
+    protected boolean canPlace(ItemPlacementContext useContext, BlockState state) {
         PlayerEntity player = useContext.getPlayer();
-        CollisionContext collisionContext = player == null ? CollisionContext.empty() : CollisionContext.of(player);
-        return (!this.mustSurvive() || state.canSurvive(useContext.getWorld(), useContext.getClickedPos())) && useContext.getWorld().isUnobstructed(state, useContext.getClickedPos(), collisionContext);
+        ShapeContext collisionContext = player == null ? ShapeContext.absent() : ShapeContext.of(player);
+        return (!this.checkStatePlacement() || state.canPlaceAt(useContext.getWorld(), useContext.getBlockPos())) && useContext.getWorld().canPlace(state, useContext.getBlockPos(), collisionContext);
     }
 
     @Override

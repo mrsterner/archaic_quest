@@ -3,29 +3,24 @@ package com.obsidian_core.archaic_quest.common.blockentity;
 import com.obsidian_core.archaic_quest.common.block.AztecThroneBlock;
 import com.obsidian_core.archaic_quest.common.block.data.ThroneType;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.world.block.entity.BlockEntity;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.phys.Box;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.Nullable;
 
 public class AztecThroneBlockEntity extends BlockEntity {
 
     private ThroneType throneType = null;
 
     public AztecThroneBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.AZTEC_THRONE.get(), pos, state);
+        super(AQBlockEntities.AZTEC_THRONE, pos, state);
     }
 
     @Override
     public void onLoad() {
         if (world != null) {
-            BlockState state = world.getBlockState(getBlockPos());
+            BlockState state = world.getBlockState(getPos());
 
             if (state.getBlock() instanceof AztecThroneBlock throneBlock) {
                 setThroneType(throneBlock.getThroneType());
@@ -52,7 +47,7 @@ public class AztecThroneBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
+    protected void saveAdditional(NbtCompound compoundTag) {
         super.saveAdditional(compoundTag);
 
         if (throneType != null) {
@@ -61,7 +56,7 @@ public class AztecThroneBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compoundTag) {
+    public void load(NbtCompound compoundTag) {
         super.load(compoundTag);
 
         if (compoundTag.contains("ThroneType", Tag.TAG_STRING)) {

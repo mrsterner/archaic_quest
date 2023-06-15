@@ -13,7 +13,7 @@ import net.minecraft.world.world.block.Block;
 import net.minecraft.world.world.block.SimpleWaterloggedBlock;
 import net.minecraft.world.world.block.state.BlockState;
 import net.minecraft.world.world.block.state.StateDefinition;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.Properties;
 import net.minecraft.world.world.block.state.properties.BooleanProperty;
 import net.minecraft.world.world.material.FluidState;
 import net.minecraft.world.world.material.Fluids;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterloggedBlock {
 
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
     private static final VoxelShape SHAPE =
             Shapes.or(
@@ -34,9 +34,9 @@ public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterlogged
                     Block.box(3.0D, 5.0D, 3.0D, 13.0D, 7.0D, 13.0D)
             );
 
-    public AztecWoodPillarBaseBlock(Properties properties) {
+    public AztecWoodPillarBaseBlock(Settings properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
+        setDefaultState(getDefaultState().with(WATERLOGGED, false));
     }
 
     @SuppressWarnings("deprecation")
@@ -47,21 +47,21 @@ public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterlogged
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos clickedPos = context.getClickedPos();
+        BlockPos clickedPos = context.getBlockPos();
         World world = context.getWorld();
         boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
-        return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);
+        return this.getDefaultState().with(WATERLOGGED, waterlogged);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState state) {
-        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.get(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(WATERLOGGED);
     }
 }

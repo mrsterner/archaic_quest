@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public class FoundryBlock extends Block implements EntityBlock {
 
     public FoundryBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE)
+        super(BlockBehaviour.Settings.of(Material.STONE)
                 .requiresCorrectToolForDrops()
                 .randomTicks()
                 .sound(SoundType.STONE)

@@ -3,17 +3,16 @@ package com.obsidian_core.archaic_quest.common.loot_modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.obsidian_core.archaic_quest.common.core.register.AQGlobalLootModifiers;
+import io.github.fabricators_of_create.porting_lib.loot.IGlobalLootModifier;
+import io.github.fabricators_of_create.porting_lib.loot.LootModifier;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.world.storage.loot.LootContext;
-import net.minecraft.world.world.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.common.loot.LootModifier;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -22,7 +21,7 @@ public class LootModifierAdd extends LootModifier {
     public final Item itemToAdd;
     public final int maxStackCount;
     public final int minStackCount;
-    public final ResourceLocation targetLootTable;
+    public final Identifier targetLootTable;
 
 
     public static final Supplier<Codec<LootModifierAdd>> CODEC = () -> RecordCodecBuilder.create(inst -> LootModifier.codecStart(inst)
@@ -34,7 +33,7 @@ public class LootModifierAdd extends LootModifier {
                             .forGetter(m -> m.maxStackCount),
                     Codec.INT.fieldOf("minCount")
                             .forGetter(m -> m.minStackCount),
-                    ResourceLocation.CODEC
+                    Identifier.CODEC
                             .fieldOf("lootTable")
                             .forGetter(m -> m.targetLootTable)
                     )
@@ -47,7 +46,7 @@ public class LootModifierAdd extends LootModifier {
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
-    public LootModifierAdd(LootItemCondition[] conditionsIn, Item itemToAdd, int maxStackCount, int minStackCount, ResourceLocation lootTable) {
+    public LootModifierAdd(LootCondition[] conditionsIn, Item itemToAdd, int maxStackCount, int minStackCount, Identifier lootTable) {
         super(conditionsIn);
         this.itemToAdd = itemToAdd;
         this.maxStackCount = maxStackCount;
@@ -55,7 +54,7 @@ public class LootModifierAdd extends LootModifier {
         this.targetLootTable = lootTable;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if (context.getQueriedLootTableId().equals(targetLootTable)) {
@@ -69,6 +68,6 @@ public class LootModifierAdd extends LootModifier {
 
     @Override
     public Codec<? extends IGlobalLootModifier> codec() {
-        return AQGlobalLootModifiers.ADD_ITEM_MODIFIER.get();
+        return AQGlobalLootModifiers.ADD_ITEM_MODIFIER;
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.data.worldgen.features.VegetationFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.TreePlacements;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.world.block.Block;
 import net.minecraft.world.world.block.Blocks;
@@ -56,7 +56,7 @@ public class AQConfiguredFeatures {
     public static final DeferredRegister<PlacedFeature> P_REGISTRY = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, ArchaicQuest.MODID);
 
 
-    private static final Map<ModOre, RegistryObject<PlacedFeature>> ORES_BY_TYPE = new HashMap<>();
+    private static final Map<ModOre, RegistryObject<PlacedFeature>> ORES_BY_TPOSITIVE_YE = new HashMap<>();
 
 
     //----------------------------- CONFIGURED ----------------------------------
@@ -68,9 +68,9 @@ public class AQConfiguredFeatures {
                     .decorators(ImmutableList.of(TrunkVineVarDecorator.INSTANCE, new LeafVineVarDecorator(0.40F)))
                     .build());
 
-    public static final RegistryObject<ConfiguredFeature<OreConfiguration, ?>> TIN_ORE = registerOre("tin_ore", () -> new OreConfiguration(OreFeatures.NATURAL_STONE, AQBlocks.TIN_ORE.get().defaultBlockState(), 9));
-    public static final RegistryObject<ConfiguredFeature<OreConfiguration, ?>> SILVER_ORE = registerOre("silver_ore", () -> new OreConfiguration(OreFeatures.NATURAL_STONE, AQBlocks.SILVER_ORE.get().defaultBlockState(), 9));
-    public static final RegistryObject<ConfiguredFeature<OreConfiguration, ?>> GRANITE_QUARTZ_ORE = registerOre("granite_quartz_ore", () -> new OreConfiguration(AQFillerBlockTypes.GRANITE, AQBlocks.GRANITE_QUARTZ_ORE.get().defaultBlockState(), 9));
+    public static final RegistryObject<ConfiguredFeature<OreConfiguration, ?>> TIN_ORE = registerOre("tin_ore", () -> new OreConfiguration(OreFeatures.NATURAL_STONE, AQBlocks.TIN_ORE.get().getDefaultState(), 9));
+    public static final RegistryObject<ConfiguredFeature<OreConfiguration, ?>> SILVER_ORE = registerOre("silver_ore", () -> new OreConfiguration(OreFeatures.NATURAL_STONE, AQBlocks.SILVER_ORE.get().getDefaultState(), 9));
+    public static final RegistryObject<ConfiguredFeature<OreConfiguration, ?>> GRANITE_QUARTZ_ORE = registerOre("granite_quartz_ore", () -> new OreConfiguration(AQFillerBlockTypes.GRANITE, AQBlocks.GRANITE_QUARTZ_ORE.get().getDefaultState(), 9));
 
 
     //------------------------------- PLACED ------------------------------------
@@ -94,7 +94,7 @@ public class AQConfiguredFeatures {
 
     private static RegistryObject<PlacedFeature> registerOre(ModOre ore, String name, RegistryObject<? extends ConfiguredFeature<?, ?>> feature, Supplier<List<PlacementModifier>> modifiers) {
         RegistryObject<PlacedFeature> placedFeature = registerPlaced(name, feature, modifiers);
-        ORES_BY_TYPE.put(ore, placedFeature);
+        ORES_BY_TPOSITIVE_YE.put(ore, placedFeature);
         return placedFeature;
     }
 
@@ -128,12 +128,12 @@ public class AQConfiguredFeatures {
     }
 
     public static List<PlacementModifier> treePlacement(PlacementModifier modifier, Block block) {
-        return treePlacementBase(modifier).add(BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(block.defaultBlockState(), BlockPos.ZERO))).build();
+        return treePlacementBase(modifier).add(BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(block.getDefaultState(), BlockPos.ZERO))).build();
     }
 
 
     @Nullable
     public static RegistryObject<PlacedFeature> getOreForType(ModOre ore) {
-        return ORES_BY_TYPE.get(ore);
+        return ORES_BY_TPOSITIVE_YE.get(ore);
     }
 }

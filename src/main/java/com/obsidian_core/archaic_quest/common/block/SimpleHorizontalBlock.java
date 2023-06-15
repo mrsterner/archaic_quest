@@ -9,18 +9,18 @@ import net.minecraft.world.world.block.state.StateDefinition;
 
 public class SimpleHorizontalBlock extends HorizontalDirectionalBlock {
 
-    public SimpleHorizontalBlock(Properties properties) {
+    public SimpleHorizontalBlock(Settings properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext useContext) {
-        return this.defaultBlockState().setValue(FACING, useContext.getHorizontalDirection());
+        return this.getDefaultState().with(FACING, useContext.getPlayerFacing());
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(FACING);
     }
 }

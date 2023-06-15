@@ -3,7 +3,7 @@ package com.obsidian_core.archaic_quest.common.worldgen.feature.decorators;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.Random;
 import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.world.worldgen.feature.treedecorators.TreeDecoratorType;
 
@@ -24,7 +24,7 @@ public class LeafVineVarDecorator extends TreeDecorator {
 
     @Override
     public void place(TreeDecorator.Context context) {
-        RandomSource random = context.random();
+        Random random = context.random();
 
         context.leaves().forEach((pos) -> {
             if (random.nextFloat() < probability) {
@@ -61,9 +61,9 @@ public class LeafVineVarDecorator extends TreeDecorator {
         DecoratorUtil.placeVineVar(context, pos, direction);
         int i = 4;
 
-        for(BlockPos blockpos = pos.below(); context.isAir(blockpos) && i > 0; --i) {
+        for(BlockPos blockpos = pos.down(); context.isAir(blockpos) && i > 0; --i) {
             DecoratorUtil.placeVineVar(context, blockpos, direction);
-            blockpos = blockpos.below();
+            blockpos = blockpos.down();
         }
     }
 }

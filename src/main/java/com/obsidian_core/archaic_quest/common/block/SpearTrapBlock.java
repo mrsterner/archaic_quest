@@ -1,6 +1,6 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import com.obsidian_core.archaic_quest.common.block.state.AQStateProperties;
+import com.obsidian_core.archaic_quest.common.block.state.AQStateSettings;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +17,7 @@ import net.minecraft.world.world.WorldReader;
 import net.minecraft.world.world.block.*;
 import net.minecraft.world.world.block.state.BlockState;
 import net.minecraft.world.world.block.state.StateDefinition;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.Properties;
 import net.minecraft.world.world.block.state.properties.BooleanProperty;
 import net.minecraft.world.world.block.state.properties.DripstoneThickness;
 import net.minecraft.world.world.material.FluidState;
@@ -30,8 +30,8 @@ import javax.annotation.Nullable;
 
 public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
 
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final BooleanProperty EXTENDED = AQStateProperties.EXTENDED;
+    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+    public static final BooleanProperty EXTENDED = AQStateSettings.EXTENDED;
 
     private final float damageMult;
 
@@ -41,9 +41,9 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
     };
 
 
-    public SpearTrapBlock(float baseDamage, Properties properties) {
+    public SpearTrapBlock(float baseDamage, Settings properties) {
         super(properties.speedFactor(0.4F));
-        registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false).setValue(EXTENDED, false));
+        setDefaultState(getDefaultState().with(WATERLOGGED, false).with(EXTENDED, false));
         this.damageMult = Math.max(0.0F, baseDamage);
     }
 
@@ -59,26 +59,26 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     private boolean isExtended(BlockState state) {
-        return state.is(this) && state.getValue(EXTENDED);
+        return state.is(this) && state.get(EXTENDED);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public boolean canSurvive(BlockState state, WorldReader world, BlockPos pos) {
-        return world.getBlockState(pos.below()).isFaceSturdy(world, pos.below(), Direction.UP) || world.getBlockState(pos.below()).is(this);
+        return world.getBlockState(pos.down()).isFaceSturdy(world, pos.down(), Direction.UP) || world.getBlockState(pos.down()).is(this);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor world, BlockPos pos, BlockPos pos1) {
         if (!newState.canSurvive(world, pos)) {
-            return Blocks.AIR.defaultBlockState();
+            return Blocks.AIR.getDefaultState();
         }
         else {
-            BlockState aboveState = world.getBlockState(pos.above());
+            BlockState upState = world.getBlockState(pos.up());
 
-            if (newState.is(this) && newState.getValue(EXTENDED) && !aboveState.is(this)) {
-                world.setBlock(pos, newState.setValue(EXTENDED, false), 3);
+            if (newState.is(this) && newState.get(EXTENDED) && !upState.is(this)) {
+                world.setBlockState(pos, newState.with(EXTENDED, false), 3);
             }
             return super.updateShape(newState, direction, state, world, pos, pos1);
         }
@@ -86,11 +86,11 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos clickedPos = context.getClickedPos();
+        BlockPos clickedPos = context.getBlockPos();
         World world = context.getWorld();
         boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
-        return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);
+        return this.getDefaultState().with(WATERLOGGED, waterlogged);
     }
 
     @Override
@@ -98,23 +98,23 @@ public class SpearTrapBlock extends Block implements SimpleWaterloggedBlock {
         if (!state.is(this))
             super.setPlacedBy(world, pos, state, livingEntity, itemStack);
 
-        BlockPos belowPos = pos.below();
-        boolean spearsBelow = world.getBlockState(belowPos).is(this);
+        BlockPos downPos = pos.down();
+        boolean spearsBelow = world.getBlockState(downPos).is(this);
 
         if (spearsBelow) {
-            BlockState belowState = world.getBlockState(belowPos);
-            world.setBlock(belowPos, belowState.setValue(EXTENDED, true), 3);
+            BlockState downState = world.getBlockState(downPos);
+            world.setBlockState(downPos, downState.with(EXTENDED, true), 3);
         }
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState state) {
-        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.get(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(EXTENDED, WATERLOGGED);
     }
 }

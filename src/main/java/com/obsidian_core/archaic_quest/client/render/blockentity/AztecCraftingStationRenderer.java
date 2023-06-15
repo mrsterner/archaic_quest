@@ -1,87 +1,85 @@
 package com.obsidian_core.archaic_quest.client.render.blockentity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecCraftingStationBlockEntity;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.model.*;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 
 public class AztecCraftingStationRenderer implements BlockEntityRenderer<AztecCraftingStationBlockEntity> {
 
-    private static final ResourceLocation texture = ArchaicQuest.resourceLoc("textures/block/aztec_crafting_station.png");
+    private static final Identifier texture = ArchaicQuest.id("textures/block/aztec_crafting_station.png");
 
     private final ModelPart table;
     private final ModelPart misc;
 
 
-    public AztecCraftingStationRenderer(BlockEntityRendererProvider.Context context) {
-        ModelPart root = context.bakeLayer(AQModelLayers.AZTEC_CRAFTING_STATION);
+    public AztecCraftingStationRenderer(BlockEntityRendererFactory.Context context) {
+        ModelPart root = context.getLayerModelPart(AQModelLayers.AZTEC_CRAFTING_STATION);
         this.table = root.getChild("table");
         this.misc = root.getChild("misc");
     }
 
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshDef = new MeshDefinition();
-        PartDefinition partDef = meshDef.getRoot();
+    public static TexturedModelData createBodyLayer() {
+        ModelData meshDef = new ModelData();
+        ModelPartData partDef = meshDef.getRoot();
 
-        PartDefinition table = partDef.addOrReplaceChild("table", CubeListBuilder.create().texOffs(0, 193).addBox(-16.0F, -4.0F, -8.0F, 32.0F, 4.0F, 24.0F, new CubeDeformation(0.0F))
-                .texOffs(173, 53).addBox(-16.0F, -12.0F, 12.99F, 2.0F, 8.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(176, 53).addBox(-16.0F, -12.0F, -5.99F, 2.0F, 8.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(173, 53).addBox(13.99F, -12.0F, 12.99F, 2.0F, 8.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(176, 53).addBox(13.99F, -12.0F, -5.99F, 2.0F, 8.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(6, 165).addBox(-14.0F, -12.0F, -6.001F, 28.0F, 8.0F, 20.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 228).addBox(-19.0F, -16.0F, -8.0F, 38.0F, 4.0F, 24.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -8.0F));
+        ModelPartData table = partDef.addChild("table", ModelPartBuilder.create().uv(0, 193).cuboid(-16.0F, -4.0F, -8.0F, 32.0F, 4.0F, 24.0F, new Dilation(0.0F))
+                .uv(173, 53).cuboid(-16.0F, -12.0F, 12.99F, 2.0F, 8.0F, 1.0F, new Dilation(0.0F))
+                .uv(176, 53).cuboid(-16.0F, -12.0F, -5.99F, 2.0F, 8.0F, 1.0F, new Dilation(0.0F))
+                .uv(173, 53).cuboid(13.99F, -12.0F, 12.99F, 2.0F, 8.0F, 1.0F, new Dilation(0.0F))
+                .uv(176, 53).cuboid(13.99F, -12.0F, -5.99F, 2.0F, 8.0F, 1.0F, new Dilation(0.0F))
+                .uv(6, 165).cuboid(-14.0F, -12.0F, -6.001F, 28.0F, 8.0F, 20.0F, new Dilation(0.0F))
+                .uv(0, 228).cuboid(-19.0F, -16.0F, -8.0F, 38.0F, 4.0F, 24.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 24.0F, -8.0F));
 
-        PartDefinition cube5_r1 = table.addOrReplaceChild("cube5_r1", CubeListBuilder.create().texOffs(71, 72).addBox(-1.0F, -9.0F, -9.0001F, 2.0F, 9.0F, 10.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 71).addBox(-1.0F, -9.0F, -18.9999F, 2.0F, 9.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(14.0F, -4.0F, 13.0F, 0.0F, 0.0F, 0.2618F));
+        ModelPartData cube5_r1 = table.addChild("cube5_r1", ModelPartBuilder.create().uv(71, 72).cuboid(-1.0F, -9.0F, -9.0001F, 2.0F, 9.0F, 10.0F, new Dilation(0.0F))
+                .uv(0, 71).cuboid(-1.0F, -9.0F, -18.9999F, 2.0F, 9.0F, 10.0F, new Dilation(0.0F)), ModelTransform.of(14.0F, -4.0F, 13.0F, 0.0F, 0.0F, 0.2618F));
 
-        PartDefinition cube8_r1 = table.addOrReplaceChild("cube8_r1", CubeListBuilder.create().texOffs(0, 46).addBox(-1.0F, -9.0F, -15.0001F, 2.0F, 9.0F, 10.0F, new CubeDeformation(0.0F))
-                .texOffs(40, 40).addBox(-1.0F, -9.0F, -25.0F, 2.0F, 9.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-14.0F, -4.0F, 19.0F, 0.0F, 0.0F, -0.2618F));
+        ModelPartData cube8_r1 = table.addChild("cube8_r1", ModelPartBuilder.create().uv(0, 46).cuboid(-1.0F, -9.0F, -15.0001F, 2.0F, 9.0F, 10.0F, new Dilation(0.0F))
+                .uv(40, 40).cuboid(-1.0F, -9.0F, -25.0F, 2.0F, 9.0F, 10.0F, new Dilation(0.0F)), ModelTransform.of(-14.0F, -4.0F, 19.0F, 0.0F, 0.0F, -0.2618F));
 
-        PartDefinition misc = partDef.addOrReplaceChild("misc", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 8.0F, -4.0F, 0.0F, 3.1416F, 0.0F));
+        ModelPartData misc = partDef.addChild("misc", ModelPartBuilder.create(), ModelTransform.of(0.0F, 8.0F, -4.0F, 0.0F, 3.1416F, 0.0F));
 
-        PartDefinition hammer = misc.addOrReplaceChild("hammer", CubeListBuilder.create().texOffs(115, 6).addBox(-3.0F, -3.0F, -2.0F, 5.0F, 3.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(122, 46).addBox(-1.0F, -2.0F, 0.0F, 1.0F, 1.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(11.0F, 0.0F, 5.0F, -0.1745F, -0.8308F, 0.0F));
+        ModelPartData hammer = misc.addChild("hammer", ModelPartBuilder.create().uv(115, 6).cuboid(-3.0F, -3.0F, -2.0F, 5.0F, 3.0F, 2.0F, new Dilation(0.0F))
+                .uv(122, 46).cuboid(-1.0F, -2.0F, 0.0F, 1.0F, 1.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(11.0F, 0.0F, 5.0F, -0.1745F, -0.8308F, 0.0F));
 
-        PartDefinition chissel = misc.addOrReplaceChild("chissel", CubeListBuilder.create().texOffs(145, 67).addBox(-1.0F, -1.0F, 0.0F, 1.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(116, 7).addBox(-1.5F, -1.0F, -4.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-9.0F, 0.0F, 5.0F, 0.0F, 0.3491F, 0.0F));
+        ModelPartData chissel = misc.addChild("chissel", ModelPartBuilder.create().uv(145, 67).cuboid(-1.0F, -1.0F, 0.0F, 1.0F, 1.0F, 3.0F, new Dilation(0.0F))
+                .uv(116, 7).cuboid(-1.5F, -1.0F, -4.0F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(-9.0F, 0.0F, 5.0F, 0.0F, 0.3491F, 0.0F));
 
-        PartDefinition paper = misc.addOrReplaceChild("paper", CubeListBuilder.create().texOffs(155, 29).addBox(-0.5365F, -0.01F, -7.3187F, 5.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, -0.3491F, 0.0F));
+        ModelPartData paper = misc.addChild("paper", ModelPartBuilder.create().uv(155, 29).cuboid(-0.5365F, -0.01F, -7.3187F, 5.0F, 0.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(2.0F, 0.0F, 0.0F, 0.0F, -0.3491F, 0.0F));
 
-        PartDefinition cube17_r1 = paper.addOrReplaceChild("cube17_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-0.5365F, 0.3051F, -5.0868F, 5.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.7581F, -4.3137F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData cube17_r1 = paper.addChild("cube17_r1", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5365F, 0.3051F, -5.0868F, 5.0F, 0.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.7581F, -4.3137F, -0.3491F, 0.0F, 0.0F));
 
-        PartDefinition patterntiles = misc.addOrReplaceChild("patterntiles", CubeListBuilder.create(), PartPose.offset(0.0F, 16.0F, -4.0F));
+        ModelPartData patterntiles = misc.addChild("patterntiles", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 16.0F, -4.0F));
 
-        PartDefinition cube13_r1 = patterntiles.addOrReplaceChild("cube13_r1", CubeListBuilder.create().texOffs(240, 248).addBox(-3.0F, -7.0F, 2.0F, 6.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-11.0F, -16.0F, 2.0F, 1.5708F, 0.0F, 0.0F));
+        ModelPartData cube13_r1 = patterntiles.addChild("cube13_r1", ModelPartBuilder.create().uv(240, 248).cuboid(-3.0F, -7.0F, 2.0F, 6.0F, 6.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(-11.0F, -16.0F, 2.0F, 1.5708F, 0.0F, 0.0F));
 
-        PartDefinition cube12_r1 = patterntiles.addOrReplaceChild("cube12_r1", CubeListBuilder.create().texOffs(240, 248).addBox(-4.0F, -6.1F, -0.25F, 6.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-10.0F, -16.0F, 2.0F, 0.1745F, 0.0F, 0.0F));
+        ModelPartData cube12_r1 = patterntiles.addChild("cube12_r1", ModelPartBuilder.create().uv(240, 248).cuboid(-4.0F, -6.1F, -0.25F, 6.0F, 6.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(-10.0F, -16.0F, 2.0F, 0.1745F, 0.0F, 0.0F));
 
-        PartDefinition cube14_r1 = patterntiles.addOrReplaceChild("cube14_r1", CubeListBuilder.create().texOffs(240, 248).addBox(-3.0F, -7.0F, 2.0F, 6.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-10.0F, -14.0F, 2.0F, 1.5708F, 0.0F, 0.0F));
+        ModelPartData cube14_r1 = patterntiles.addChild("cube14_r1", ModelPartBuilder.create().uv(240, 248).cuboid(-3.0F, -7.0F, 2.0F, 6.0F, 6.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(-10.0F, -14.0F, 2.0F, 1.5708F, 0.0F, 0.0F));
 
-        return LayerDefinition.create(meshDef, 256, 256);
+        return TexturedModelData.of(meshDef, 256, 256);
     }
 
     @Override
-    public void render(AztecCraftingStationBlockEntity craftingStation, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int textureOverlay) {
-        BlockState state = craftingStation.getWorld() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState() : craftingStation.getBlockState();
-        Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+    public void render(AztecCraftingStationBlockEntity craftingStation, float partialTick, MatrixStack matrices, VertexConsumerProvider bufferSource, int packedLight, int textureOverlay) {
+        BlockState state = craftingStation.getWorld() == null ? AQBlocks.AZTEC_CRAFTING_STATION.getDefaultState() : craftingStation.getBlockState();
+        Direction direction = state.get(Properties.HORIZONTAL_FACING);
         float rotation = direction.toYRot();
 
-        poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-rotation));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+        matrices.push();
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-rotation));
+        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F));
 
         double x, z;
 
@@ -104,13 +102,13 @@ public class AztecCraftingStationRenderer implements BlockEntityRenderer<AztecCr
                 z = 0.5D;
             }
         }
-        poseStack.translate(x, -1.5D, z);
+        matrices.translate(x, -1.5D, z);
 
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
-        table.render(poseStack, vertexConsumer, packedLight, textureOverlay);
-        misc.render(poseStack, vertexConsumer, packedLight, textureOverlay);
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderLayer.getEntityCutout(texture));
+        table.render(matrices, vertexConsumer, packedLight, textureOverlay);
+        misc.render(matrices, vertexConsumer, packedLight, textureOverlay);
 
-        poseStack.popPose();
+        matrices.pop();
     }
 
     public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {

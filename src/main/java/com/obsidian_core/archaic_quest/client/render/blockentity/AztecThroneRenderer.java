@@ -1,61 +1,59 @@
 package com.obsidian_core.archaic_quest.client.render.blockentity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import com.obsidian_core.archaic_quest.common.block.data.ThroneType;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecThroneBlockEntity;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.model.*;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 
 public class AztecThroneRenderer implements BlockEntityRenderer<AztecThroneBlockEntity> {
 
     private final ModelPart throneModel;
 
 
-    public AztecThroneRenderer(BlockEntityRendererProvider.Context context) {
-        ModelPart root = context.bakeLayer(AQModelLayers.AZTEC_THRONE);
+    public AztecThroneRenderer(BlockEntityRendererFactory.Context context) {
+        ModelPart root = context.getLayerModelPart(AQModelLayers.AZTEC_THRONE);
         this.throneModel = root.getChild("throne");
     }
 
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
+    public static TexturedModelData createBodyLayer() {
+        ModelData meshdefinition = new ModelData();
+        ModelPartData partdefinition = meshdefinition.getRoot();
 
-        PartDefinition throne = partdefinition.addOrReplaceChild("throne", CubeListBuilder.create().texOffs(74, 0).addBox(-8.0F, -8.0F, -8.0F, 16.0F, 8.0F, 16.0F, new CubeDeformation(0.0F))
-                .texOffs(82, 34).addBox(-8.0F, -11.0F, -9.0F, 16.0F, 3.0F, 17.0F, new CubeDeformation(0.0F))
-                .texOffs(37, 13).addBox(8.0F, -13.0F, -11.0F, 6.0F, 13.0F, 25.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 0).addBox(-14.0F, -13.0F, -11.0F, 6.0F, 13.0F, 25.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 85).addBox(-11.0F, -38.0F, 8.0F, 22.0F, 38.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(42, 55).addBox(7.0F, -17.0F, -11.99F, 8.0F, 4.0F, 26.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 51).addBox(-15.0F, -17.0F, -11.99F, 8.0F, 4.0F, 26.0F, new CubeDeformation(0.0F))
-                .texOffs(84, 54).addBox(-11.0F, -44.0F, 5.0F, 22.0F, 6.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        ModelPartData throne = partdefinition.addChild("throne", ModelPartBuilder.create().uv(74, 0).cuboid(-8.0F, -8.0F, -8.0F, 16.0F, 8.0F, 16.0F, new Dilation(0.0F))
+                .uv(82, 34).cuboid(-8.0F, -11.0F, -9.0F, 16.0F, 3.0F, 17.0F, new Dilation(0.0F))
+                .uv(37, 13).cuboid(8.0F, -13.0F, -11.0F, 6.0F, 13.0F, 25.0F, new Dilation(0.0F))
+                .uv(0, 0).cuboid(-14.0F, -13.0F, -11.0F, 6.0F, 13.0F, 25.0F, new Dilation(0.0F))
+                .uv(0, 85).cuboid(-11.0F, -38.0F, 8.0F, 22.0F, 38.0F, 4.0F, new Dilation(0.0F))
+                .uv(42, 55).cuboid(7.0F, -17.0F, -11.99F, 8.0F, 4.0F, 26.0F, new Dilation(0.0F))
+                .uv(0, 51).cuboid(-15.0F, -17.0F, -11.99F, 8.0F, 4.0F, 26.0F, new Dilation(0.0F))
+                .uv(84, 54).cuboid(-11.0F, -44.0F, 5.0F, 22.0F, 6.0F, 10.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
-        PartDefinition cube_r1 = throne.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(52, 85).addBox(-6.0F, -22.0F, -0.001F, 6.0F, 22.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(13.0F, -17.0F, 6.0F, 0.0F, 0.0F, -0.1309F));
-        PartDefinition cube_r2 = throne.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(80, 85).addBox(0.0F, -22.0F, -0.001F, 6.0F, 22.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-13.0F, -17.0F, 6.0F, 0.0F, 0.0F, 0.1309F));
+        ModelPartData cube_r1 = throne.addChild("cube_r1", ModelPartBuilder.create().uv(52, 85).cuboid(-6.0F, -22.0F, -0.001F, 6.0F, 22.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(13.0F, -17.0F, 6.0F, 0.0F, 0.0F, -0.1309F));
+        ModelPartData cube_r2 = throne.addChild("cube_r2", ModelPartBuilder.create().uv(80, 85).cuboid(0.0F, -22.0F, -0.001F, 6.0F, 22.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(-13.0F, -17.0F, 6.0F, 0.0F, 0.0F, 0.1309F));
 
-        return LayerDefinition.create(meshdefinition, 256, 256);
+        return TexturedModelData.of(meshdefinition, 256, 256);
     }
 
 
     @Override
-    public void render(AztecThroneBlockEntity throne, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int textureOverlay) {
-        BlockState state = throne.getWorld() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().defaultBlockState() : throne.getBlockState();
-        Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+    public void render(AztecThroneBlockEntity throne, float partialTick, MatrixStack matrices, VertexConsumerProvider bufferSource, int packedLight, int textureOverlay) {
+        BlockState state = throne.getWorld() == null ? AQBlocks.AZTEC_CRAFTING_STATION.get().getDefaultState() : throne.getBlockState();
+        Direction direction = state.get(Properties.HORIZONTAL_FACING);
         float rotation = direction.toYRot();
 
-        poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-rotation));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+        matrices.push();
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-rotation));
+        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F));
 
         double x, z;
 
@@ -78,13 +76,13 @@ public class AztecThroneRenderer implements BlockEntityRenderer<AztecThroneBlock
                 z = 0.5D;
             }
         }
-        poseStack.translate(x, -1.5D, z);
+        matrices.translate(x, -1.5D, z);
 
         ThroneType type = throne.getThroneType() == null ? ThroneType.THRONE : throne.getThroneType();
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(type.getTextureLocation()));
-        throneModel.render(poseStack, vertexConsumer, packedLight, textureOverlay);
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderLayer.getEntityCutout(type.getTextureLocation()));
+        throneModel.render(matrices, vertexConsumer, packedLight, textureOverlay);
 
-        poseStack.popPose();
+        matrices.pop();
     }
 
     @Override

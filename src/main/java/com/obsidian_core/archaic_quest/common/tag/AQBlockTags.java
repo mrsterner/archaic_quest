@@ -1,11 +1,10 @@
 package com.obsidian_core.archaic_quest.common.tag;
 
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.world.block.Block;
-import net.minecraftforge.common.Tags;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
+import net.minecraft.block.Block;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class AQBlockTags {
 
@@ -17,10 +16,10 @@ public class AQBlockTags {
 
 
     private static TagKey<Block> forgeTag(String path) {
-        return BlockTags.create(new ResourceLocation("forge", path));
+        return TagKey.of(Registry.BLOCK_KEY, new Identifier("c", path));
     }
 
     private static TagKey<Block> modTag(String path) {
-        return BlockTags.create(ArchaicQuest.resourceLoc(path));
+        return TagKey.of(Registry.BLOCK_KEY, ArchaicQuest.id(path));
     }
 }

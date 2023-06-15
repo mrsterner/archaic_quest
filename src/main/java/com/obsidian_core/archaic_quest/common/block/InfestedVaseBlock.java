@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 public class InfestedVaseBlock extends CeramicVaseBlock {
 
-    public InfestedVaseBlock(Properties properties) {
+    public InfestedVaseBlock(Settings properties) {
         super(properties);
     }
 

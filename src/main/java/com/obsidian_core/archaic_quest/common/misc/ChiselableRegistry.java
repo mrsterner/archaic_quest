@@ -1,10 +1,6 @@
 package com.obsidian_core.archaic_quest.common.misc;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import net.minecraft.world.world.block.Block;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.Objects;
 import java.util.TreeMap;

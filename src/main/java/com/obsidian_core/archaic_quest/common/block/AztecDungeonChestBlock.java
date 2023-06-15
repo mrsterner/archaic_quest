@@ -1,93 +1,120 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonChestBlockEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.stat.Stats;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.*;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class AztecDungeonChestBlock extends Block implements EntityBlock {
+public class AztecDungeonChestBlock extends Block implements BlockEntityProvider {
 
-    public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
+    public static final IntProperty ROTATION = Properties.ROTATION;
 
-    public AztecDungeonChestBlock(Properties properties) {
-        super(properties.noOcclusion());
-        registerDefaultState(stateDefinition.any().setValue(ROTATION, 0));
+    public AztecDungeonChestBlock(Settings properties) {
+        super(properties.nonOpaque());
+        setDefaultState(getDefaultState().with(ROTATION, 0));
     }
 
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(ROTATION, MathHelper.floor((double) (context.getRotation() * 16.0F / 360.0F) + 0.5D) & 15);
+    public BlockState getPlacementState(ItemPlacementContext context) {
+        return this.getDefaultState().with(ROTATION, MathHelper.floor((double) (context.getPlayerYaw() * 16.0F / 360.0F) + 0.5D) & 15);
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rotation) {
-        return state.setValue(ROTATION, rotation.rotate(state.getValue(ROTATION), 16));
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        return state.with(ROTATION, rotation.rotate(state.get(ROTATION), 16));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirror) {
-        return state.setValue(ROTATION, mirror.mirror(state.getValue(ROTATION), 16));
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        return state.with(ROTATION, mirror.mirror(state.get(ROTATION), 16));
+    }
+
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(ROTATION);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_56329_) {
-        p_56329_.add(ROTATION);
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
-
-    @Override
-    public InteractionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult hitResult) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (world.isClient()) {
-            return InteractionResult.SUCCESS;
+            return ActionResult.SUCCESS;
         }
         else {
-            MenuProvider menuProvider = getMenuProvider(state, world, pos);
+            NamedScreenHandlerFactory menuProvider = getNamedScreenHandlerFactory(state, world, pos);
 
             if (menuProvider != null) {
-                player.openMenu(menuProvider);
-                player.awardStat(Stats.CUSTOM.get(Stats.OPEN_CHEST));
+                player.openHandledScreen(menuProvider);
+                player.incrementStat(Stats.CUSTOM.getOrCreateStat(Stats.OPEN_CHEST));
             }
-            return InteractionResult.CONSUME;
+            return ActionResult.CONSUME;
         }
     }
 
     @Override
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean b) {
-        if (!state.is(newState.getBlock())) {
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.isOf(newState.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
 
-            if (blockEntity instanceof Container container) {
-                Containers.dropContents(world, pos, container);
-                world.updateNeighbourForOutputSignal(pos, this);
+            if (blockEntity instanceof Inventory container) {
+                ItemScatterer.spawn(world, pos, container);
+                world.updateComparators(pos, this);
             }
-            super.onRemove(state, world, pos, newState, b);
+            super.onStateReplaced(state, world, pos, newState, moved);
         }
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType computationType) {
+    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
     }
 
     @Nullable
     @Override
-    public MenuProvider getMenuProvider(BlockState state, World world, BlockPos pos) {
+    public NamedScreenHandlerFactory getNamedScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        return blockEntity instanceof MenuProvider ? (MenuProvider) blockEntity : null;
+        return blockEntity instanceof NamedScreenHandlerFactory ? (NamedScreenHandlerFactory) blockEntity : null;
     }
 
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new AztecDungeonChestBlockEntity(pos, state);
     }
 
+
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, RandomSource random) {
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof AztecDungeonChestBlockEntity chest) {
             chest.recheckOpen();
@@ -95,10 +122,10 @@ public class AztecDungeonChestBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean triggerEvent(BlockState state, World world, BlockPos pos, int id, int data) {
-        super.triggerEvent(state, world, pos, id, data);
+    public boolean onSyncedBlockEvent(BlockState state, World world, BlockPos pos, int id, int data) {
+        super.onSyncedBlockEvent(state, world, pos, id, data);
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        return blockEntity != null && blockEntity.triggerEvent(id, data);
+        return blockEntity != null && blockEntity.onSyncedBlockEvent(id, data);
     }
 
     @Nullable

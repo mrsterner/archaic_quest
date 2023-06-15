@@ -1,161 +1,169 @@
 package com.obsidian_core.archaic_quest.common.blockentity;
 
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.world.BlockGetter;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.ChestBlock;
-import net.minecraft.world.world.block.entity.*;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import io.github.fabricators_of_create.porting_lib.util.LazyOptional;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.entity.*;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
-public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
+public class AztecDungeonChestBlockEntity extends LootableContainerBlockEntity implements LidOpenable {
 
-    private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
+    private DefaultedList<ItemStack> items = DefaultedList.ofSize(27, ItemStack.EMPTY);
 
-    private final ChestLidController chestLidController = new ChestLidController();
-    private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
-        protected void onOpen(World world, BlockPos pos, BlockState state) {
-            world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
+    private final ChestLidAnimator chestLidController = new ChestLidAnimator();
+    private final ViewerCountManager openersCounter = new ViewerCountManager() {
+        @Override
+        protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
+            world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
+
         }
 
-        protected void onClose(World world, BlockPos pos, BlockState state) {
-            world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
+        @Override
+        protected void onContainerClose(World world, BlockPos pos, BlockState state) {
+            world.playSound(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
+
         }
 
-        protected void openerCountChanged(World world, BlockPos pos, BlockState state, int openCount, int prevOpenCount) {
-            AztecDungeonChestBlockEntity.this.signalOpenCount(world, pos, state, openCount, prevOpenCount);
+        @Override
+        protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+            AztecDungeonChestBlockEntity.this.signalOpenCount(world, pos, state, newViewerCount, oldViewerCount);
+
         }
 
-        protected boolean isOwnContainer(PlayerEntity player) {
-            if (!(player.containerMenu instanceof ChestMenu)) {
+        @Override
+        protected boolean isPlayerViewing(PlayerEntity player) {
+            if (!(player.currentScreenHandler instanceof GenericContainerScreenHandler)) {
                 return false;
             }
             else {
-                Container container = ((ChestMenu) player.containerMenu).getContainer();
+                Inventory container = ((GenericContainerScreenHandler) player.currentScreenHandler).getInventory();
                 return container == AztecDungeonChestBlockEntity.this;
             }
         }
     };
 
     public AztecDungeonChestBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.AZTEC_DUNGEON_CHEST.get(), pos, state);
+        super(AQBlockEntities.AZTEC_DUNGEON_CHEST, pos, state);
     }
 
     @Override
-    public int getContainerSize() {
+    public int size() {
         return 27;
     }
 
+
     @Override
-    protected Component getDefaultName() {
-        return Component.translatable("container.chest");
+    protected Text getContainerName() {
+        return Text.translatable("container.chest");
     }
 
     @Override
-    public void load(CompoundTag compoundTag) {
-        super.load(compoundTag);
-        items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+    protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
+        return null;
+    }
 
-        if (!this.tryLoadLootTable(compoundTag)) {
-            ContainerHelper.loadAllItems(compoundTag, items);
+    @Override
+    public void readNbt(NbtCompound compoundTag) {
+        super.readNbt(compoundTag);
+        items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+
+        if (!this.deserializeLootTable(compoundTag)) {
+            Inventories.readNbt(compoundTag, items);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
+    protected void writeNbt(NbtCompound compoundTag) {
+        super.writeNbt(compoundTag);
 
-        if (!trySaveLootTable(compoundTag)) {
-            ContainerHelper.saveAllItems(compoundTag, items);
+        if (!serializeLootTable(compoundTag)) {
+            Inventories.writeNbt(compoundTag, items);
         }
     }
 
     public static void lidAnimateTick(World world, BlockPos pos, BlockState state, AztecDungeonChestBlockEntity chest) {
-        chest.chestLidController.tickLid();
+        chest.chestLidController.step();
     }
 
     @Override
-    public boolean triggerEvent(int id, int data) {
+    public boolean onSyncedBlockEvent(int id, int data) {
         if (id == 1) {
-            chestLidController.shouldBeOpen(data > 0);
+            chestLidController.setOpen(data > 0);
             return true;
         }
         else {
-            return super.triggerEvent(id, data);
+            return super.onSyncedBlockEvent(id, data);
         }
     }
 
     @Override
-    public void startOpen(PlayerEntity player) {
+    public void onOpen(PlayerEntity player) {
         if (!remove && !player.isSpectator()) {
-            openersCounter.incrementOpeners(player, world, getBlockPos(), getBlockState());
+            openersCounter.openContainer(player, world, getPos(), getCachedState());
         }
     }
 
     @Override
-    public void stopOpen(PlayerEntity player) {
+    public void onClose(PlayerEntity player) {
         if (!remove && !player.isSpectator()) {
-            openersCounter.decrementOpeners(player, world, getBlockPos(), getBlockState());
+            openersCounter.closeContainer(player, world, getPos(), getCachedState());
         }
     }
 
     @Override
-    protected NonNullList<ItemStack> getItems() {
+    protected DefaultedList<ItemStack> getInvStackList() {
         return items;
     }
 
     @Override
-    protected void setItems(NonNullList<ItemStack> itemList) {
+    protected void setInvStackList(DefaultedList<ItemStack> itemList) {
         items = itemList;
     }
 
     @Override
-    public float getOpenNess(float f) {
-        return chestLidController.getOpenness(f);
+    public float getAnimationProgress(float tickDelta) {
+        return chestLidController.getProgress(tickDelta);
     }
 
-    public static int getOpenCount(BlockGetter world, BlockPos pos) {
+    @Override
+    public static int getPlayersLookingInChestCount(BlockView world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (state.hasBlockEntity()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
 
             if (blockEntity instanceof AztecDungeonChestBlockEntity chest) {
-                return chest.openersCounter.getOpenerCount();
+                return chest.openersCounter.getViewerCount();
             }
         }
         return 0;
     }
 
-    protected AbstractContainerMenu createMenu(int id, Inventory inventory) {
-        return ChestMenu.threeRows(id, inventory, this);
+    protected ScreenHandler createMenu(int id, PlayerInventory inventory) {
+        return GenericContainerScreenHandler.createGeneric9x3(id, inventory, this);
     }
 
     private LazyOptional<IItemHandlerModifiable> chestHandler;
 
     @Override
     @SuppressWarnings("deprecation")
-    public void setBlockState(BlockState state) {
-        super.setBlockState(state);
+    public void setCachedState(BlockState state) {
+        super.setCachedState(state);
 
         if (chestHandler != null) {
             LazyOptional<?> oldHandler = chestHandler;
@@ -179,7 +187,7 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
         if (!(state.getBlock() instanceof ChestBlock)) {
             return new InvWrapper(this);
         }
-        Container inv = ChestBlock.getContainer((ChestBlock) state.getBlock(), state, world, getBlockPos(), true);
+        Inventory inv = ChestBlock.getInventory((ChestBlock) state.getBlock(), state, world, getPos(), true);
         return new InvWrapper(inv == null ? this : inv);
     }
 
@@ -195,12 +203,12 @@ public class AztecDungeonChestBlockEntity extends RandomizableContainerBlockEnti
 
     public void recheckOpen() {
         if (!remove) {
-            openersCounter.recheckOpeners(world, getBlockPos(), getBlockState());
+            openersCounter.updateViewerCount(world, getPos(), getCachedState());
         }
     }
 
     protected void signalOpenCount(World world, BlockPos pos, BlockState state, int id, int data) {
         Block block = state.getBlock();
-        world.blockEvent(pos, block, 1, data);
+        world.addSyncedBlockEvent(pos, block, 1, data);
     }
 }

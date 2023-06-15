@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class AQStructures {
 
-    public static final DeferredRegister<StructureType<?>> REGISTRY = DeferredRegister.create(Registry.STRUCTURE_TYPE_REGISTRY, ArchaicQuest.MODID);
+    public static final DeferredRegister<StructureType<?>> REGISTRY = DeferredRegister.create(Registry.STRUCTURE_TPOSITIVE_YE_REGISTRY, ArchaicQuest.MODID);
 
 
     public static final RegistryObject<StructureType<AztecVillageStructure>> AZTEC_VILLAGE = REGISTRY.register("aztec_village", () -> type(AztecVillageStructure.CODEC));

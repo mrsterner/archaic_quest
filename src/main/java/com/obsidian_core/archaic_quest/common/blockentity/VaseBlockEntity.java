@@ -4,10 +4,10 @@ import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.Criteria;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.DefaultedList;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.ServerPlayerEntity;
 import net.minecraft.world.ContainerHelper;
@@ -28,14 +28,14 @@ import javax.annotation.Nullable;
 
 public class VaseBlockEntity extends BlockEntity {
 
-    private ResourceLocation lootTableId = null;
+    private Identifier lootTableId = null;
     private long lootTableSeed = 0L;
 
     public VaseBlockEntity(BlockPos pos, BlockState state) {
         super(AQBlockEntities.VASE.get(), pos, state);
     }
 
-    public void setLootTable(ResourceLocation lootTableId, long lootTableSeed) {
+    public void setLootTable(Identifier lootTableId, long lootTableSeed) {
         this.lootTableId = lootTableId;
         this.lootTableSeed = lootTableSeed;
     }
@@ -48,7 +48,7 @@ public class VaseBlockEntity extends BlockEntity {
             if (player != null) {
                 builder.withLuck(player.getLuck()).withParameter(LootContextParams.THIS_ENTITY, player);
             }
-            NonNullList<ItemStack> loot = NonNullList.create();
+            DefaultedList<ItemStack> loot = DefaultedList.create();
             loot.addAll(lootTable.getRandomItems(builder.create(LootContextParamSets.CHEST)));
 
             if (!loot.isEmpty()) {
@@ -59,11 +59,11 @@ public class VaseBlockEntity extends BlockEntity {
 
 
     @Override
-    public void load(CompoundTag compoundTag) {
+    public void load(NbtCompound compoundTag) {
         super.load(compoundTag);
 
         if (compoundTag.contains("LootTable", Tag.TAG_STRING)) {
-            lootTableId = new ResourceLocation(compoundTag.getString("LootTable"));
+            lootTableId = new Identifier(compoundTag.getString("LootTable"));
         }
         if (compoundTag.contains("LootTableSeed", Tag.TAG_LONG)) {
             lootTableSeed = compoundTag.getLong("LootTableSeed");
@@ -71,7 +71,7 @@ public class VaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
+    protected void saveAdditional(NbtCompound compoundTag) {
         super.saveAdditional(compoundTag);
 
         if (lootTableId != null) {

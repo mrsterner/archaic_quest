@@ -1,29 +1,25 @@
 package com.obsidian_core.archaic_quest.client.render.entity.living;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
 import com.obsidian_core.archaic_quest.client.render.entity.model.TlatlaomiModel;
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.entity.living.Tlatlaomi;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRendererContext;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 
-public class TlatlaomiGlowLayer extends RenderLayer<Tlatlaomi, TlatlaomiModel> {
+public class TlatlaomiGlowLayer extends FeatureRenderer<Tlatlaomi, TlatlaomiModel> {
 
-    private static final ResourceLocation TEXTURE = ArchaicQuest.resourceLoc("textures/entity/tlatlaomi/glow_overlay.png");
+    private static final Identifier TEXTURE = ArchaicQuest.id("textures/entity/tlatlaomi/glow_overlay.png");
 
-    public TlatlaomiGlowLayer(RenderLayerParent<Tlatlaomi, TlatlaomiModel> parent) {
+    public TlatlaomiGlowLayer(FeatureRendererContext<Tlatlaomi, TlatlaomiModel> parent) {
         super(parent);
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Tlatlaomi tlatlaomi, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
-        getParentModel().renderToBuffer(poseStack, vertexConsumer, LightTexture.pack(15, 15), OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.0F);
+    public void render(MatrixStack matrices, VertexConsumerProvider buffer, int packedLight, Tlatlaomi tlatlaomi, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderLayer.getEntityCutout(TEXTURE));
+        getContextModel().render(matrices, vertexConsumer, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 0.0F);
     }
 }

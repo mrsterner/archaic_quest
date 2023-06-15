@@ -1,49 +1,46 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.block.data.ThroneType;
-import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecThroneBlockEntity;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.world.BlockGetter;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.*;
-import net.minecraft.world.world.block.entity.BlockEntity;
-import net.minecraft.world.world.block.entity.BlockEntityTicker;
-import net.minecraft.world.world.block.entity.BlockEntityType;
-import net.minecraft.world.world.block.state.BlockBehaviour;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.StateDefinition;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
-import net.minecraft.world.world.block.state.properties.DirectionProperty;
-import net.minecraft.world.world.material.PushReaction;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+public class AztecThroneBlock extends Block implements BlockEntityProvider {
 
-public class AztecThroneBlock extends Block implements EntityBlock {
+    public static DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
-    public static DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-
-    private static final VoxelShape shape = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 11.0D, 16.0D);
+    private static final VoxelShape SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 11.0D, 16.0D);
 
 
     private final ThroneType throneType;
 
     public AztecThroneBlock(ThroneType throneType) {
-        super(BlockBehaviour.Properties.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0.get()).noOcclusion());
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        super(Settings.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0).nonOpaque());
+        setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
         this.throneType = throneType;
     }
 
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
+    }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return shape;
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
     }
 
     public ThroneType getThroneType() {
@@ -52,48 +49,42 @@ public class AztecThroneBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
+    public PistonBehavior getPistonBehavior(BlockState state) {
+        return PistonBehavior.BLOCK;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction direction = context.getHorizontalDirection();
-        return defaultBlockState().setValue(FACING, direction);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public BlockState rotate(BlockState state, Rotation rotation) {
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public BlockState mirror(BlockState state, Mirror mirror) {
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
-        stateBuilder.add(FACING);
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        Direction direction = ctx.getPlayerFacing();
+        return getDefaultState().with(FACING, direction);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        return state.rotate(mirror.getRotation(state.get(FACING)));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new AztecThroneBlockEntity(pos, state);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return null;
     }
 }

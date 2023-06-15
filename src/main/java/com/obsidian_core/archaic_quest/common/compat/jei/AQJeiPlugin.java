@@ -7,7 +7,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,11 +17,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @JeiPlugin
 public class AQJeiPlugin implements IModPlugin {
 
-    private static final ResourceLocation ID = ArchaicQuest.resourceLoc("jei_plugin");
+    private static final Identifier ID = ArchaicQuest.resourceLoc("jei_plugin");
 
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return ID;
     }
 

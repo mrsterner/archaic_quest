@@ -15,6 +15,7 @@ import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -25,7 +26,7 @@ public class AztecCraftingStationBlock extends Block implements BlockEntityProvi
 
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
     // Whether this block state is the "master" block or a sub-block for collision purposes.
-    public static final EnumProperty<BlockType> BLOCK_TYPE = EnumProperty.of("block_type", BlockType.class);
+    public static final EnumProperty<BlockType> BLOCK_TPOSITIVE_YE = EnumProperty.of("block_type", BlockType.class);
 
     private static final VoxelShape[] shapes = new VoxelShape[] {
             Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
@@ -41,7 +42,7 @@ public class AztecCraftingStationBlock extends Block implements BlockEntityProvi
 
     public AztecCraftingStationBlock(Settings properties) {
         super(properties);
-        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(BLOCK_TYPE, BlockType.MASTER));
+        this.setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(BLOCK_TPOSITIVE_YE, BlockType.MASTER));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class AztecCraftingStationBlock extends Block implements BlockEntityProvi
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        BlockType type = state.get(BLOCK_TYPE);
+        BlockType type = state.get(BLOCK_TPOSITIVE_YE);
 
         if (type == BlockType.MASTER) {
             return VoxelShapes.fullCube();
@@ -77,12 +78,12 @@ public class AztecCraftingStationBlock extends Block implements BlockEntityProvi
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return getDefaultState().with(FACING, ctx.getPlayerLookDirection()).with(BLOCK_TYPE, BlockType.MASTER);
+        return getDefaultState().with(FACING, ctx.getPlayerLookDirection()).with(BLOCK_TPOSITIVE_YE, BlockType.MASTER);
     }
 
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return state.get(BLOCK_TYPE) == BlockType.MASTER ? new AztecCraftingStationBlockEntity(pos, state) : null;
+        return state.get(BLOCK_TPOSITIVE_YE) == BlockType.MASTER ? new AztecCraftingStationBlockEntity(pos, state) : null;
     }
 
     @Override
@@ -107,7 +108,7 @@ public class AztecCraftingStationBlock extends Block implements BlockEntityProvi
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, BLOCK_TYPE);
+        builder.add(FACING, BLOCK_TPOSITIVE_YE);
     }
 
     @Nullable

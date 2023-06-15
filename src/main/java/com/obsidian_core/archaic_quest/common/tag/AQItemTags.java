@@ -1,9 +1,10 @@
 package com.obsidian_core.archaic_quest.common.tag;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
+
+import net.minecraft.item.Item;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class AQItemTags {
 
@@ -15,6 +16,6 @@ public class AQItemTags {
     public static final TagKey<Item> INGOT_SILVER = forgeTag("ingots/silver");
 
     private static TagKey<Item> forgeTag(String path) {
-        return ItemTags.create(new ResourceLocation("forge", path));
+        return TagKey.of(Registry.ITEM_KEY, new Identifier("c", path));
     }
 }

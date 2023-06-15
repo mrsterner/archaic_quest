@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.world.storage.loot.LootTable;
 import net.minecraft.world.world.storage.loot.ValidationContext;
 import net.minecraft.world.world.storage.loot.parameters.LootContextParamSet;
@@ -29,8 +29,8 @@ public class AQLootTableProvider extends LootTableProvider {
 
     @Nonnull
     @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
-        ImmutableList.Builder<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> builder = new ImmutableList.Builder<>();
+    protected List<Pair<Supplier<Consumer<BiConsumer<Identifier, LootTable.Builder>>>, LootContextParamSet>> getTables() {
+        ImmutableList.Builder<Pair<Supplier<Consumer<BiConsumer<Identifier, LootTable.Builder>>>, LootContextParamSet>> builder = new ImmutableList.Builder<>();
 
         builder.add(Pair.of(AQBlockLootTableProvider::new, LootContextParamSets.BLOCK));
 
@@ -38,7 +38,7 @@ public class AQLootTableProvider extends LootTableProvider {
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext context) {
+    protected void validate(Map<Identifier, LootTable> map, ValidationContext context) {
         // NOOP
     }
 }

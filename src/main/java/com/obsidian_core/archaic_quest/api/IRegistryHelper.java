@@ -1,7 +1,8 @@
 package com.obsidian_core.archaic_quest.api;
 
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.state.BlockState;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 
 import java.util.function.Predicate;
 

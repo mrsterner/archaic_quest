@@ -21,6 +21,6 @@ public class AQSurfaceRuleData {
     }
 
     private static SurfaceRules.RuleSource stateRule(Block block) {
-        return SurfaceRules.state(block.defaultBlockState());
+        return SurfaceRules.state(block.getDefaultState());
     }
 }

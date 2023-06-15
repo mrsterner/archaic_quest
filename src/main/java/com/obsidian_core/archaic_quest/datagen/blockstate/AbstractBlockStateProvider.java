@@ -4,7 +4,7 @@ import com.obsidian_core.archaic_quest.common.block.*;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.world.block.Block;
 import net.minecraft.world.world.block.SlabBlock;
 import net.minecraft.world.world.block.state.properties.SlabType;
@@ -31,7 +31,7 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         this.simpleBlockItem(block, cubeAll(block));
     }
 
-    public void topBottomCube(Block block, ResourceLocation sides, ResourceLocation topBottom) {
+    public void topBottomCube(Block block, Identifier sides, Identifier topBottom) {
         ModelFile model = models().cubeBottomTop(resLoc(":block/" + name(block)).toString(), sides, topBottom, topBottom);
 
         getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
@@ -45,11 +45,11 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         slab(block, doubleBlock, blockTexture(doubleBlock));
     }
 
-    public void slab(SlabBlock block, Block doubleBlock, ResourceLocation texture) {
+    public void slab(SlabBlock block, Block doubleBlock, Identifier texture) {
         slab(block, doubleBlock, texture, texture, texture);
     }
 
-    public void slab(SlabBlock block, Block doubleBlock, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+    public void slab(SlabBlock block, Block doubleBlock, Identifier side, Identifier bottom, Identifier top) {
         ModelFile topModel = models().withExistingParent(name(block) + "_top", mcLoc("block/slab_top"))
                 .texture("side", side)
                 .texture("bottom", bottom)
@@ -66,16 +66,16 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
 
     public void slab(SlabBlock block, ModelFile topModel, ModelFile bottomModel, ModelFile doubleModel) {
         getVariantBuilder(block)
-                .partialState().with(SlabBlock.TYPE, SlabType.BOTTOM).addModels(new ConfiguredModel(bottomModel))
-                .partialState().with(SlabBlock.TYPE, SlabType.TOP).addModels(new ConfiguredModel(topModel))
-                .partialState().with(SlabBlock.TYPE, SlabType.DOUBLE).addModels(new ConfiguredModel(doubleModel));
+                .partialState().with(SlabBlock.TPOSITIVE_YE, SlabType.BOTTOM).addModels(new ConfiguredModel(bottomModel))
+                .partialState().with(SlabBlock.TPOSITIVE_YE, SlabType.TOP).addModels(new ConfiguredModel(topModel))
+                .partialState().with(SlabBlock.TPOSITIVE_YE, SlabType.DOUBLE).addModels(new ConfiguredModel(doubleModel));
     }
 
     public void simpleVerticalSlab(VerticalSlabBlock block, Block doubleBlock) {
         verticalSlab(block, doubleBlock, blockTexture(doubleBlock), blockTexture(doubleBlock), blockTexture(doubleBlock));
     }
 
-    public void verticalSlab(VerticalSlabBlock block, Block doubleBlock, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+    public void verticalSlab(VerticalSlabBlock block, Block doubleBlock, Identifier side, Identifier bottom, Identifier top) {
         ModelFile model = models().withExistingParent(name(block), resLoc("block/vertical_slab"))
                 .texture("side", side)
                 .texture("bottom", bottom)
@@ -88,7 +88,7 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
 
     public void verticalSlab(VerticalSlabBlock block, ModelFile model, ModelFile doubleSlab) {
         getVariantBuilder(block).forAllStatesExcept(state -> {
-            VerticalSlabBlock.SlabState slabState = state.getValue(VerticalSlabBlock.SLAB_STATE);
+            VerticalSlabBlock.SlabState slabState = state.get(VerticalSlabBlock.SLAB_STATE);
 
             if (slabState == VerticalSlabBlock.SlabState.DOUBLE) {
                 return ConfiguredModel.builder()
@@ -107,11 +107,11 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
     }
 
     public void doubleCrop(DoubleCropBlock block) {
-        ResourceLocation crossModel = mcLoc("block/cross");
+        Identifier crossModel = mcLoc("block/cross");
 
         getVariantBuilder(block).forAllStates((state) -> {
-            int age = state.getValue(block.getAgeProperty());
-            boolean top = state.getValue(DoubleCropBlock.IS_TOP);
+            int age = state.get(block.getAgeProperty());
+            boolean top = state.get(DoubleCropBlock.IS_TOP);
             String modelFileName = name(block) + "_stage_" + age + (top ? "_top" : "");
 
             return ConfiguredModel.builder()
@@ -124,12 +124,12 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
 
     public void vine(CoolVinesBlock vineBlock) {
         getVariantBuilder(vineBlock).forAllStatesExcept((state) -> {
-            Direction face = state.getValue(CoolVinesBlock.FACING);
-            boolean cut = state.getValue(CoolVinesBlock.CUT);
+            Direction face = state.get(CoolVinesBlock.FACING);
+            boolean cut = state.get(CoolVinesBlock.CUT);
             int yRot = (int) face.getOpposite().toYRot();
 
             String textureName = name(vineBlock) + (cut ? "_cut" : "");
-            ResourceLocation modelName = resLoc("block/vine_var_1" + (cut ? "_cut" : ""));
+            Identifier modelName = resLoc("block/vine_var_1" + (cut ? "_cut" : ""));
 
             return ConfiguredModel.builder()
                     .modelFile(models().withExistingParent(name(vineBlock) + (cut ? "_cut" : ""), modelName)
@@ -142,8 +142,8 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
 
     public void spearTrap(SpearTrapBlock trapBlock) {
         getVariantBuilder(trapBlock).forAllStatesExcept((state) -> {
-            boolean extended = state.getValue(SpearTrapBlock.EXTENDED);
-            ResourceLocation modelName = resLoc("block/spear_trap");
+            boolean extended = state.get(SpearTrapBlock.EXTENDED);
+            Identifier modelName = resLoc("block/spear_trap");
 
             return ConfiguredModel.builder()
                     .modelFile(models().withExistingParent(extended ? name(trapBlock) + "_extended" : name(trapBlock), modelName)
@@ -168,10 +168,10 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
         final String connectXZ = "_connect_xz";
 
         getVariantBuilder(woodPillarBlock).forAllStatesExcept((state) -> {
-            boolean extended = state.getValue(AztecWoodPillarBlock.EXTENDED);
-            Direction.Axis axis = state.getValue(AztecWoodPillarBlock.AXIS);
-            boolean connectedX = state.getValue(AztecWoodPillarBlock.CONNECTED_X);
-            boolean connectedZ = state.getValue(AztecWoodPillarBlock.CONNECTED_Z);
+            boolean extended = state.get(AztecWoodPillarBlock.EXTENDED);
+            Direction.Axis axis = state.get(AztecWoodPillarBlock.AXIS);
+            boolean connectedX = state.get(AztecWoodPillarBlock.CONNECTED_X);
+            boolean connectedZ = state.get(AztecWoodPillarBlock.CONNECTED_Z);
 
             String modelName = normal;
 
@@ -226,15 +226,15 @@ public abstract class AbstractBlockStateProvider extends BlockStateProvider {
                 .texture("layer0", texture(name(block)));
     }
 
-    public static ResourceLocation resLoc(String path) {
+    public static Identifier resLoc(String path) {
         return ArchaicQuest.resourceLoc(path);
     }
 
-    public static ResourceLocation texture(String textureName) {
+    public static Identifier texture(String textureName) {
         return resLoc("block/" + textureName);
     }
 
-    public static ResourceLocation itemTexture(String textureName) {
+    public static Identifier itemTexture(String textureName) {
         return resLoc("item/" + textureName);
     }
 }

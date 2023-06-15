@@ -1,44 +1,44 @@
 package com.obsidian_core.archaic_quest.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.inventory.container.KnappingTableContainer;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Identifier;
+import org.w3c.dom.Text;
 
-public class KnappingTableScreen extends AbstractContainerScreen<KnappingTableContainer> {
+public class KnappingTableScreen extends HandledScreen<KnappingTableContainer> {
 
-    private static final ResourceLocation texture = ArchaicQuest.resourceLoc("textures/gui/knapping_table.png");
+    private static final Identifier texture = ArchaicQuest.id("textures/gui/knapping_table.png");
 
-    public KnappingTableScreen(KnappingTableContainer container, Inventory inventory, Component title) {
+    public KnappingTableScreen(KnappingTableContainer container, PlayerInventory inventory, Text title) {
         super(container, inventory, title);
     }
 
     @Override
     public void init() {
         super.init();
-        imageWidth = 176;
-        imageHeight = 166;
-        titleLabelX = (imageWidth - font.width(title)) / 2;
+        backgroundWidth = 176;
+        backgroundHeight = 166;
+        titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2;
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(poseStack);
-        renderBg(poseStack, partialTick, mouseX, mouseY);
-        super.render(poseStack, mouseX, mouseY, partialTick);
-        renderTooltip(poseStack, mouseX, mouseY);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTick) {
+        renderBackground(matrices);
+        drawBackground(matrices, partialTick, mouseX, mouseY);
+        super.render(matrices, mouseX, mouseY, partialTick);
+        drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
+    protected void drawBackground(MatrixStack matrices, float partialTick, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, texture);
-        blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight);
     }
 }

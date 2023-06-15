@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public class AQEntities {
 
-    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, ArchaicQuest.MODID);
+    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITY_TPOSITIVE_YES, ArchaicQuest.MODID);
 
 
     // LIVING

@@ -106,7 +106,7 @@ public class AQLanguageProvider extends AbstractLanguageProvider {
 
         addBiome(AQBiomes.AZTEC_JUNGLE, "Aztec Jungle");
 
-        addTranslationComponent(TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME, "Knapping Table");
+        addTranslationText(TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME, "Knapping Table");
 
         addDamageSource(AQDamageSources.SPEAR_TRAP,
                 "%1$s was impaled on a spear trap",

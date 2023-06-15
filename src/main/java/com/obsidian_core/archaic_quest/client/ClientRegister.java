@@ -34,7 +34,7 @@ public class ClientRegister {
         AQModelLayers.init();
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
 
-        setBlockRenderTypes();
+        setBlockStateRenderTypes();
         registerScreenMenus();
         addSkippedHighlightBlocks();
 
@@ -53,15 +53,15 @@ public class ClientRegister {
     }
 
     @SubscribeEvent
-    public static void registerLayerDefs(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(AQModelLayers.AZTEC_DUNGEON_DOOR, AztecDungeonDoorRenderer::createBodyLayer);
-        event.registerLayerDefinition(AQModelLayers.AZTEC_CRAFTING_STATION, AztecCraftingStationRenderer::createBodyLayer);
-        event.registerLayerDefinition(AQModelLayers.AZTEC_THRONE, AztecThroneRenderer::createBodyLayer);
-        event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP, SpikeTrapRenderer::createBodyLayer);
-        event.registerLayerDefinition(AQModelLayers.SPIKE_TRAP_OVERLAY, SpikeTrapRenderer::createOverlayBodyLayer);
-        event.registerLayerDefinition(AQModelLayers.AZTEC_DUNGEON_CHEST, AztecDungeonChestRenderer::createBodyLayer);
+    public static void registerLayerDefs(EntityRenderersEvent.RegisterTexturedModelDatas event) {
+        event.registerTexturedModelData(AQModelLayers.AZTEC_DUNGEON_DOOR, AztecDungeonDoorRenderer::createBodyLayer);
+        event.registerTexturedModelData(AQModelLayers.AZTEC_CRAFTING_STATION, AztecCraftingStationRenderer::createBodyLayer);
+        event.registerTexturedModelData(AQModelLayers.AZTEC_THRONE, AztecThroneRenderer::createBodyLayer);
+        event.registerTexturedModelData(AQModelLayers.SPIKE_TRAP, SpikeTrapRenderer::createBodyLayer);
+        event.registerTexturedModelData(AQModelLayers.SPIKE_TRAP_OVERLAY, SpikeTrapRenderer::createOverlayBodyLayer);
+        event.registerTexturedModelData(AQModelLayers.AZTEC_DUNGEON_CHEST, AztecDungeonChestRenderer::createBodyLayer);
 
-        event.registerLayerDefinition(AQModelLayers.TLATLAOMI, TlatlaomiModel::createBodyLayer);
+        event.registerTexturedModelData(AQModelLayers.TLATLAOMI, TlatlaomiModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -85,7 +85,7 @@ public class ClientRegister {
     }
 
     @Deprecated // Render type should be specified in block model
-    private static void setBlockRenderTypes() {
+    private static void setBlockStateRenderTypes() {
 
     }
 
@@ -107,7 +107,7 @@ public class ClientRegister {
         BlockColors blockColors = event.getBlockColors();
 
         event.register((itemStack, color) -> {
-            BlockState blockState = ((BlockItem) itemStack.getItem()).getBlock().defaultBlockState();
+            BlockState blockState = ((BlockItem) itemStack.getItem()).getBlock().getDefaultState();
             return blockColors.getColor(blockState, null, null, color);
         }, AQBlocks.VINES_1.get());
     }

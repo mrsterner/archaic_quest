@@ -5,9 +5,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.Random;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ActionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Ravager;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +41,7 @@ import java.util.function.Supplier;
 
 public abstract class DoubleCropBlock extends CropBlock {
 
-    protected static final BlockBehaviour.Properties DEFAULT_PROPS = BlockBehaviour.Properties.of(Material.PLANT, MaterialColor.COLOR_GREEN).instabreak().noCollission().noOcclusion().sound(SoundType.GRASS);
+    protected static final BlockBehaviour.Settings DEFAULT_PROPS = BlockBehaviour.Settings.of(Material.PLANT, MaterialColor.COLOR_GREEN).instabreak().noCollission().nonOpaque().sound(SoundType.GRASS);
     public static final BooleanProperty IS_TOP = BooleanProperty.create("top");
 
     public static final IntegerProperty AGE_4 = IntegerProperty.create("age", 0, 4);
@@ -49,10 +49,10 @@ public abstract class DoubleCropBlock extends CropBlock {
     private final Supplier<ItemLike> seed;
 
 
-    public DoubleCropBlock(Properties properties, @Nonnull Supplier<ItemLike> seed) {
+    public DoubleCropBlock(Settings properties, @Nonnull Supplier<ItemLike> seed) {
         super(properties);
         this.seed = seed;
-        registerDefaultState(stateDefinition.any().setValue(IS_TOP, false));
+        setDefaultState(getDefaultState().with(IS_TOP, false));
 
         if (getShapes().getFirst().length - 1 != getMaxAge() || getShapes().getSecond().length - 1 != getMaxAge())
             throw new IllegalArgumentException("Tried constructing a double crop with inconsistent voxel shape array sizes. Hopefully this didn't make it into a release.");
@@ -102,7 +102,7 @@ public abstract class DoubleCropBlock extends CropBlock {
     public abstract int getOnHarvestAge();
 
     public boolean isTop(BlockState state) {
-        return state.getValue(IS_TOP);
+        return state.get(IS_TOP);
     }
 
     @Override
@@ -112,7 +112,7 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, RandomSource randomSource) {
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random randomSource) {
         if (!world.isAreaLoaded(pos, 1)) return;
 
         if (world.getRawBrightness(pos, 0) >= 9) {
@@ -123,10 +123,10 @@ public abstract class DoubleCropBlock extends CropBlock {
 
                 if (ForgeHooks.onCropsGrowPre(world, pos, state, randomSource.nextInt((int)(25.0F / growthSpeed) + 1) == 0)) {
                     int newAge = age + 1;
-                    world.setBlock(pos, getStateForAge(newAge), 2);
+                    world.setBlockState(pos, getStateForAge(newAge), 2);
 
                     if (newAge >= getDoublingAge()) {
-                        world.setBlock(pos.above(), getStateForAge(newAge).setValue(IS_TOP, true), 2);
+                        world.setBlockState(pos.up(), getStateForAge(newAge).with(IS_TOP, true), 2);
                     }
                     ForgeHooks.onCropsGrowPost(world, pos, state);
                 }
@@ -136,15 +136,15 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult hitResult) {
+    public ActionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult hitResult) {
         if (getAge(state) >= maxAge()) {
             if (isTop(state)) {
-                world.setBlock(pos, getStateForAge(getOnHarvestAge()).setValue(IS_TOP, true), 2);
-                world.setBlock(pos.below(), getStateForAge(getOnHarvestAge()), 2);
+                world.setBlockState(pos, getStateForAge(getOnHarvestAge()).with(IS_TOP, true), 2);
+                world.setBlockState(pos.down(), getStateForAge(getOnHarvestAge()), 2);
             }
             else {
-                world.setBlock(pos, getStateForAge(getOnHarvestAge()), 2);
-                world.setBlock(pos.above(), getStateForAge(getOnHarvestAge()).setValue(IS_TOP, true), 2);
+                world.setBlockState(pos, getStateForAge(getOnHarvestAge()), 2);
+                world.setBlockState(pos.up(), getStateForAge(getOnHarvestAge()).with(IS_TOP, true), 2);
             }
             if (!world.isClient()) {
                 List<ItemStack> drops = getDrops(getStateForAge(maxAge()), (ServerWorld) world, pos, null);
@@ -153,14 +153,14 @@ public abstract class DoubleCropBlock extends CropBlock {
                     popResource(world, pos, stack);
                 }
             }
-            return InteractionResult.sidedSuccess(world.isClient());
+            return ActionResult.sidedSuccess(world.isClient());
         }
-        return InteractionResult.PASS;
+        return ActionResult.PASS;
     }
 
     @Override
     public BlockState getStateForAge(int age) {
-        return defaultBlockState().setValue(IS_TOP, false).setValue(getAgeProperty(), age);
+        return getDefaultState().with(IS_TOP, false).with(getAgeProperty(), age);
     }
 
     @Override
@@ -171,10 +171,10 @@ public abstract class DoubleCropBlock extends CropBlock {
         if (age > maxAge) {
             age = maxAge;
         }
-        world.setBlock(pos, getStateForAge(age), 2);
+        world.setBlockState(pos, getStateForAge(age), 2);
 
         if (age >= getDoublingAge()) {
-            world.setBlock(pos.above(), getStateForAge(age).setValue(IS_TOP, true), 2);
+            world.setBlockState(pos.up(), getStateForAge(age).with(IS_TOP, true), 2);
         }
     }
 
@@ -189,27 +189,27 @@ public abstract class DoubleCropBlock extends CropBlock {
     }
 
     private boolean validPosition(WorldReader world, BlockState state, BlockPos pos) {
-        BlockPos belowPos = pos.below();
+        BlockPos downPos = pos.down();
 
         if (state.getBlock() == this) { //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
-            BlockState belowState = world.getBlockState(belowPos);
+            BlockState downState = world.getBlockState(downPos);
 
             if (isTop(state)) {
-                return belowState.is(this) && !isTop(belowState);
+                return downState.is(this) && !isTop(downState);
             }
             else {
                 if (getAge(state) >= getDoublingAge()) {
-                    return mayPlaceOn(belowState, world, belowPos) && world.getBlockState(pos.above()).is(this);
+                    return mayPlaceOn(downState, world, downPos) && world.getBlockState(pos.up()).is(this);
                 }
-                return mayPlaceOn(belowState, world, belowPos);
+                return mayPlaceOn(downState, world, downPos);
             }
         }
-        return world.getBlockState(belowPos).canSustainPlant(world, belowPos, Direction.UP, this);
+        return world.getBlockState(downPos).canSustainPlant(world, downPos, Direction.UP, this);
     }
 
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter world, BlockPos pos) {
-        return state.is(Blocks.FARMLAND) && pos.above(2).getY() <= world.getMaxBuildHeight();
+        return state.is(Blocks.FARMLAND) && pos.up(2).getY() <= world.getMaxBuildHeight();
     }
 
     @Override
@@ -217,7 +217,7 @@ public abstract class DoubleCropBlock extends CropBlock {
         if (entity instanceof Ravager && ForgeEventFactory.getMobGriefingEvent(world, entity)) {
             world.destroyBlock(pos, true, entity);
         }
-        if (state.getValue(getAgeProperty()) == getMaxAge() && !isTop(state))
+        if (state.get(getAgeProperty()) == getMaxAge() && !isTop(state))
             entity.makeStuckInBlock(state, new Vec3(0.95D, 0.95D, 0.95D));
         super.entityInside(state, world, pos, entity);
     }
@@ -233,7 +233,7 @@ public abstract class DoubleCropBlock extends CropBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(IS_TOP, getAgeProperty());
     }
 }

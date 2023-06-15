@@ -3,7 +3,7 @@ package com.obsidian_core.archaic_quest.datagen.model;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -25,12 +25,12 @@ public class AQItemModelProvider extends ItemModelProvider {
     }
 
     private <T extends Item> void simpleItem(T item) {
-        ResourceLocation regName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
+        Identifier regName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
         singleTexture(regName.getPath(), mcLoc("item/generated"), "layer0", ArchaicQuest.resourceLoc("item/" + regName.getPath()));
     }
 
     private void spawnEgg(ForgeSpawnEggItem spawnEgg) {
-        ResourceLocation regName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(spawnEgg));
+        Identifier regName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(spawnEgg));
         withExistingParent(regName.getPath(), mcLoc("item/template_spawn_egg"));
     }
 }

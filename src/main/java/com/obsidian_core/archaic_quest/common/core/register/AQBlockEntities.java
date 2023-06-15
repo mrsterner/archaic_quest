@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("ConstantConditions")
 public class AQBlockEntities {
 
-    public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ArchaicQuest.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TPOSITIVE_YES, ArchaicQuest.MODID);
 
 
     private static final Supplier<AztecDungeonDoorBlock[]> DUNGEON_DOORS = () ->

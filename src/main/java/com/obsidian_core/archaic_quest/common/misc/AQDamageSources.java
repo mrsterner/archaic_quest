@@ -1,24 +1,23 @@
 package com.obsidian_core.archaic_quest.common.misc;
 
-import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.entity.projectile.DartEntity;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
-import net.minecraft.world.entity.Entity;
-
-import javax.annotation.Nullable;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.ProjectileDamageSource;
+import org.jetbrains.annotations.Nullable;
 
 public class AQDamageSources {
 
-    public static final DamageSource SPEAR_TRAP = create("spear_trap").bypassArmor().bypassEnchantments().bypassMagic().setIsFall();
-    public static final DamageSource SPIKE_TRAP = create("spike_trap").bypassArmor().bypassEnchantments();
+    public static final DamageSource SPEAR_TRAP = create("spear_trap").setBypassesArmor().setBypassesProtection().setUnblockable().setFromFalling();
+    public static final DamageSource SPIKE_TRAP = create("spike_trap").setBypassesArmor().setBypassesProtection();
 
     public static DamageSource dart(DartEntity dartEntity, @Nullable Entity entity) {
-        return new IndirectEntityDamageSource("archaic_quest.dart", dartEntity, entity).setProjectile();
+        return new ProjectileDamageSource("archaic_quest.dart", dartEntity, entity).setProjectile();
     }
 
     private static DamageSource create(String name) {
-        return new DamageSource(ArchaicQuest.resourceLoc(name).toString());
+        return new DamageSource(ArchaicQuest.id(name).toString());
     }
 
     public static void init() {}

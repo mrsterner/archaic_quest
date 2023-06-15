@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class AQTreeDecoratorType<P extends TreeDecorator> {
 
-    public static final DeferredRegister<TreeDecoratorType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TREE_DECORATOR_TYPES, ArchaicQuest.MODID);
+    public static final DeferredRegister<TreeDecoratorType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TREE_DECORATOR_TPOSITIVE_YES, ArchaicQuest.MODID);
 
     public static final RegistryObject<TreeDecoratorType<TrunkVineVarDecorator>> TRUNK_VINE = register("trunk_vine", () -> new TreeDecoratorType<>(TrunkVineVarDecorator.CODEC));
     public static final RegistryObject<TreeDecoratorType<LeafVineVarDecorator>> LEAF_VINE = register("leaf_vine", () -> new TreeDecoratorType<>(LeafVineVarDecorator.CODEC));

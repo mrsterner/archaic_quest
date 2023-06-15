@@ -1,10 +1,10 @@
 package com.obsidian_core.archaic_quest.common.misc;
 
+
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.properties.Property;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.state.property.Property;
 
 import java.util.Map;
 import java.util.Objects;
@@ -17,19 +17,19 @@ public class AQNBTUtil {
      *
      * Not sure if this is redundant or not, very likely it is.
      */
-    public static CompoundTag writeBlockState(BlockState state) {
-        CompoundTag blockTag = new CompoundTag();
+    public static NbtCompound writeBlockState(BlockState state) {
+        NbtCompound blockTag = new NbtCompound();
         blockTag.putString("Name", Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(state.getBlock())).toString());
-        ImmutableMap<Property<?>, Comparable<?>> properties = state.getValues();
+        ImmutableMap<Property<?>, Comparable<?>> properties = state.gets();
 
         if (!properties.isEmpty()) {
-            CompoundTag propertyTag = new CompoundTag();
+            NbtCompound propertyTag = new NbtCompound();
 
             for(Map.Entry<Property<?>, Comparable<?>> entry : properties.entrySet()) {
                 Property<?> property = entry.getKey();
-                propertyTag.putString(property.getName(), getName(property, entry.getValue()));
+                propertyTag.putString(property.getName(), getName(property, entry.get()));
             }
-            blockTag.put("Properties", propertyTag);
+            blockTag.put("Settings", propertyTag);
         }
         return blockTag;
     }

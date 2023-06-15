@@ -1,15 +1,12 @@
 package com.obsidian_core.archaic_quest.common.item.data;
 
 import com.obsidian_core.archaic_quest.common.core.register.AQItems;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.Ingredient;
 
-import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public record AQItemTier(int durability, float speed, float damage, int world, int enchantmentValue,
-                         Supplier<Ingredient> repairMaterial) implements Tier {
+public record AQItemTier(int durability, float speed, float damage, int world, int enchantmentValue, Supplier<Ingredient> repairMaterial) implements Tier {
 
 
     public static final AQItemTier JADE = new AQItemTier(
@@ -18,7 +15,7 @@ public record AQItemTier(int durability, float speed, float damage, int world, i
             3.0F,
             3,
             10,
-            () -> Ingredient.of(AQItems.JADE.get())
+            () -> Ingredient.of(AQItems.JADE)
     );
     public static final AQItemTier OBSIDIAN = new AQItemTier(
             400,

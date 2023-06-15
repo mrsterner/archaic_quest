@@ -5,10 +5,10 @@ import com.obsidian_core.archaic_quest.common.network.NetworkHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundCategory;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ActionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.world.BlockGetter;
@@ -34,9 +34,9 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
 
     private static final VoxelShape shape = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D);
 
-    public SpikeTrapBlock(Properties properties) {
+    public SpikeTrapBlock(Settings properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(MODE, Mode.NORMAL));
+        setDefaultState(getDefaultState().with(MODE, Mode.NORMAL));
     }
 
     @SuppressWarnings("deprecation")
@@ -53,10 +53,10 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
         if (!world.isClient()) {
             BlockEntity be = world.getExistingBlockEntity(pos);
-            Mode mode = state.getValue(MODE);
+            Mode mode = state.get(MODE);
 
             if (be instanceof SpikeTrapBlockEntity spikeTrap) {
                 boolean active = spikeTrap.isActive();
@@ -72,7 +72,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
     }
 
     private void neighborChangeNormal(boolean active, SpikeTrapBlockEntity spikeTrap, World world, BlockPos pos) {
-        if (world.hasNeighborSignal(pos)) {
+        if (world.isReceivingRedstonePower(pos)) {
             if (!active) {
                 spikeTrap.setActive(true);
                 NetworkHelper.updateSpikeTrap((ServerWorld) world, pos, spikeTrap.isActive());
@@ -87,7 +87,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
     }
 
     private void neighborChangeMaster(boolean active, SpikeTrapBlockEntity spikeTrap, World world, BlockPos pos) {
-        if (world.hasNeighborSignal(pos)) {
+        if (world.isReceivingRedstonePower(pos)) {
             if (!active) {
                 spikeTrap.setActive(true);
                 NetworkHelper.updateSpikeTrap((ServerWorld) world, pos, spikeTrap.isActive());
@@ -124,7 +124,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
     }
 
     private void neighborChangeInvert(boolean active, SpikeTrapBlockEntity spikeTrap, BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
-        if (world.hasNeighborSignal(pos)) {
+        if (world.isReceivingRedstonePower(pos)) {
             if (active) {
                 spikeTrap.setActive(false);
                 NetworkHelper.updateSpikeTrap((ServerWorld) world, pos, spikeTrap.isActive());
@@ -163,9 +163,9 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult hitResult) {
-        if (player.getItemInHand(hand).getItem() == Items.REDSTONE_TORCH && state.is(this)) {
-            Mode mode = Mode.cycle(state.getValue(MODE));
+    public ActionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult hitResult) {
+        if (player.getStackInHand(hand).getItem() == Items.REDSTONE_TORCH && state.is(this)) {
+            Mode mode = Mode.cycle(state.get(MODE));
 
             if (world.getExistingBlockEntity(pos) instanceof SpikeTrapBlockEntity spikeTrap) {
                 spikeTrap.setMode(mode);
@@ -174,9 +174,9 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
                     NetworkHelper.updateSpikeTrap((ServerWorld) world, pos, mode);
                 }
             }
-            world.setBlockAndUpdate(pos, state.setValue(MODE, mode));
-            world.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, 0.6F);
-            return InteractionResult.SUCCESS;
+            world.setBlockStateAndUpdate(pos, state.with(MODE, mode));
+            world.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.6F);
+            return ActionResult.SUCCESS;
         }
         return super.use(state, world, pos, player, hand, hitResult);
     }
@@ -194,7 +194,7 @@ public class SpikeTrapBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder.add(MODE));
     }
 

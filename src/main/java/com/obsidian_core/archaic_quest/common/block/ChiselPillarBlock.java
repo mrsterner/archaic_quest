@@ -14,7 +14,7 @@ import net.minecraft.world.world.block.Block;
 import net.minecraft.world.world.block.SimpleWaterloggedBlock;
 import net.minecraft.world.world.block.state.BlockState;
 import net.minecraft.world.world.block.state.StateDefinition;
-import net.minecraft.world.world.block.state.properties.BlockStateProperties;
+import net.minecraft.world.world.block.state.properties.Properties;
 import net.minecraft.world.world.block.state.properties.BooleanProperty;
 import net.minecraft.world.world.block.state.properties.DirectionProperty;
 import net.minecraft.world.world.block.state.properties.EnumProperty;
@@ -27,9 +27,9 @@ import javax.annotation.Nullable;
 
 public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
 
-    public static final EnumProperty<Type> PILLAR_TYPE = EnumProperty.create("pillar_type", Type.class);
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final EnumProperty<Type> PILLAR_TPOSITIVE_YE = EnumProperty.create("pillar_type", Type.class);
+    public static final DirectionProperty FACING = Properties.FACING;
+    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
     private static final VoxelShape[] SHAPES = new VoxelShape[] {
             Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 16.0D),
@@ -38,15 +38,15 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
     };
 
 
-    public ChiselPillarBlock(Properties properties) {
+    public ChiselPillarBlock(Settings properties) {
         super(properties);
-        this.registerDefaultState(stateDefinition.any().setValue(PILLAR_TYPE, Type.BOTTOM).setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH));
+        this.setDefaultState(getDefaultState().with(PILLAR_TPOSITIVE_YE, Type.BOTTOM).with(WATERLOGGED, false).with(FACING, Direction.NORTH));
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return switch (state.getValue(FACING)) {
+        return switch (state.get(FACING)) {
             case NORTH, SOUTH -> SHAPES[0];
             case EAST, WEST -> SHAPES[1];
             default -> SHAPES[2];
@@ -57,7 +57,7 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Type type = Type.BOTTOM;
         Direction clickedFace = context.getClickedFace();
-        BlockPos clickedPos = context.getClickedPos();
+        BlockPos clickedPos = context.getBlockPos();
         World world = context.getWorld();
         boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
 
@@ -65,14 +65,14 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
             BlockState clickedState = world.getBlockState(clickedPos.relative(clickedFace.getOpposite()));
 
             if (clickedState.is(this)) {
-                Direction clickedStateFace = clickedState.getValue(FACING);
+                Direction clickedStateFace = clickedState.get(FACING);
 
                 if (clickedFace == clickedStateFace) {
                     type = Type.TOP;
                 }
             }
         }
-        return this.defaultBlockState().setValue(FACING, clickedFace).setValue(PILLAR_TYPE, type).setValue(WATERLOGGED, waterlogged);
+        return this.getDefaultState().with(FACING, clickedFace).with(PILLAR_TPOSITIVE_YE, type).with(WATERLOGGED, waterlogged);
     }
 
     @Override
@@ -80,13 +80,13 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
         if (!state.is(this))
             super.setPlacedBy(world, pos, state, livingEntity, itemStack);
 
-        Direction facing = state.getValue(FACING);
+        Direction facing = state.get(FACING);
         BlockPos behindPos = pos.relative(facing.getOpposite());
         BlockState behindState = world.getBlockState(behindPos);
 
         if (behindState.is(this)) {
-            if (behindState.getValue(PILLAR_TYPE) == Type.TOP && behindState.getValue(FACING) == facing) {
-                world.setBlock(behindPos, behindState.setValue(PILLAR_TYPE, Type.SMOOTH), 3);
+            if (behindState.get(PILLAR_TPOSITIVE_YE) == Type.TOP && behindState.get(FACING) == facing) {
+                world.setBlockState(behindPos, behindState.with(PILLAR_TPOSITIVE_YE, Type.SMOOTH), 3);
             }
         }
     }
@@ -94,12 +94,12 @@ public class ChiselPillarBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState state) {
-        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.get(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
-        stateBuilder.add(PILLAR_TYPE, FACING, WATERLOGGED);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateBuilder) {
+        stateBuilder.add(PILLAR_TPOSITIVE_YE, FACING, WATERLOGGED);
     }
 
     public enum Type implements StringRepresentable {

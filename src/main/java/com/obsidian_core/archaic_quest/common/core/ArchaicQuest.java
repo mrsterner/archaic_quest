@@ -8,7 +8,7 @@ import com.obsidian_core.archaic_quest.common.network.PacketHandler;
 import com.obsidian_core.archaic_quest.common.core.register.*;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.AQConfiguredFeatures;
 import com.obsidian_core.archaic_quest.common.worldgen.feature.decorators.AQTreeDecoratorType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.world.worldgen.GenerationStep;
 import net.minecraft.world.world.worldgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.client.model.ItemLayerModel;
@@ -68,7 +68,7 @@ public class ArchaicQuest {
         });
     }
 
-    public static ResourceLocation resourceLoc(String path) {
-        return new ResourceLocation(MODID, path);
+    public static Identifier resourceLoc(String path) {
+        return new Identifier(MODID, path);
     }
 }

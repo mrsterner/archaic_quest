@@ -6,7 +6,7 @@ import com.obsidian_core.archaic_quest.common.block.DoubleCropBlock;
 import com.obsidian_core.archaic_quest.common.block.VerticalSlabBlock;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.core.register.AQItems;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.critereon.StateSettingsPredicate;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -223,13 +223,13 @@ public class AQBlockLootTableProvider extends BlockLoot {
     }
 
     private void doubleCrop(DoubleCropBlock crop) {
-        LootItemCondition.Builder harvestCondition = LootItemBlockStatePropertyCondition.hasBlockStateProperties(crop)
-                .setProperties(StatePropertiesPredicate.Builder.properties()
+        LootItemCondition.Builder harvestCondition = LootItemBlockStatePropertyCondition.hasProperties(crop)
+                .setSettings(StateSettingsPredicate.Builder.properties()
                         .hasProperty(crop.getAgeProperty(), crop.getMaxAge())
                         .hasProperty(DoubleCropBlock.IS_TOP, false));
 
-        LootItemCondition.Builder retrieveSeedCondition = LootItemBlockStatePropertyCondition.hasBlockStateProperties(crop)
-                .setProperties(StatePropertiesPredicate.Builder.properties()
+        LootItemCondition.Builder retrieveSeedCondition = LootItemBlockStatePropertyCondition.hasProperties(crop)
+                .setSettings(StateSettingsPredicate.Builder.properties()
                         .hasProperty(DoubleCropBlock.IS_TOP, false));
 
         LootTable.Builder builder = applyExplosionDecay(crop, LootTable.lootTable()
@@ -251,9 +251,9 @@ public class AQBlockLootTableProvider extends BlockLoot {
     }
 
     private void dungeonDoor(AztecDungeonDoorBlock block) {
-        LootItemCondition.Builder condition = LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
-                .setProperties(StatePropertiesPredicate.Builder.properties()
-                        .hasProperty(AztecDungeonDoorBlock.BLOCK_TYPE, AztecDungeonDoorBlock.BlockType.MASTER));
+        LootItemCondition.Builder condition = LootItemBlockStatePropertyCondition.hasProperties(block)
+                .setSettings(StateSettingsPredicate.Builder.properties()
+                        .hasProperty(AztecDungeonDoorBlock.BLOCK_TPOSITIVE_YE, AztecDungeonDoorBlock.BlockType.MASTER));
 
         LootTable.Builder builder = applyExplosionDecay(block, LootTable.lootTable()
                 .withPool(LootPool.lootPool()

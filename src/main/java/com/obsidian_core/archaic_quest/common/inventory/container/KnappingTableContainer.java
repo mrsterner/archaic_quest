@@ -1,42 +1,41 @@
 package com.obsidian_core.archaic_quest.common.inventory.container;
 
 import com.obsidian_core.archaic_quest.common.core.register.AQContainers;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.world.block.Block;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+public class KnappingTableContainer extends ScreenHandler {
 
-public class KnappingTableContainer extends AbstractContainerMenu {
-
-    private final Container container;
+    private final Inventory container;
     @Nullable
     private final BlockPos openedPos;
 
-    public KnappingTableContainer(int id, Inventory inventory) {
+    public KnappingTableContainer(int id, PlayerInventory inventory) {
         this(id, inventory, null);
     }
 
-    public KnappingTableContainer(int id, Inventory inventory, @Nullable BlockPos openedPos) {
-        super(AQContainers.KNAPPING.get(), id);
+    public KnappingTableContainer(int id, PlayerInventory inventory, @Nullable BlockPos openedPos) {
+        super(AQContainers.KNAPPING, id);
         this.openedPos = openedPos;
-        container = new SimpleContainer(11) {
+        container = new SimpleInventory(11) {
             @Override
-            public void stopOpen(PlayerEntity player) {
-                for (int slot = 0; slot < container.getContainerSize(); slot++) {
-                    if (!container.getItem(slot).isEmpty())
-                        Block.popResource(player.world, player.blockPosition(), container.getItem(slot));
+            public void onClose(PlayerEntity player) {
+                for (int slot = 0; slot < container.size(); slot++) {
+                    if (!container.getStack(slot).isEmpty())
+                        Block.dropStack(player.world, player.getBlockPos(), container.getStack(slot));
                 }
             }
         };
-        checkContainerSize(container, 11);
-        container.startOpen(inventory.player);
+        checkSize(container, 11);
+        container.onOpen(inventory.player);
 
         // Crafting slots
         int slotId = 0;
@@ -65,46 +64,46 @@ public class KnappingTableContainer extends AbstractContainerMenu {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int slotId) {
+    public ItemStack transferSlot(PlayerEntity player, int slotId) {
         ItemStack returnedItem = ItemStack.EMPTY;
         Slot slot = slots.get(slotId);
 
-        if (slot != null && slot.hasItem()) {
-            ItemStack slotItem = slot.getItem();
+        if (slot != null && slot.hasStack()) {
+            ItemStack slotItem = slot.getStack();
             returnedItem = slotItem.copy();
 
-            if (slotId < container.getContainerSize()) {
-                if (!this.moveItemStackTo(slotItem, container.getContainerSize(), slots.size(), true)) {
+            if (slotId < container.size()) {
+                if (!this.insertItem(slotItem, container.size(), slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (!this.moveItemStackTo(slotItem, 9, 10, false)) {
+            else if (!this.insertItem(slotItem, 9, 10, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (slotItem.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
+                slot.setStack(ItemStack.EMPTY);
             }
             else {
-                slot.setChanged();
+                slot.markDirty();
             }
         }
         return returnedItem;
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
-        return openedPos == null || player.distanceToSqr(openedPos.getX() + 0.5D, openedPos.getY() + 0.5D, openedPos.getZ() + 0.5D) < 64.0D;
+    public boolean canUse(PlayerEntity player) {
+        return openedPos == null || player.squaredDistanceTo(openedPos.getX() + 0.5D, openedPos.getY() + 0.5D, openedPos.getZ() + 0.5D) < 64.0D;
     }
 
     private static class ResultSlot extends Slot {
 
-        public ResultSlot(Container container, int id, int x, int y) {
+        public ResultSlot(Inventory container, int id, int x, int y) {
             super(container, id, x, y);
         }
 
         @Override
-        public boolean mayPlace(ItemStack itemStack) {
+        public boolean canInsert(ItemStack itemStack) {
             return false;
         }
     }

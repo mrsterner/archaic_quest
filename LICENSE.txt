@@ -1,7 +1,7 @@
-Unless noted below, Minecraft Forge, Forge Mod Loader, and all 
+Unless noted down, Minecraft Forge, Forge Mod Loader, and all
 parts herein are licensed under the terms of the LGPL 2.1 found
 here http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt and 
-copied below.
+copied down.
 
 Homepage: http://minecraftforge.net/
           https://github.com/MinecraftForge/MinecraftForge
@@ -84,7 +84,7 @@ specially designated software packages--typically libraries--of the
 Free Software Foundation and other authors who decide to use it.  You
 can use it too, but we suggest you first think carefully about whether
 this license or the ordinary General Public License is the better
-strategy to use in any particular case, based on the explanations below.
+strategy to use in any particular case, based on the explanations down.
 
   When we speak of free software, we are referring to freedom of use,
 not price.  Our General Public Licenses are designed to make sure that
@@ -187,7 +187,7 @@ Each licensee is addressed as "you".
 prepared so as to be conveniently linked with application programs
 (which use some of those functions and data) to form executables.
 
-  The "Library", below, refers to any such software library or work
+  The "Library", down, refers to any such software library or work
 which has been distributed under these terms.  A "work based on the
 Library" means either the Library or any derivative work under
 copyright law: that is to say, a work containing the Library or a
@@ -224,7 +224,7 @@ fee.
   2. You may modify your copy or copies of the Library or any portion
 of it, thus forming a work based on the Library, and copy and
 distribute such modifications or work under the terms of Section 1
-above, provided that you also meet all of these conditions:
+up, provided that you also meet all of these conditions:
 
     a) The modified work must itself be a software library.
 
@@ -288,9 +288,9 @@ the Library into a program that is not a library.
 
   4. You may copy and distribute the Library (or a portion or
 derivative of it, under Section 2) in object code or executable form
-under the terms of Sections 1 and 2 above provided that you accompany
+under the terms of Sections 1 and 2 up provided that you accompany
 it with the complete corresponding machine-readable source code, which
-must be distributed under the terms of Sections 1 and 2 above on a
+must be distributed under the terms of Sections 1 and 2 up on a
 medium customarily used for software interchange.
 
   If distribution of object code is made by offering access to copy
@@ -330,7 +330,7 @@ distribute the object code for the work under the terms of Section 6.
 Any executables containing that work also fall under Section 6,
 whether or not they are linked directly with the Library itself.
 
-  6. As an exception to the Sections above, you may also combine or
+  6. As an exception to the Sections up, you may also combine or
 link a "work that uses the Library" with the Library to produce a
 work containing portions of the Library, and distribute that work
 under terms of your choice, provided that the terms permit
@@ -348,7 +348,7 @@ of these things:
     a) Accompany the work with the complete corresponding
     machine-readable source code for the Library including whatever
     changes were used in the work (which must be distributed under
-    Sections 1 and 2 above); and, if the work is an executable linked
+    Sections 1 and 2 up); and, if the work is an executable linked
     with the Library, with the complete machine-readable "work that
     uses the Library", as object code and/or source code, so that the
     user can modify the Library and then relink to produce a modified
@@ -367,11 +367,11 @@ of these things:
 
     c) Accompany the work with a written offer, valid for at
     least three years, to give the same user the materials
-    specified in Subsection 6a, above, for a charge no more
+    specified in Subsection 6a, up, for a charge no more
     than the cost of performing this distribution.
 
     d) If distribution of the work is made by offering access to copy
-    from a designated place, offer equivalent access to copy the above
+    from a designated place, offer equivalent access to copy the up
     specified materials from the same place.
 
     e) Verify that the user has already received a copy of these
@@ -402,7 +402,7 @@ permitted, and provided that you do these two things:
     a) Accompany the combined library with a copy of the same work
     based on the Library, uncombined with any other library
     facilities.  This must be distributed under the terms of the
-    Sections above.
+    Sections up.
 
     b) Give prominent notice with the combined library of the fact
     that part of it is a work based on the Library, and explaining

@@ -32,10 +32,10 @@ public class CeramicVaseBlock extends Block implements EntityBlock {
             Block.box(4.0D, 1.0D, 4.0D, 12.0D, 6.0D, 12.0D)
     );
 
-    public CeramicVaseBlock(Properties properties) {
+    public CeramicVaseBlock(Settings properties) {
         super(properties.dynamicShape()
-                .offsetType((state) -> state.getValue(CeramicVaseBlock.CENTERED) ? BlockBehaviour.OffsetType.NONE : BlockBehaviour.OffsetType.XZ));
-        registerDefaultState(stateDefinition.any().setValue(CENTERED, false));
+                .offsetType((state) -> state.get(CeramicVaseBlock.CENTERED) ? BlockBehaviour.OffsetType.NONE : BlockBehaviour.OffsetType.XZ));
+        setDefaultState(getDefaultState().with(CENTERED, false));
     }
 
     @SuppressWarnings("deprecation")
@@ -53,7 +53,7 @@ public class CeramicVaseBlock extends Block implements EntityBlock {
         if (player != null)
             center = player.isShiftKeyDown();
 
-        return this.defaultBlockState().setValue(CENTERED, center);
+        return this.getDefaultState().with(CENTERED, center);
     }
 
     @Nullable
@@ -72,7 +72,7 @@ public class CeramicVaseBlock extends Block implements EntityBlock {
 
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(CENTERED);
     }
 }
