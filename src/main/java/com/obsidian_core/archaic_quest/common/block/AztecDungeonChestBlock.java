@@ -70,7 +70,7 @@ public class AztecDungeonChestBlock extends Block implements BlockEntityProvider
             return ActionResult.SUCCESS;
         }
         else {
-            NamedScreenHandlerFactory menuProvider = getNamedScreenHandlerFactory(state, world, pos);
+            NamedScreenHandlerFactory menuProvider = createScreenHandlerFactory(state, world, pos);
 
             if (menuProvider != null) {
                 player.openHandledScreen(menuProvider);
@@ -100,7 +100,7 @@ public class AztecDungeonChestBlock extends Block implements BlockEntityProvider
 
     @Nullable
     @Override
-    public NamedScreenHandlerFactory getNamedScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+    public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         return blockEntity instanceof NamedScreenHandlerFactory ? (NamedScreenHandlerFactory) blockEntity : null;
     }

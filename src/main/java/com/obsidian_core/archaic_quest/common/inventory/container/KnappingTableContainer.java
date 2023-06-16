@@ -1,6 +1,6 @@
 package com.obsidian_core.archaic_quest.common.inventory.container;
 
-import com.obsidian_core.archaic_quest.common.core.register.AQContainers;
+import com.obsidian_core.archaic_quest.registry.AQScreenHandlers;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,7 +23,7 @@ public class KnappingTableContainer extends ScreenHandler {
     }
 
     public KnappingTableContainer(int id, PlayerInventory inventory, @Nullable BlockPos openedPos) {
-        super(AQContainers.KNAPPING, id);
+        super(AQScreenHandlers.KNAPPING_SCREEN_HANDLER, id);
         this.openedPos = openedPos;
         container = new SimpleInventory(11) {
             @Override

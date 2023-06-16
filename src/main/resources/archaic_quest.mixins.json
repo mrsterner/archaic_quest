@@ -4,6 +4,7 @@
   "package": "com.obsidian_core.archaic_quest.mixin",
   "compatibilityWorld": "JAVA_17",
   "mixins": [
+    "ShearsItemMixin"
   ],
   "client": [
   ],

@@ -22,6 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.NotNull;
@@ -203,7 +204,7 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (entity instanceof RavagerEntity && ForgeEventFactory.getMobGriefingEvent(world, entity)) {
+        if (entity instanceof RavagerEntity && world.getGameRules().get(GameRules.DO_MOB_GRIEFING).get()) {
             world.breakBlock(pos, true, entity);
         }
         if (state.get(getAgeProperty()) == getMaxAge() && !isTop(state)) {

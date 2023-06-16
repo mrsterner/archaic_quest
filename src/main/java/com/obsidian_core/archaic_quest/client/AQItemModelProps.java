@@ -7,6 +7,7 @@ import javax.swing.text.html.parser.Entity;
 
 public class AQItemModelProps {
 
+    //TODO this is a model predicate, fabric has a thingy for that
     public static void register() {
         // Adventurer's Torch
         ItemSettings.register(AQItems.ADVENTURERS_TORCH.get(), ArchaicQuest.resourceLoc("lit"), (itemStack, clientWorld, livingEntity, seed) -> {

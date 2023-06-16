@@ -1,7 +1,6 @@
 package com.obsidian_core.archaic_quest.client.render.blockentity;
 
 import com.obsidian_core.archaic_quest.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecCraftingStationBlockEntity;
 import com.obsidian_core.archaic_quest.registry.AQObjects;
 import net.minecraft.block.BlockState;

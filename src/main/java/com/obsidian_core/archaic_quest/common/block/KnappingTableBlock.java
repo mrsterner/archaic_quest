@@ -43,7 +43,7 @@ public class KnappingTableBlock extends Block {
             return ActionResult.SUCCESS;
         }
         else {
-            player.openHandledScreen(state.getNamedScreenHandlerFactory(world, pos));
+            player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             return ActionResult.CONSUME;
         }
     }
@@ -51,7 +51,7 @@ public class KnappingTableBlock extends Block {
     @Nullable
     @Override
     @SuppressWarnings("deprecation")
-    public NamedScreenHandlerFactory getNamedScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+    public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
         return new SimpleNamedScreenHandlerFactory((id, inventory, player)
                 -> new KnappingTableContainer(id, inventory, pos), TranslationReferences.KNAPPING_TABLE_CONTAINER_NAME);
     }

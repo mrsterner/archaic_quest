@@ -2,8 +2,10 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.enums.SlabType;
+import net.minecraft.entity.Shearable;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -20,7 +22,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class CoolVinesBlock extends Block implements IForgeShearable {
+public class CoolVinesBlock extends Block {
 
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final BooleanProperty CUT = BooleanProperty.of("cut");
@@ -47,10 +49,6 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
     @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return shapes[state.get(FACING).getHorizontal() + (state.get(CUT) ? 4 : 0)];
-    }
-
-    public boolean isCut(BlockState state) {
-        return state.get(CUT);
     }
 
     public boolean canGrow(BlockState state) {

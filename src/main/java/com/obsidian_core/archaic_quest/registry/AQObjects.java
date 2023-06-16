@@ -223,56 +223,56 @@ public interface AQObjects {
                     .build())));
 
     // MISC
-    Item TIN_INGOT = register("tin_ingot", AQCreativeTabs.ITEMS);
-    Item SILVER_INGOT = register("silver_ingot", AQCreativeTabs.ITEMS);
-    Item TURQUOISE = register("turquoise", AQCreativeTabs.ITEMS);
-    Item JADE = register("jade", AQCreativeTabs.ITEMS);
+    Item TIN_INGOT = register("tin_ingot", new Item(settings()));
+    Item SILVER_INGOT = register("silver_ingot", new Item(settings()));
+    Item TURQUOISE = register("turquoise", new Item(settings()));
+    Item JADE = register("jade", new Item(settings()));
     Item PEBBLE = register("pebble", new PebbleItem());
 
-    Item ADVENTURERS_BAG = register("adventurers_bag", AQCreativeTabs.ITEMS);
-    Item ADVENTURERS_GLOBE = register("adventurers_globe", AQCreativeTabs.ITEMS);
-    Item ADVENTURERS_HAT = register("adventurers_hat", AQCreativeTabs.ITEMS);
-    Item ADVENTURERS_MAGNIFYING_GLASS = register("adventurers_magnifying_glass", AQCreativeTabs.ITEMS);
-    Item ADVENTURERS_SPYGLASS = register("adventurers_spyglass", AQCreativeTabs.ITEMS);
+    Item ADVENTURERS_BAG = register("adventurers_bag", new Item(settings()));
+    Item ADVENTURERS_GLOBE = register("adventurers_globe", new Item(settings()));
+    Item ADVENTURERS_HAT = register("adventurers_hat", new Item(settings()));
+    Item ADVENTURERS_MAGNIFYING_GLASS = register("adventurers_magnifying_glass", new Item(settings()));
+    Item ADVENTURERS_SPYGLASS = register("adventurers_spyglass", new Item(settings()));
     Item ADVENTURERS_TORCH = register("adventurers_torch", new AdventurersTorchItem());
-    Item AMBER = register("amber", AQCreativeTabs.ITEMS);
-    Item AMBER_FOSSIL_0 = register("amber_fossil_0", AQCreativeTabs.ITEMS);
-    Item AMBER_FOSSIL_1 = register("amber_fossil_1", AQCreativeTabs.ITEMS);
-    Item AZTEC_GOLD_TALISMAN = register("aztec_gold_talisman", AQCreativeTabs.ITEMS);
-    Item AZTEC_GUIDE_BOOK = register("aztec_guide_book", AQCreativeTabs.ITEMS);
-    Item AZTEC_JADE_TALISMAN = register("aztec_jade_talisman", AQCreativeTabs.ITEMS);
-    Item AZTEC_PAN_FLUTE = register("aztec_pan_flute", AQCreativeTabs.ITEMS);
-    Item AZTEC_PIPE = register("aztec_pipe", AQCreativeTabs.ITEMS);
-    Item AZTEC_RITUAL_CHALICE = register("aztec_ritual_chalice", AQCreativeTabs.ITEMS);
-    Item AZTEC_RITUAL_STAFF = register("aztec_ritual_staff", AQCreativeTabs.ITEMS);
+    Item AMBER = register("amber", new Item(settings()));
+    Item AMBER_FOSSIL_0 = register("amber_fossil_0", new Item(settings()));
+    Item AMBER_FOSSIL_1 = register("amber_fossil_1", new Item(settings()));
+    Item AZTEC_GOLD_TALISMAN = register("aztec_gold_talisman", new Item(settings()));
+    Item AZTEC_GUIDE_BOOK = register("aztec_guide_book", new Item(settings()));
+    Item AZTEC_JADE_TALISMAN = register("aztec_jade_talisman", new Item(settings()));
+    Item AZTEC_PAN_FLUTE = register("aztec_pan_flute", new Item(settings()));
+    Item AZTEC_PIPE = register("aztec_pipe", new Item(settings()));
+    Item AZTEC_RITUAL_CHALICE = register("aztec_ritual_chalice", new Item(settings()));
+    Item AZTEC_RITUAL_STAFF = register("aztec_ritual_staff", new Item(settings()));
     Item AZTEC_DEATH_WHISTLE = register("aztec_death_whistle", new AztecDeathWhistleItem());
-    Item HEART = register("heart", AQCreativeTabs.ITEMS);
-    Item JAGUAR_HIDE = register("jaguar_hide", AQCreativeTabs.ITEMS);
-    Item LEATHER_QUIVER = register("leather_quiver", AQCreativeTabs.ITEMS);
-    Item AZTEC_JAGUAR_QUIVER = register("aztec_jaguar_quiver", AQCreativeTabs.ITEMS);
-    Item OLD_BONE = register("old_bone", AQCreativeTabs.ITEMS);
-    Item POISONOUS_FROG_0 = register("poisonous_frog_0", AQCreativeTabs.ITEMS);
-    Item POISONOUS_FROG_1 = register("poisonous_frog_1", AQCreativeTabs.ITEMS);
-    Item SKULL_0 = register("skull_0", AQCreativeTabs.ITEMS);
-    Item SKULL_1 = register("skull_1", AQCreativeTabs.ITEMS);
-    Item CRYSTAL_SKULL = register("crystal_skull", AQCreativeTabs.ITEMS);
-    Item STONE_SKULL = register("stone_skull", AQCreativeTabs.ITEMS);
+    Item HEART = register("heart", new Item(settings()));
+    Item JAGUAR_HIDE = register("jaguar_hide", new Item(settings()));
+    Item LEATHER_QUIVER = register("leather_quiver", new Item(settings()));
+    Item AZTEC_JAGUAR_QUIVER = register("aztec_jaguar_quiver", new Item(settings()));
+    Item OLD_BONE = register("old_bone", new Item(settings()));
+    Item POISONOUS_FROG_0 = register("poisonous_frog_0", new Item(settings()));
+    Item POISONOUS_FROG_1 = register("poisonous_frog_1", new Item(settings()));
+    Item SKULL_0 = register("skull_0", new Item(settings()));
+    Item SKULL_1 = register("skull_1", new Item(settings()));
+    Item CRYSTAL_SKULL = register("crystal_skull", new Item(settings()));
+    Item STONE_SKULL = register("stone_skull", new Item(settings()));
 
 
     // TOOLS & WEAPONS
     Item MACHETE = register("machete", new MacheteItem(ToolMaterials.IRON, 200, 2, -1.0F));
     Item HAMMER_AND_CHISEL = register("hammer_and_chisel", new HammerAndChiselItem());
-    Item WHIP = register("whip", AQCreativeTabs.ITEMS);
+    Item WHIP = register("whip", new Item(settings()));
 
     Item WOOD_BONE_DAGGER = register("wood_bone_dagger", new AQSimpleWeaponItem(ToolMaterials.WOOD, 60, 3, 0.0F));
     Item WOOD_JADE_DAGGER = register("wood_jade_dagger", new AQSimpleWeaponItem(AQToolMaterials.JADE, 60, 3, 0.0F));
     Item WOOD_OBSIDIAN_DAGGER = register("wood_obsidian_dagger", new AQSimpleWeaponItem(AQToolMaterials.OBSIDIAN, 60, 3, 0.0F));
     Item BONE_CLUB = register("bone_club", new AQSimpleWeaponItem(ToolMaterials.WOOD, 60, 5, -3.0F));
 
-    Item BONE_BLOWPIPE = register("bone_blowpipe", AQCreativeTabs.WEAPONS);
-    Item WOODEN_BLOWPIPE = register("wooden_blowpipe", AQCreativeTabs.WEAPONS);
-    Item WOODEN_DART = register("wooden_dart", AQCreativeTabs.WEAPONS);
-    Item BONE_DART = register("bone_dart", AQCreativeTabs.WEAPONS);
+    Item BONE_BLOWPIPE = register("bone_blowpipe", new Item(settings()));
+    Item WOODEN_BLOWPIPE = register("wooden_blowpipe", new Item(settings()));
+    Item WOODEN_DART = register("wooden_dart", new Item(settings()));
+    Item BONE_DART = register("bone_dart", new Item(settings()));
 
     static Item.Settings settings() {
         return new Item.Settings();

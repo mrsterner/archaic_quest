@@ -1,6 +1,7 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 
+import io.github.fabricators_of_create.porting_lib.extensions.BlockExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -27,8 +28,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-
-/** Essentially just copy-paste code from Quark */
 public class VerticalSlabBlock extends Block implements Waterloggable {
 
     public static final EnumProperty<SlabState> SLAB_STATE = EnumProperty.of("type", SlabState.class);
@@ -116,11 +115,6 @@ public class VerticalSlabBlock extends Block implements Waterloggable {
     @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
-    }
-
-    @Override
-    public boolean placeLiquid(WorldAccess world, BlockPos pos, BlockState state, FluidState fluidState) {
-        return state.get(SLAB_STATE) != SlabState.DOUBLE && Waterloggable.super.placeLiquid(world, pos, state, fluidState);
     }
 
     @Override

@@ -3,10 +3,12 @@ package com.obsidian_core.archaic_quest.common.entity.projectile;
 import com.google.common.collect.Lists;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -154,7 +156,7 @@ public class DartEntity extends ProjectileEntity {
             --this.shakeTime;
         }
 
-        if (this.isTouchingWaterOrRain() || blockstate.isOf(Blocks.POWDER_SNOW) || this.isInFluidType((fluidType, height) -> this.canFluidExtinguish(fluidType))) {
+        if (this.isTouchingWaterOrRain() || blockstate.isOf(Blocks.POWDER_SNOW)) {
             this.extinguish();
         }
 
@@ -190,7 +192,7 @@ public class DartEntity extends ProjectileEntity {
                     }
                 }
 
-                if (hitresult != null && hitresult.getType() != HitResult.Type.MISS && !flag && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
+                if (hitresult != null && hitresult.getType() != HitResult.Type.MISS && !flag) {
                     this.onCollision(hitresult);
                     this.velocityDirty = true;
                 }
@@ -356,7 +358,8 @@ public class DartEntity extends ProjectileEntity {
                 }
 
                 this.doPostHurtEffects(livingentity);
-                if (entity1 != null && livingentity != entity1 && livingentity instanceof PlayerEntity && entity1 instanceof ServerPlayerEntity && !this.isSilent()) {
+                if (entity1 != null && livingentity != entity1 && livingentity instanceof PlayerEntity && entity1 instanceof ServerPlayerEntity serverPlayerEntity && !this.isSilent()) {
+                    PlayerLookup.tracking(serverPlayerEntity).forEach(track -> );
                     ((ServerPlayerEntity)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
 
@@ -570,10 +573,10 @@ public class DartEntity extends ProjectileEntity {
     }
 
     //TODO forge
-    public void applyEnchantmentEffects(LivingEntity p_36746_, float p_36747_) {
-        int i = EnchantmentHelper.getEnchantmentWorld(Enchantments.POWER_ARROWS, p_36746_);
-        int j = EnchantmentHelper.getEnchantmentWorld(Enchantments.PUNCH_ARROWS, p_36746_);
-        this.setBaseDamage((double)(p_36747_ * 2.0F) + this.random.triangle((double)this.world.getDifficulty().getId() * 0.11D, 0.57425D));
+    public void applyEnchantmentEffects(LivingEntity livingEntity, float p_36747_) {
+        int i = EnchantmentHelper.getEquipmentLevel(Enchantments.POWER, livingEntity);
+        int j = EnchantmentHelper.getEquipmentLevel(Enchantments.PUNCH, livingEntity);
+        this.setBaseDamage((double)(p_36747_ * 2.0F) + this.random.nextTriangular((double)this.world.getDifficulty().getId() * 0.11D, 0.57425D));
         if (i > 0) {
             this.setBaseDamage(this.getBaseDamage() + (double)i * 0.5D + 0.5D);
         }
@@ -582,7 +585,7 @@ public class DartEntity extends ProjectileEntity {
             this.setKnockback(j);
         }
 
-        if (EnchantmentHelper.getEnchantmentWorld(Enchantments.FLAMING_ARROWS, p_36746_) > 0) {
+        if (EnchantmentHelper.getEquipmentLevel(Enchantments.FLAME, livingEntity) > 0) {
             this.setOnFireFor(100);
         }
 
