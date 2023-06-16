@@ -1,23 +1,24 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.DirectionalBlock;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.StateDefinition;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FacingBlock;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager;
+import net.minecraft.util.math.Direction;
 
-public class SimpleDirectionalBlock extends DirectionalBlock {
+public class SimpleDirectionalBlock extends FacingBlock {
 
-    public SimpleDirectionalBlock(Settings properties) {
+    public SimpleDirectionalBlock(AbstractBlock.Settings properties) {
         super(properties);
         setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext useContext) {
-        return this.getDefaultState().with(FACING, useContext.getNearestLookingDirection().getOpposite());
+    public BlockState getPlacementState(ItemPlacementContext useContext) {
+        return this.getDefaultState().with(FACING, useContext.getPlayerLookDirection().getOpposite());
     }
 
     @Override

@@ -1,55 +1,45 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.block.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.RavagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Random;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ActionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.Ravager;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.world.BlockGetter;
-import net.minecraft.world.world.ItemLike;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.WorldReader;
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.Blocks;
-import net.minecraft.world.world.block.CropBlock;
-import net.minecraft.world.world.block.SoundType;
-import net.minecraft.world.world.block.state.BlockBehaviour;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.StateDefinition;
-import net.minecraft.world.world.block.state.properties.BooleanProperty;
-import net.minecraft.world.world.block.state.properties.IntegerProperty;
-import net.minecraft.world.world.material.Material;
-import net.minecraft.world.world.material.MaterialColor;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.IntProperty;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 public abstract class DoubleCropBlock extends CropBlock {
 
-    protected static final BlockBehaviour.Settings DEFAULT_PROPS = BlockBehaviour.Settings.of(Material.PLANT, MaterialColor.COLOR_GREEN).instabreak().noCollission().nonOpaque().sound(SoundType.GRASS);
-    public static final BooleanProperty IS_TOP = BooleanProperty.create("top");
+    protected static final Settings DEFAULT_PROPS = Settings.of(Material.PLANT, MapColor.GREEN).breakInstantly().noCollision().nonOpaque().sounds(BlockSoundGroup.GRASS);
+    public static final BooleanProperty IS_TOP = BooleanProperty.of("top");
 
-    public static final IntegerProperty AGE_4 = IntegerProperty.create("age", 0, 4);
+    public static final IntProperty AGE_4 = IntProperty.of("age", 0, 4);
 
-    private final Supplier<ItemLike> seed;
+    private final Supplier<ItemConvertible> seed;
 
 
-    public DoubleCropBlock(Settings properties, @Nonnull Supplier<ItemLike> seed) {
+    public DoubleCropBlock(Settings properties, @NotNull Supplier<ItemConvertible> seed) {
         super(properties);
         this.seed = seed;
         setDefaultState(getDefaultState().with(IS_TOP, false));
@@ -66,18 +56,17 @@ public abstract class DoubleCropBlock extends CropBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         VoxelShape[] shapes = isTop(state) ? getShapes().getSecond() : getShapes().getFirst();
         return shapes[getAge(state)];
     }
 
     /**
-     *  @return A Pair of VoxelShape arrays. The first array is used for the lower block,
+     * @return A Pair of VoxelShape arrays. The first array is used for the lower block,
      * the second array is used for the top block. Both arrays must be the same size as
      * the crop's max age.
      */
-    @Nonnull
-    public abstract Pair<VoxelShape[], VoxelShape[]> getShapes();
+    public abstract @NotNull Pair<VoxelShape[], VoxelShape[]> getShapes();
 
     /** @return The crop age for when the crop should grow its top block. */
     public abstract int getDoublingAge();
@@ -88,10 +77,10 @@ public abstract class DoubleCropBlock extends CropBlock {
         return maxAge();
     }
 
-    public abstract IntegerProperty ageProperty();
+    public abstract IntProperty ageProperty();
 
     @Override
-    public final IntegerProperty getAgeProperty() {
+    public final IntProperty getAgeProperty() {
         return ageProperty();
     }
 
@@ -106,8 +95,8 @@ public abstract class DoubleCropBlock extends CropBlock {
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState state) {
-        return !isMaxAge(state) && !isTop(state);
+    public boolean hasRandomTicks(BlockState state) {
+        return !isMature(state) && !isTop(state);
     }
 
     @SuppressWarnings("deprecation")
@@ -115,18 +104,18 @@ public abstract class DoubleCropBlock extends CropBlock {
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random randomSource) {
         if (!world.isAreaLoaded(pos, 1)) return;
 
-        if (world.getRawBrightness(pos, 0) >= 9) {
+        if (world.getBaseLightLevel(pos, 0) >= 9) {
             int age = getAge(state);
 
             if (age < getMaxAge() && !isTop(state)) {
-                float growthSpeed = getGrowthSpeed(this, world, pos);
+                float growthSpeed = getAvailableMoisture(this, world, pos);
 
                 if (ForgeHooks.onCropsGrowPre(world, pos, state, randomSource.nextInt((int)(25.0F / growthSpeed) + 1) == 0)) {
                     int newAge = age + 1;
-                    world.setBlockState(pos, getStateForAge(newAge), 2);
+                    world.setBlockState(pos, withAge(newAge), 2);
 
                     if (newAge >= getDoublingAge()) {
-                        world.setBlockState(pos.up(), getStateForAge(newAge).with(IS_TOP, true), 2);
+                        world.setBlockState(pos.up(), withAge(newAge).with(IS_TOP, true), 2);
                     }
                     ForgeHooks.onCropsGrowPost(world, pos, state);
                 }
@@ -136,100 +125,101 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult hitResult) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         if (getAge(state) >= maxAge()) {
             if (isTop(state)) {
-                world.setBlockState(pos, getStateForAge(getOnHarvestAge()).with(IS_TOP, true), 2);
-                world.setBlockState(pos.down(), getStateForAge(getOnHarvestAge()), 2);
+                world.setBlockState(pos, withAge(getOnHarvestAge()).with(IS_TOP, true), 2);
+                world.setBlockState(pos.down(), withAge(getOnHarvestAge()), 2);
             }
             else {
-                world.setBlockState(pos, getStateForAge(getOnHarvestAge()), 2);
-                world.setBlockState(pos.up(), getStateForAge(getOnHarvestAge()).with(IS_TOP, true), 2);
+                world.setBlockState(pos, withAge(getOnHarvestAge()), 2);
+                world.setBlockState(pos.up(), withAge(getOnHarvestAge()).with(IS_TOP, true), 2);
             }
             if (!world.isClient()) {
-                List<ItemStack> drops = getDrops(getStateForAge(maxAge()), (ServerWorld) world, pos, null);
+                List<ItemStack> drops = Block.getDroppedStacks(withAge(maxAge()), (ServerWorld) world, pos, null);
 
                 for (ItemStack stack : drops) {
-                    popResource(world, pos, stack);
+                    Block.dropStack(world, pos, stack);
                 }
             }
-            return ActionResult.sidedSuccess(world.isClient());
+            return ActionResult.success(world.isClient());
         }
         return ActionResult.PASS;
     }
 
     @Override
-    public BlockState getStateForAge(int age) {
+    public BlockState withAge(int age) {
         return getDefaultState().with(IS_TOP, false).with(getAgeProperty(), age);
     }
 
     @Override
-    public void growCrops(World world, BlockPos pos, BlockState state) {
-        int age = this.getAge(state) + getBonemealAgeIncrease(world);
+    public void applyGrowth(World world, BlockPos pos, BlockState state) {
+        int age = this.getAge(state) + getGrowthAmount(world);
         int maxAge = this.getMaxAge();
 
         if (age > maxAge) {
             age = maxAge;
         }
-        world.setBlockState(pos, getStateForAge(age), 2);
+        world.setBlockState(pos, withAge(age), 2);
 
         if (age >= getDoublingAge()) {
-            world.setBlockState(pos.up(), getStateForAge(age).with(IS_TOP, true), 2);
+            world.setBlockState(pos.up(), withAge(age).with(IS_TOP, true), 2);
         }
     }
 
     @Override
-    protected int getBonemealAgeIncrease(World world) {
+    protected int getGrowthAmount(World world) {
         return MathHelper.nextInt(world.random, 2, 3);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, WorldReader world, BlockPos pos) {
-        return world.getRawBrightness(pos, 0) >= 8 && validPosition(world, state, pos);
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        return world.getBaseLightLevel(pos, 0) >= 8 && validPosition(world, state, pos);
     }
 
-    private boolean validPosition(WorldReader world, BlockState state, BlockPos pos) {
+    private boolean validPosition(WorldView world, BlockState state, BlockPos pos) {
         BlockPos downPos = pos.down();
 
         if (state.getBlock() == this) { //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
             BlockState downState = world.getBlockState(downPos);
 
             if (isTop(state)) {
-                return downState.is(this) && !isTop(downState);
+                return downState.isOf(this) && !isTop(downState);
             }
             else {
                 if (getAge(state) >= getDoublingAge()) {
-                    return mayPlaceOn(downState, world, downPos) && world.getBlockState(pos.up()).is(this);
+                    return canPlantOnTop(downState, world, downPos) && world.getBlockState(pos.up()).isOf(this);
                 }
-                return mayPlaceOn(downState, world, downPos);
+                return canPlantOnTop(downState, world, downPos);
             }
         }
         return world.getBlockState(downPos).canSustainPlant(world, downPos, Direction.UP, this);
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState state, BlockGetter world, BlockPos pos) {
-        return state.is(Blocks.FARMLAND) && pos.up(2).getY() <= world.getMaxBuildHeight();
+    protected boolean canPlantOnTop(BlockState state, BlockView world, BlockPos pos) {
+        return state.isOf(Blocks.FARMLAND) && pos.up(2).getY() <= world.getTopY();
     }
 
     @Override
-    public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (entity instanceof Ravager && ForgeEventFactory.getMobGriefingEvent(world, entity)) {
-            world.destroyBlock(pos, true, entity);
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+        if (entity instanceof RavagerEntity && ForgeEventFactory.getMobGriefingEvent(world, entity)) {
+            world.breakBlock(pos, true, entity);
         }
-        if (state.get(getAgeProperty()) == getMaxAge() && !isTop(state))
-            entity.makeStuckInBlock(state, new Vec3(0.95D, 0.95D, 0.95D));
-        super.entityInside(state, world, pos, entity);
+        if (state.get(getAgeProperty()) == getMaxAge() && !isTop(state)) {
+            entity.slowMovement(state, new Vec3d(0.95D, 0.95D, 0.95D));
+        }
+        super.onEntityCollision(state, world, pos, entity);
     }
 
     @Override
-    public ItemLike getBaseSeedId() {
+    public ItemConvertible getSeedsItem() {
         return seed.get();
     }
 
     @Override
-    public boolean isValidBonemealTarget(BlockGetter world, BlockPos pos, BlockState state, boolean clientSide) {
-        return !this.isMaxAge(state) && !isTop(state);
+    public boolean isFertilizable(BlockView world, BlockPos pos, BlockState state, boolean clientSide) {
+        return !this.isMature(state) && !isTop(state);
     }
 
     @Override

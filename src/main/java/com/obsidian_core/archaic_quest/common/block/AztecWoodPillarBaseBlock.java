@@ -1,37 +1,32 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.world.BlockGetter;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.SimpleWaterloggedBlock;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.block.state.StateDefinition;
-import net.minecraft.world.world.block.state.properties.Properties;
-import net.minecraft.world.world.block.state.properties.BooleanProperty;
-import net.minecraft.world.world.material.FluidState;
-import net.minecraft.world.world.material.Fluids;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.block.Waterloggable;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-
-public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterloggedBlock {
+public class AztecWoodPillarBaseBlock extends Block implements Waterloggable {
 
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
     private static final VoxelShape SHAPE =
-            Shapes.or(
-                    Block.box(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D),
-                    Block.box(4.0D, 0.0D, 4.0D, 12.0D, 5.0D, 12.0D),
-                    Block.box(3.0D, 5.0D, 3.0D, 13.0D, 7.0D, 13.0D)
+            VoxelShapes.union(
+                    Block.createCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D),
+                    Block.createCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 5.0D, 12.0D),
+                    Block.createCuboidShape(3.0D, 5.0D, 3.0D, 13.0D, 7.0D, 13.0D)
             );
 
     public AztecWoodPillarBaseBlock(Settings properties) {
@@ -39,17 +34,16 @@ public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterlogged
         setDefaultState(getDefaultState().with(WATERLOGGED, false));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    public BlockState getPlacementState(ItemPlacementContext context) {
         BlockPos clickedPos = context.getBlockPos();
         World world = context.getWorld();
-        boolean waterlogged = world.getBlockState(clickedPos).getFluidState().is(FluidTags.WATER);
+        boolean waterlogged = world.getBlockState(clickedPos).getFluidState().isIn(FluidTags.WATER);
 
         return this.getDefaultState().with(WATERLOGGED, waterlogged);
     }
@@ -57,7 +51,7 @@ public class AztecWoodPillarBaseBlock extends Block implements SimpleWaterlogged
     @Override
     @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState state) {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
     }
 
     @Override

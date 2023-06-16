@@ -1,25 +1,25 @@
 package com.obsidian_core.archaic_quest.common.blockentity;
 
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
-import com.obsidian_core.archaic_quest.common.block.SpikeTrapBlock;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
-import net.minecraft.core.BlockPos;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.entity.BlockEntity;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.phys.Box;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
+
 import static com.obsidian_core.archaic_quest.common.block.SpikeTrapBlock.Mode;
 
 import java.util.List;
@@ -49,14 +49,14 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
             // Create collision box if needed
             if (trap.effectBox == null) {
-                trap.effectBox = new Box(pos.up()).inflate(0.0D, 0.75D, 0.0D);
+                trap.effectBox = new Box(pos.up()).expand(0.0D, 0.75D, 0.0D);
             }
-            List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, trap.effectBox);
+            List<LivingEntity> entities = world.getNonSpectatingEntities(LivingEntity.class, trap.effectBox);
 
             // Affect/damage entities inside the spikes
             for (LivingEntity entity : entities) {
-                entity.hurt(AQDamageSources.SPIKE_TRAP, 2.0F);
-                entity.makeStuckInBlock(state, new Vec3(0.25D, 0.05F, 0.25D));
+                entity.damage(AQDamageSources.SPIKE_TRAP, 2.0F);
+                entity.slowMovement(state, new Vec3d(0.25D, 0.05F, 0.25D));
             }
         }
         else {
@@ -91,62 +91,62 @@ public class SpikeTrapBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(NbtCompound compoundTag) {
-        super.load(compoundTag);
+    public void readNbt(NbtCompound compoundTag) {
+        super.readNbt(compoundTag);
 
-        if (compoundTag.contains("Active", Tag.TAG_BYTE)) {
+        if (compoundTag.contains("Active", NbtElement.BYTE_TYPE)) {
             active = compoundTag.getBoolean("Active");
         }
 
-        if (compoundTag.contains("SpikeRise", Tag.TAG_ANY_NUMERIC)) {
+        if (compoundTag.contains("SpikeRise", NbtElement.INT_TYPE)) {
             spikeRise = MathHelper.clamp(compoundTag.getInt("SpikeRise"), 0, maxSpikeRise);
         }
 
-        if (compoundTag.contains("Mode", Tag.TAG_STRING)) {
+        if (compoundTag.contains("Mode", NbtElement.STRING_TYPE)) {
             Mode mode = Mode.getFromName(compoundTag.getString("Mode"));
             this.mode = mode == null ? Mode.NORMAL : mode;
         }
     }
 
     @Override
-    public void saveAdditional(NbtCompound compoundTag) {
-        super.saveAdditional(compoundTag);
+    public void writeNbt(NbtCompound compoundTag) {
+        super.writeNbt(compoundTag);
 
         compoundTag.putBoolean("Active", active);
         compoundTag.putInt("SpikeRise", spikeRise);
-        compoundTag.putString("Mode", mode.getSerializedName());
+        compoundTag.putString("Mode", mode.asString());
     }
 
     private void writeUpdateData(NbtCompound compoundTag) {
         compoundTag.putBoolean("Active", active);
         compoundTag.putInt("SpikeRise", spikeRise);
-        compoundTag.putString("Mode", mode.getSerializedName());
+        compoundTag.putString("Mode", mode.asString());
     }
 
 
     @Override
-    public NbtCompound getUpdateTag() {
+    public NbtCompound toInitialChunkDataNbt() {
         NbtCompound compoundTag = new NbtCompound();
         writeUpdateData(compoundTag);
         return compoundTag;
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
     public void handleUpdateTag(NbtCompound tag) {
         super.handleUpdateTag(tag);
 
-        if (tag.contains("Active", Tag.TAG_BYTE)) {
+        if (tag.contains("Active", NbtElement.BYTE_TYPE)) {
             active = tag.getBoolean("Active");
         }
-        if (tag.contains("SpikeRise", Tag.TAG_ANY_NUMERIC)) {
+        if (tag.contains("SpikeRise", NbtElement.INT_TYPE)) {
             spikeRise = MathHelper.clamp(tag.getInt("SpikeRise"), 0, maxSpikeRise);
         }
-        if (tag.contains("Mode", Tag.TAG_STRING)) {
+        if (tag.contains("Mode", NbtElement.STRING_TYPE)) {
             Mode mode = Mode.getFromName(tag.getString("Mode"));
             this.mode = mode == null ? Mode.NORMAL : mode;
         }
@@ -161,11 +161,11 @@ public class SpikeTrapBlockEntity extends BlockEntity {
     }
 
     @Override
-    public boolean onlyOpCanSetNbt() {
+    public boolean copyItemDataRequiresOperator() {
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public Box getRenderBoundingBox() {
         BlockPos pos = getBlockPos();

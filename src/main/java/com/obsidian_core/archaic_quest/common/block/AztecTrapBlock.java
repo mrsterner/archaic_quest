@@ -7,9 +7,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-import java.util.Random;
 
 public class AztecTrapBlock extends DispenserBlock {
 
@@ -35,8 +35,8 @@ public class AztecTrapBlock extends DispenserBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld serverWorld, BlockPos pos, Random random) {
-        super.tick(state, serverWorld, pos, random);
+    public void scheduledTick(BlockState state, ServerWorld serverWorld, BlockPos pos, Random random) {
+        super.scheduledTick(state, serverWorld, pos, random);
         serverWorld.setBlockState(pos, state.with(ACTIVE, false), 3);
     }
 

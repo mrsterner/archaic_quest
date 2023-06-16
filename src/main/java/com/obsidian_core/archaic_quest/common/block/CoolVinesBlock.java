@@ -1,22 +1,40 @@
 package com.obsidian_core.archaic_quest.common.block;
 
+import net.minecraft.block.*;
+import net.minecraft.block.enums.SlabType;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.Nullable;
 
 public class CoolVinesBlock extends Block implements IForgeShearable {
 
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-    public static final BooleanProperty CUT = BooleanProperty.create("cut");
-    public static final BooleanProperty CAN_GROW = BooleanProperty.create("can_grow");
+    public static final BooleanProperty CUT = BooleanProperty.of("cut");
+    public static final BooleanProperty CAN_GROW = BooleanProperty.of("can_grow");
 
     private static final VoxelShape[] shapes = {
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 1.0D),
-            Block.box(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-            Block.box(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D),
-            Block.box(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D),
-            Block.box(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 1.0D),
-            Block.box(15.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-            Block.box(0.0D, 8.0D, 15.0D, 16.0D, 16.0D, 16.0D),
-            Block.box(0.0D, 8.0D, 0.0D, 1.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 1.0D),
+            Block.createCuboidShape(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 1.0D),
+            Block.createCuboidShape(15.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 8.0D, 15.0D, 16.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 8.0D, 0.0D, 1.0D, 16.0D, 16.0D),
     };
 
 
@@ -27,8 +45,8 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return shapes[state.get(FACING).get2DDataValue() + (state.get(CUT) ? 4 : 0)];
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return shapes[state.get(FACING).getHorizontal() + (state.get(CUT) ? 4 : 0)];
     }
 
     public boolean isCut(BlockState state) {
@@ -40,7 +58,7 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState state) {
+    public boolean hasRandomTicks(BlockState state) {
         return canGrow(state);
     }
 
@@ -60,10 +78,10 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction face = context.getClickedFace();
+    public BlockState getPlacementState(ItemPlacementContext context) {
+        Direction face = context.getSide();
         BlockPos pos = context.getBlockPos();
-        BlockPos behindPos = pos.relative(face.getOpposite());
+        BlockPos behindPos = pos.offset(face.getOpposite());
         World world = context.getWorld();
 
         if (face == Direction.DOWN || face == Direction.UP) {
@@ -72,11 +90,11 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
         BlockState behindState = world.getBlockState(behindPos);
         BlockState upState = world.getBlockState(pos.up());
 
-        if (Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
-                || behindState.isFaceSturdy(world, behindPos, face)
-                || (behindState.getBlock() instanceof SlabBlock && behindState.get(SlabBlock.TPOSITIVE_YE) == SlabType.TOP)
+        if (Block.isFaceFullSquare(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
+                || behindState.isSideSolidFullSquare(world, behindPos, face)
+                || (behindState.getBlock() instanceof SlabBlock && behindState.get(SlabBlock.TYPE) == SlabType.TOP)
                 || (upState.getBlock() instanceof VerticalSlabBlock && upState.get(VerticalSlabBlock.SLAB_STATE).getDirection() == face )
-                || upState.isFaceSturdy(world, pos.up(), Direction.DOWN)) {
+                || upState.isSideSolidFullSquare(world, pos.up(), Direction.DOWN)) {
             return getDefaultState().with(FACING, face);
         }
         return null;
@@ -84,27 +102,28 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Deprecated
     @SuppressWarnings("deprecation")
-    public boolean canSurvive(BlockState state, WorldReader world, BlockPos pos) {
+    @Override
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         Direction face = state.get(FACING);
-        BlockPos behindPos = pos.relative(face.getOpposite());
+        BlockPos behindPos = pos.offset(face.getOpposite());
         BlockState behindState = world.getBlockState(behindPos);
         BlockState upState = world.getBlockState(pos.up());
 
-        return Block.isFaceFull(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
-                || behindState.isFaceSturdy(world, behindPos, face)
-                || (behindState.getBlock() instanceof SlabBlock && behindState.get(SlabBlock.TPOSITIVE_YE) == SlabType.TOP)
+        return Block.isFaceFullSquare(world.getBlockState(behindPos).getCollisionShape(world, behindPos), face)
+                || behindState.isSideSolidFullSquare(world, behindPos, face)
+                || (behindState.getBlock() instanceof SlabBlock && behindState.get(SlabBlock.TYPE) == SlabType.TOP)
                 || (upState.getBlock() instanceof VerticalSlabBlock && upState.get(VerticalSlabBlock.SLAB_STATE).getDirection() == face )
-                || upState.isFaceSturdy(world, pos.up(), Direction.DOWN)
-                || (upState.is(this) && upState.get(FACING) == face && !upState.get(CUT));
+                || upState.isSideSolidFullSquare(world, pos.up(), Direction.DOWN)
+                || (upState.isOf(this) && upState.get(FACING) == face && !upState.get(CUT));
     }
 
     @Deprecated
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updateShape(BlockState newState, Direction direction, BlockState state, WorldAccessor world, BlockPos pos, BlockPos pos1) {
-        return !newState.canSurvive(world, pos)
+    public BlockState getStateForNeighborUpdate(BlockState newState, Direction direction, BlockState state, WorldAccess world, BlockPos pos, BlockPos pos1) {
+        return !newState.canPlaceAt(world, pos)
                 ? Blocks.AIR.getDefaultState()
-                : super.updateShape(newState, direction, state, world, pos, pos1);
+                : super.getStateForNeighborUpdate(newState, direction, state, world, pos, pos1);
     }
 
     @Override
@@ -114,13 +133,13 @@ public class CoolVinesBlock extends Block implements IForgeShearable {
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 }

@@ -1,32 +1,31 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.world.World;
-import net.minecraft.world.world.block.Block;
-import net.minecraft.world.world.block.EntityBlock;
-import net.minecraft.world.world.block.SoundType;
-import net.minecraft.world.world.block.entity.BlockEntity;
-import net.minecraft.world.world.block.entity.BlockEntityTicker;
-import net.minecraft.world.world.block.entity.BlockEntityType;
-import net.minecraft.world.world.block.state.BlockBehaviour;
-import net.minecraft.world.world.block.state.BlockState;
-import net.minecraft.world.world.material.Material;
 
-import javax.annotation.Nullable;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-public class FoundryBlock extends Block implements EntityBlock {
+public class FoundryBlock extends Block implements BlockEntityProvider {
 
     public FoundryBlock() {
-        super(BlockBehaviour.Settings.of(Material.STONE)
-                .requiresCorrectToolForDrops()
-                .randomTicks()
-                .sound(SoundType.STONE)
+        super(Settings.of(Material.STONE)
+                .requiresTool()
+                .ticksRandomly()
+                .sounds(BlockSoundGroup.STONE)
                 .strength(2.0F));
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return null;
     }
 
