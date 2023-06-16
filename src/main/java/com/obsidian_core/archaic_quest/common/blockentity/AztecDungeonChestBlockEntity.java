@@ -1,6 +1,7 @@
 package com.obsidian_core.archaic_quest.common.blockentity;
 
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
+import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
 import io.github.fabricators_of_create.porting_lib.util.LazyOptional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -59,7 +60,7 @@ public class AztecDungeonChestBlockEntity extends LootableContainerBlockEntity i
     };
 
     public AztecDungeonChestBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.AZTEC_DUNGEON_CHEST, pos, state);
+        super(AQBlockEntityTypes.AZTEC_DUNGEON_CHEST, pos, state);
     }
 
     @Override

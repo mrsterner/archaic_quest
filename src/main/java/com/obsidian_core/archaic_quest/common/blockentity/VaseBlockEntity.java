@@ -1,6 +1,7 @@
 package com.obsidian_core.archaic_quest.common.blockentity;
 
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
+import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +26,7 @@ public class VaseBlockEntity extends BlockEntity {
     private long lootTableSeed = 0L;
 
     public VaseBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.VASE, pos, state);
+        super(AQBlockEntityTypes.VASE, pos, state);
     }
 
     public void setLootTable(Identifier lootTableId, long lootTableSeed) {

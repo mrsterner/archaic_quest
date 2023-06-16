@@ -3,6 +3,7 @@ package com.obsidian_core.archaic_quest.common.blockentity;
 import com.obsidian_core.archaic_quest.common.block.AztecThroneBlock;
 import com.obsidian_core.archaic_quest.common.block.data.ThroneType;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
+import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -14,7 +15,7 @@ public class AztecThroneBlockEntity extends BlockEntity {
     private ThroneType throneType = null;
 
     public AztecThroneBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.AZTEC_THRONE, pos, state);
+        super(AQBlockEntityTypes.AZTEC_THRONE, pos, state);
     }
 
     @Override

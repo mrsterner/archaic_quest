@@ -99,4 +99,6 @@ public class AQBiomes {
         $$1 = MathHelper.clamp($$1, -1.0F, 1.0F);
         return MathHelper.hsvToRgb(0.62222224F - $$1 * 0.05F, 0.5F + $$1 * 0.1F, 1.0F);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.obsidian_core.archaic_quest.common.item;
 
-import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
+import com.obsidian_core.archaic_quest.ArchaicQuest;
+import com.obsidian_core.archaic_quest.registry.AQSoundEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,7 @@ import net.minecraft.world.World;
 public class AztecDeathWhistleItem extends Item {
 
     public AztecDeathWhistleItem() {
-        super(new Item.Settings().group(AQCreativeTabs.ITEMS).stacksTo(1));
+        super(new Item.Settings().group(ArchaicQuest.ITEMS).maxCount(1));
     }
 
 

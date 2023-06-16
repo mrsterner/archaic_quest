@@ -4,6 +4,7 @@ import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
 import com.obsidian_core.archaic_quest.common.network.NetworkHelper;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
+import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -36,7 +37,7 @@ public class AztecDungeonDoorBlockEntity extends BlockEntity {
     }
 
     public AztecDungeonDoorBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.AZTEC_DUNGEON_DOOR, pos, state);
+        super(AQBlockEntityTypes.AZTEC_DUNGEON_DOOR, pos, state);
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.obsidian_core.archaic_quest.common.item;
 
+import com.obsidian_core.archaic_quest.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.block.ChiselPillarBlock;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
+import com.obsidian_core.archaic_quest.registry.AQObjects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 public class HammerAndChiselItem extends Item {
 
     public HammerAndChiselItem() {
-        super(new Item.Settings().group(AQCreativeTabs.TOOLS).stacksTo(1).defaultDurability(150));
+        super(new Item.Settings().group(ArchaicQuest.TOOLS).maxCount(1).maxDamage(150));
     }
 
     @Override
@@ -28,7 +29,7 @@ public class HammerAndChiselItem extends Item {
         BlockPos pos = context.getBlockPos();
         BlockState clickedState = world.getBlockState(pos);
 
-        if (clickedState.isOf(AQBlocks.AZTEC_PILLAR)) {
+        if (clickedState.isOf(AQObjects.AZTEC_PILLAR)) {
             ChiselPillarBlock.Type pillarType = clickedState.get(ChiselPillarBlock.PILLAR_TPOSITIVE_YE);
 
             if (pillarType.canBeChiseled()) {

@@ -27,7 +27,7 @@ public class MacheteItem extends AQSimpleWeaponItem {
         World world = context.getWorld();
         BlockPos pos = context.getBlockPos();
         BlockState state = world.getBlockState(pos);
-        ItemStack stack = context.getStackInHand();
+        ItemStack stack = context.getStack();
 
         if (state.getBlock() instanceof CoolVinesBlock && !state.get(CoolVinesBlock.CUT)) {
             if (player.isSneaking()) {

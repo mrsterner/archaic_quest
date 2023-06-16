@@ -3,6 +3,7 @@ package com.obsidian_core.archaic_quest.common.blockentity;
 import com.obsidian_core.archaic_quest.common.block.AztecDungeonDoorBlock;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.misc.AQDamageSources;
+import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -37,7 +38,7 @@ public class SpikeTrapBlockEntity extends BlockEntity {
 
 
     public SpikeTrapBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.SPIKE_TRAP.get(), pos, state);
+        super(AQBlockEntityTypes.SPIKE_TRAP, pos, state);
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, SpikeTrapBlockEntity trap) {

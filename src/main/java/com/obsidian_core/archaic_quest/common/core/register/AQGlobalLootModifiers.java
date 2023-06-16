@@ -4,10 +4,7 @@ import com.mojang.serialization.Codec;
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.loot_modifier.LootModifierAdd;
 import com.obsidian_core.archaic_quest.common.loot_modifier.LootModifierRemove;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import io.github.fabricators_of_create.porting_lib.loot.IGlobalLootModifier;
 
 import java.util.function.Supplier;
 

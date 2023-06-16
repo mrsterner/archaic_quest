@@ -3,6 +3,7 @@ package com.obsidian_core.archaic_quest.common.blockentity;
 import com.obsidian_core.archaic_quest.common.block.AztecPoisonTrapBlock;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
+import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -24,7 +25,7 @@ public class AztecPoisonTrapBlockEntity extends BlockEntity {
     private int timeNextCollisionTick = 8;
 
     public AztecPoisonTrapBlockEntity(BlockPos pos, BlockState state) {
-        super(AQBlockEntities.POISON_TRAP, pos, state);
+        super(AQBlockEntityTypes.POISON_TRAP, pos, state);
     }
 
     @Override
