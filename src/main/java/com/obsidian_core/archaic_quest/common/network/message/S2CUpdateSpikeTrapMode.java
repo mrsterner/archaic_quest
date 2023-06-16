@@ -1,9 +1,7 @@
 package com.obsidian_core.archaic_quest.common.network.message;
 
 import com.obsidian_core.archaic_quest.common.network.work.ClientWork;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.function.Supplier;
 

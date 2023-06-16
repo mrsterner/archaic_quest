@@ -141,15 +141,15 @@ public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
 
     @Override
     public void setAngles(Tlatlaomi tlatlaomi, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        boolean flag = tlatlaomi.getFallFlyingTicks() > 4;
+        boolean flag = tlatlaomi.getRoll() > 4;
 
-        head.yRot = netHeadYaw * ((float)Math.PI / 180F);
+        head.yaw = netHeadYaw * ((float)Math.PI / 180F);
 
         if (flag) {
-            this.head.xRot = (-(float)Math.PI / 4F);
+            this.head.pitch = (-(float)Math.PI / 4F);
         }
         else {
-            this.head.xRot = headPitch * ((float)Math.PI / 180F);
+            this.head.pitch = headPitch * ((float)Math.PI / 180F);
         }
 
         float f = 1.0F;
@@ -163,32 +163,32 @@ public class TlatlaomiModel extends EntityModel<Tlatlaomi> {
             f = 1.0F;
         }
 
-        rightArm.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F / f;
-        leftArm.xRot = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f;
-        rightArm.zRot = 0.0F;
-        leftArm.zRot = 0.0F;
-        rightLeg.xRot = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / f;
-        leftLeg.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / f;
-        rightLeg.yRot = 0.0F;
-        leftLeg.yRot = 0.0F;
-        rightLeg.zRot = 0.0F;
-        leftLeg.zRot = 0.0F;
+        rightArm.pitch = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F / f;
+        leftArm.pitch = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f;
+        rightArm.roll = 0.0F;
+        leftArm.roll = 0.0F;
+        rightLeg.pitch = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / f;
+        leftLeg.pitch = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / f;
+        rightLeg.yaw = 0.0F;
+        leftLeg.yaw = 0.0F;
+        rightLeg.roll = 0.0F;
+        leftLeg.roll = 0.0F;
 
         if (riding) {
-            rightArm.xRot += (-(float)Math.PI / 5F);
-            leftArm.xRot += (-(float)Math.PI / 5F);
-            rightLeg.xRot = -1.4137167F;
-            rightLeg.yRot = ((float)Math.PI / 10F);
-            rightLeg.zRot = 0.07853982F;
-            leftLeg.xRot = -1.4137167F;
-            leftLeg.yRot = (-(float)Math.PI / 10F);
-            leftLeg.zRot = -0.07853982F;
+            rightArm.pitch += (-(float)Math.PI / 5F);
+            leftArm.pitch += (-(float)Math.PI / 5F);
+            rightLeg.pitch = -1.4137167F;
+            rightLeg.yaw = ((float)Math.PI / 10F);
+            rightLeg.roll = 0.07853982F;
+            leftLeg.pitch = -1.4137167F;
+            leftLeg.yaw = (-(float)Math.PI / 10F);
+            leftLeg.roll = -0.07853982F;
         }
-        rightArm.yRot = 0.0F;
-        leftArm.yRot = 0.0F;
+        rightArm.yaw = 0.0F;
+        leftArm.yaw = 0.0F;
 
         CrossbowPosing.swingArms(rightArm, leftArm, ageInTicks);
-        jaw.xRot = (MathHelper.sin(ageInTicks / 18.0F)) / 8.0F + 0.25F;
+        jaw.pitch = (MathHelper.sin(ageInTicks / 18.0F)) / 8.0F + 0.25F;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.mojang.datafixers.util.Pair;
-import com.obsidian_core.archaic_quest.common.core.register.AQItems;
+import com.obsidian_core.archaic_quest.registry.AQObjects;
 import net.minecraft.block.Block;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.shape.VoxelShape;
@@ -27,7 +27,7 @@ public class CornCropBlock extends DoubleCropBlock {
     );
 
     public CornCropBlock() {
-        super(DEFAULT_PROPS, AQItems.CORN);
+        super(DEFAULT_PROPS, AQObjects.CORN);
     }
 
     @Override

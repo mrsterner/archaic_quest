@@ -3,6 +3,7 @@ package com.obsidian_core.archaic_quest.client.render.blockentity;
 import com.obsidian_core.archaic_quest.ArchaicQuest;
 import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecCraftingStationBlockEntity;
+import com.obsidian_core.archaic_quest.registry.AQObjects;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.RenderLayer;
@@ -73,9 +74,9 @@ public class AztecCraftingStationRenderer implements BlockEntityRenderer<AztecCr
 
     @Override
     public void render(AztecCraftingStationBlockEntity craftingStation, float partialTick, MatrixStack matrices, VertexConsumerProvider bufferSource, int packedLight, int textureOverlay) {
-        BlockState state = craftingStation.getWorld() == null ? AQBlocks.AZTEC_CRAFTING_STATION.getDefaultState() : craftingStation.getBlockState();
+        BlockState state = craftingStation.getWorld() == null ? AQObjects.AZTEC_CRAFTING_STATION.getDefaultState() : craftingStation.getCachedState();
         Direction direction = state.get(Properties.HORIZONTAL_FACING);
-        float rotation = direction.toYRot();
+        float rotation = direction.asRotation();
 
         matrices.push();
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-rotation));
@@ -112,8 +113,8 @@ public class AztecCraftingStationRenderer implements BlockEntityRenderer<AztecCr
     }
 
     public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
-        modelRenderer.xRot = x;
-        modelRenderer.yRot = y;
-        modelRenderer.zRot = z;
+        modelRenderer.pitch = x;
+        modelRenderer.yaw = y;
+        modelRenderer.roll = z;
     }
 }

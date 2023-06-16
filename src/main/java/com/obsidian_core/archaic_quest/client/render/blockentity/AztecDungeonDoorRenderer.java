@@ -30,7 +30,7 @@ public class AztecDungeonDoorRenderer implements BlockEntityRenderer<AztecDungeo
         ModelData meshdefinition = new ModelData();
         ModelPartData partdefinition = meshdefinition.getRoot();
 
-        ModelPartData door = partdefinition.addChild("door", ModelPartBuilder.create().uv(108, 181).cuboid(-17.0F, -39.0F, 0.0F, 32.0F, 39.0F, 4.0F, new Dilation(0.0F)), ModelTransform.offset(1.0F, 24.0F, -2.0F));
+        ModelPartData door = partdefinition.addChild("door", ModelPartBuilder.create().uv(108, 181).cuboid(-17.0F, -39.0F, 0.0F, 32.0F, 39.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(1.0F, 24.0F, -2.0F));
 
         ModelPartData doorFrame = partdefinition.addChild("door_frame", ModelPartBuilder.create().uv(48, 192).cuboid(16.0F, -48.0F, -8.0F, 8.0F, 48.0F, 16.0F, new Dilation(0.0F))
                 .uv(0, 192).cuboid(-24.0F, -48.0F, -8.0F, 8.0F, 48.0F, 16.0F, new Dilation(0.0F))
@@ -65,8 +65,8 @@ public class AztecDungeonDoorRenderer implements BlockEntityRenderer<AztecDungeo
 
     @Override
     public void render(AztecDungeonDoorBlockEntity dungeonDoor, float partialTick, MatrixStack matrices, VertexConsumerProvider bufferSource, int packedLight, int textureOverlay) {
-        Direction direction = dungeonDoor.getBlockState().get(Properties.HORIZONTAL_FACING);
-        float rotation = direction.toYRot();
+        Direction direction = dungeonDoor.getCachedState().get(Properties.HORIZONTAL_FACING);
+        float rotation = direction.asRotation();
 
         matrices.push();
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-rotation));
@@ -115,14 +115,10 @@ public class AztecDungeonDoorRenderer implements BlockEntityRenderer<AztecDungeo
         float precision = doorPos >= 60 || doorPos <= 0 ? 0.0F : partialTick;
 
         switch (dungeonDoor.getDoorState()) {
-            default:
-                break;
-            case STAND_BY:
-                precision = 0.0F;
-                break;
-            case CLOSING:
-                precision = -precision;
-                break;
+            case STAND_BY -> precision = 0.0F;
+            case CLOSING -> precision = -precision;
+            default -> {
+            }
         }
 
         double y = (double) (dungeonDoor.getDoorPosition() + precision) / 25.0D;
@@ -137,18 +133,18 @@ public class AztecDungeonDoorRenderer implements BlockEntityRenderer<AztecDungeo
     }
 
     @Override
-    public boolean shouldRenderOffScreen(AztecDungeonDoorBlockEntity tileEntity) {
+    public boolean rendersOutsideBoundingBox(AztecDungeonDoorBlockEntity tileEntity) {
         return true;
     }
 
     @Override
-    public int getViewDistance() {
+    public int getRenderDistance() {
         return 256;
     }
 
     public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
-        modelRenderer.xRot = x;
-        modelRenderer.yRot = y;
-        modelRenderer.zRot = z;
+        modelRenderer.pitch = x;
+        modelRenderer.yaw = y;
+        modelRenderer.roll = z;
     }
 }

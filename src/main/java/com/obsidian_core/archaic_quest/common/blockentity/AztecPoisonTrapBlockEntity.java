@@ -1,9 +1,8 @@
 package com.obsidian_core.archaic_quest.common.blockentity;
 
 import com.obsidian_core.archaic_quest.common.block.AztecPoisonTrapBlock;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
-import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
 import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
+import com.obsidian_core.archaic_quest.registry.AQSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;

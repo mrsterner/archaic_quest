@@ -36,10 +36,10 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     public static final IntProperty AGE_4 = IntProperty.of("age", 0, 4);
 
-    private final Supplier<ItemConvertible> seed;
+    private final ItemConvertible seed;
 
 
-    public DoubleCropBlock(Settings properties, @NotNull Supplier<ItemConvertible> seed) {
+    public DoubleCropBlock(Settings properties, @NotNull ItemConvertible seed) {
         super(properties);
         this.seed = seed;
         setDefaultState(getDefaultState().with(IS_TOP, false));
@@ -214,7 +214,7 @@ public abstract class DoubleCropBlock extends CropBlock {
 
     @Override
     public ItemConvertible getSeedsItem() {
-        return seed.get();
+        return seed;
     }
 
     @Override

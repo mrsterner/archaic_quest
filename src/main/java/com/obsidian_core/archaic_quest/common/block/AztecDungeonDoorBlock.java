@@ -1,9 +1,9 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.block.data.DungeonDoorType;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecDungeonDoorBlockEntity;
-import com.obsidian_core.archaic_quest.common.core.register.AQSoundEvents;
+import com.obsidian_core.archaic_quest.registry.AQObjects;
+import com.obsidian_core.archaic_quest.registry.AQSoundEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -23,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.util.shape.VoxelVoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -187,7 +186,7 @@ public class AztecDungeonDoorBlock extends Block implements BlockEntityProvider 
 
 
     public AztecDungeonDoorBlock(DungeonDoorType doorType) {
-        super(Settings.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0));
+        super(Settings.copy(AQObjects.ANDESITE_AZTEC_BRICKS_0));
         setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(BLOCK_TPOSITIVE_YE, BlockType.MASTER).with(IS_OPEN, false));
         this.doorType = doorType;
     }
@@ -340,7 +339,7 @@ public class AztecDungeonDoorBlock extends Block implements BlockEntityProvider 
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return state.isOf(this) && isMaster(state)
                 ? new AztecDungeonDoorBlockEntity(pos, state)
                 : null;

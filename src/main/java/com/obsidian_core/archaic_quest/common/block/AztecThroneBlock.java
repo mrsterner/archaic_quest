@@ -2,7 +2,7 @@ package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.block.data.ThroneType;
 import com.obsidian_core.archaic_quest.common.blockentity.AztecThroneBlockEntity;
-import com.obsidian_core.archaic_quest.common.core.register.AQBlocks;
+import com.obsidian_core.archaic_quest.registry.AQObjects;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
@@ -28,7 +28,7 @@ public class AztecThroneBlock extends Block implements BlockEntityProvider {
     private final ThroneType throneType;
 
     public AztecThroneBlock(ThroneType throneType) {
-        super(Settings.copy(AQBlocks.ANDESITE_AZTEC_BRICKS_0).nonOpaque());
+        super(Settings.copy(AQObjects.ANDESITE_AZTEC_BRICKS_0).nonOpaque());
         setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
         this.throneType = throneType;
     }

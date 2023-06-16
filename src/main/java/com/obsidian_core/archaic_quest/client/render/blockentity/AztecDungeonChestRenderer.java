@@ -31,7 +31,7 @@ public class AztecDungeonChestRenderer implements BlockEntityRenderer<AztecDunge
         ModelPartData partdefinition = meshdefinition.getRoot();
 
         // Lid
-        partdefinition.addChild("lid", ModelPartBuilder.create().uv(0, 24).cuboid(-14.0F, -2.0F, -11.0F, 28.0F, 2.0F, 20.0F, new Dilation(0.0F)), ModelTransform.offset(0.0F, 8.0F, 1.0F));
+        partdefinition.addChild("lid", ModelPartBuilder.create().uv(0, 24).cuboid(-14.0F, -2.0F, -11.0F, 28.0F, 2.0F, 20.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 8.0F, 1.0F));
 
         // Chest
         partdefinition.addChild("chest", ModelPartBuilder.create().uv(0, 0).cuboid(-15.0F, -2.0F, -11.0F, 30.0F, 2.0F, 22.0F, new Dilation(0.0F))
@@ -52,7 +52,7 @@ public class AztecDungeonChestRenderer implements BlockEntityRenderer<AztecDunge
 
     @Override
     public void render(AztecDungeonChestBlockEntity dungeonChest, float partialTick, MatrixStack matrices, VertexConsumerProvider bufferSource, int packedLight, int textureOverlay) {
-        float rot = 22.5F * (float) dungeonChest.getBlockState().get(AztecDungeonChestBlock.ROTATION);
+        float rot = 22.5F * (float) dungeonChest.getCachedState().get(AztecDungeonChestBlock.ROTATION);
         matrices.translate(0.5D, 1.5F, 0.5D);
 
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-rot));
@@ -61,7 +61,7 @@ public class AztecDungeonChestRenderer implements BlockEntityRenderer<AztecDunge
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderLayer.getEntityCutout(texture));
         chest.render(matrices, vertexConsumer, packedLight, textureOverlay);
 
-        lid.yRot = dungeonChest.getOpenNess(partialTick) * ((float) Math.PI / 4F);
+        lid.yaw = dungeonChest.getAnimationProgress(partialTick) * ((float) Math.PI / 4F);
 
         lid.render(matrices, vertexConsumer, packedLight, textureOverlay);
     }

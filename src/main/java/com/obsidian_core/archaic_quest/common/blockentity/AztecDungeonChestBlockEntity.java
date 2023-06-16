@@ -1,6 +1,5 @@
 package com.obsidian_core.archaic_quest.common.blockentity;
 
-import com.obsidian_core.archaic_quest.common.core.register.AQBlockEntities;
 import com.obsidian_core.archaic_quest.registry.AQBlockEntityTypes;
 import io.github.fabricators_of_create.porting_lib.util.LazyOptional;
 import net.minecraft.block.Block;

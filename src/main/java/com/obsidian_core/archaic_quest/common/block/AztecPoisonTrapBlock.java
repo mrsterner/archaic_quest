@@ -1,7 +1,7 @@
 package com.obsidian_core.archaic_quest.common.block;
 
 import com.obsidian_core.archaic_quest.common.blockentity.AztecPoisonTrapBlockEntity;
-import com.obsidian_core.archaic_quest.common.core.register.AQParticles;
+import com.obsidian_core.archaic_quest.registry.AQParticleTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -48,7 +48,7 @@ public class AztecPoisonTrapBlock extends Block implements BlockEntityProvider {
                 final double z = center.getZ() + (random.nextGaussian() * 1.5D);
 
                 if (world.getBlockState(pos.up().add((int) x, 0, (int) z)).isAir()) {
-                    world.addParticle(AQParticles.POISON_CLOUD, x, center.getY(), z, 0.0D, -0.01D, 0.0D);
+                    world.addParticle(AQParticleTypes.POISON_CLOUD, x, center.getY(), z, 0.0D, -0.01D, 0.0D);
                 }
             }
         }

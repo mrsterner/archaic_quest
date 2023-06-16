@@ -1,6 +1,6 @@
 package com.obsidian_core.archaic_quest.common.block;
 
-import com.obsidian_core.archaic_quest.common.block.state.AQStateSettings;
+import com.obsidian_core.archaic_quest.common.block.state.AQStateProperties;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.ai.pathing.NavigationType;
@@ -25,7 +25,7 @@ import net.minecraft.world.WorldView;
 public class AztecWoodPillarBlock extends Block implements Waterloggable {
 
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    public static final BooleanProperty EXTENDED = AQStateSettings.EXTENDED;
+    public static final BooleanProperty EXTENDED = AQStateProperties.EXTENDED;
     public static final EnumProperty<Direction.Axis> AXIS = Properties.AXIS;
     public static final BooleanProperty CONNECTED_X = BooleanProperty.of("connected_x");
     public static final BooleanProperty CONNECTED_Z = BooleanProperty.of("connected_z");

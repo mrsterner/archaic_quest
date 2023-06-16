@@ -1,7 +1,6 @@
 package com.obsidian_core.archaic_quest.client;
 
 import com.obsidian_core.archaic_quest.common.core.ArchaicQuest;
-import com.obsidian_core.archaic_quest.common.core.register.AQItems;
 import com.obsidian_core.archaic_quest.common.item.AdventurersTorchItem;
 
 import javax.swing.text.html.parser.Entity;

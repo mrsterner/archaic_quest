@@ -1,6 +1,0 @@
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-package com.obsidian_core.archaic_quest.client.screen;
-
-import com.mojang.math.MethodsReturnNonnullByDefault;
-import javax.annotation.ParametersAreNonnullByDefault;
